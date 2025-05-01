@@ -20,4 +20,12 @@ export default defineConfig({
       }
     }
   },
+  preview: {
+    host: '0.0.0.0',
+    port: 5176,
+    allowedHosts: [
+      'localhost',
+      'chatbot.andyanh.id.vn'
+    ]
+  }
 })
