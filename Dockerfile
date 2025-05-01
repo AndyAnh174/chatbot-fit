@@ -1,15 +1,23 @@
-FROM node:20-slim
+FROM node:20-slim AS build
 
 WORKDIR /app
 
 COPY package*.json ./
 
-RUN npm install
+RUN npm ci
 
 COPY . .
 
 RUN npm run build
 
+FROM node:20-slim AS runtime
+
+WORKDIR /app
+
+COPY --from=build /app/dist ./dist
+COPY --from=build /app/node_modules ./node_modules
+COPY --from=build /app/package.json ./
+
 EXPOSE 5176
 
-CMD ["npm", "run", "dev", "--", "--host", "0.0.0.0", "--port", "5176"] 
+CMD ["npm", "run", "preview", "--", "--host", "0.0.0.0", "--port", "5176"] 
