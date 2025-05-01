@@ -16,4 +16,12 @@ services:
       - VITE_APP_DESCRIPTION=Chatbot trả lời các câu hỏi, thắc mắc liên quan đến Khoa CNTT SPKT TPHCM
       - VITE_APP_URL=https://chatbot.andyanh.id.vn
       - VITE_APP_VERSION=1.0.0
-      - NODE_ENV=production 
+      - NODE_ENV=production
+    extra_hosts:
+      - "chatbot.andyanh.id.vn:127.0.0.1"
+    networks:
+      - chatbot-network
+
+networks:
+  chatbot-network:
+    driver: bridge 

@@ -8,10 +8,9 @@ export default defineConfig({
   server: {
     host: '0.0.0.0',
     port: 5176,
-    allowedHosts: [
-      'localhost',
-      'chatbot.andyanh.id.vn'
-    ],
+    strictPort: true,
+    cors: true,
+    allowedHosts: true,
     proxy: {
       '/api': {
         target: 'https://apichatbotfit.andyanh.id.vn',
@@ -23,9 +22,16 @@ export default defineConfig({
   preview: {
     host: '0.0.0.0',
     port: 5176,
-    allowedHosts: [
-      'localhost',
-      'chatbot.andyanh.id.vn'
-    ]
+    strictPort: true,
+    cors: true,
+    allowedHosts: true
+  },
+  build: {
+    outDir: 'dist',
+    emptyOutDir: true,
+    sourcemap: false
+  },
+  optimizeDeps: {
+    include: ['react', 'react-dom', 'react-router-dom']
   }
 })
