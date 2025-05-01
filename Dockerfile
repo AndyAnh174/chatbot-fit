@@ -20,4 +20,4 @@ COPY --from=build /app/package.json ./
 
 EXPOSE 5176
 
-CMD ["npx", "vite", "preview", "--host", "0.0.0.0", "--port", "5176"] 
+CMD ["npx", "vite", "preview", "--host", "0.0.0.0", "--port", "5176", "--base", "/"]
