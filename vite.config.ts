@@ -10,7 +10,7 @@ export default defineConfig({
     port: 5176,
     strictPort: true,
     cors: true,
-    allowedHosts: true,
+    allowedHosts: ['chatbot.andyanh.id.vn'],
     proxy: {
       '/api': {
         target: 'https://apichatbotfit.andyanh.id.vn',
@@ -24,7 +24,7 @@ export default defineConfig({
     port: 5176,
     strictPort: true,
     cors: true,
-    allowedHosts: true
+    allowedHosts: ['chatbot.andyanh.id.vn']
   },
   build: {
     outDir: 'dist',
