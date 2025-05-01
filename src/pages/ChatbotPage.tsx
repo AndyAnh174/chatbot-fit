@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
-import { FaRobot, FaPaperPlane, FaHistory, FaTrash } from 'react-icons/fa';
+import { FaRobot, FaPaperPlane, FaHistory, FaTrash, FaPlus, FaArrowLeft, FaInfoCircle } from 'react-icons/fa';
 import axios from 'axios';
-import { API_ENDPOINTS } from '../config';
+import { API_ENDPOINTS, DEFAULT_HEADERS } from '../config';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import rehypeRaw from 'rehype-raw';
@@ -108,7 +108,10 @@ export function ChatbotPage() {
   // Tạo phiên chat mới
   const createNewSession = async () => {
     try {
-      const response = await axios.post(API_ENDPOINTS.NEW_SESSION);
+      const response = await axios.post(API_ENDPOINTS.NEW_SESSION, {}, {
+        headers: DEFAULT_HEADERS,
+        withCredentials: true
+      });
       setSessionId(response.data.session_id);
       setMessages([]);
     } catch (error) {
@@ -120,7 +123,10 @@ export function ChatbotPage() {
   const fetchChatSessions = async () => {
     try {
       setIsLoadingHistory(true);
-      const response = await axios.get(API_ENDPOINTS.CHAT_HISTORY);
+      const response = await axios.get(API_ENDPOINTS.CHAT_HISTORY, {
+        headers: DEFAULT_HEADERS,
+        withCredentials: true
+      });
       if (response.data.sessions) {
         setChatSessions(response.data.sessions);
       }
@@ -135,7 +141,10 @@ export function ChatbotPage() {
   const loadChatSession = async (sessionId: string) => {
     try {
       setIsLoadingHistory(true);
-      const response = await axios.get(API_ENDPOINTS.CHAT_SESSION(sessionId));
+      const response = await axios.get(API_ENDPOINTS.CHAT_SESSION(sessionId), {
+        headers: DEFAULT_HEADERS,
+        withCredentials: true
+      });
       if (response.data.chat_history) {
         // Hàm xử lý và sửa nội dung từ lịch sử
         const fixHistoryContent = (content: string): string => {
@@ -275,17 +284,19 @@ export function ChatbotPage() {
       const response = await fetch(API_ENDPOINTS.CHAT, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
+          ...DEFAULT_HEADERS,
+          'Accept': 'text/event-stream',
         },
         body: JSON.stringify({
           query: currentQuery,
           session_id: sessionId,
         }),
+        credentials: 'include',  // Gửi cookies nếu có
       });
 
       // Kiểm tra response
       if (!response.ok) {
-        throw new Error('Network response was not ok');
+        throw new Error(`Network response was not ok: ${response.status} ${response.statusText}`);
       }
 
       // Xử lý dữ liệu stream

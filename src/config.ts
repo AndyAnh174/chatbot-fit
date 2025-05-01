@@ -10,6 +10,12 @@ export const API_ENDPOINTS = {
   CHAT_SESSION: (sessionId: string) => `${API_URL}/chat/${sessionId}`,
 };
 
+// Cấu hình request headers mặc định
+export const DEFAULT_HEADERS = {
+  'Content-Type': 'application/json',
+  'Access-Control-Allow-Origin': '*',
+};
+
 // Thông tin ứng dụng
 export const APP_INFO = {
   NAME: import.meta.env.VITE_APP_NAME || 'Chatbot HCMUTE - FIT',
