@@ -1,0 +1,207 @@
+@import "tailwindcss";
+
+:root {
+  --navy-blue: #0A1929;
+  --navy-lighter: #122640;
+  --orange-primary: #EA5B21;
+  --orange-lighter: #F47B4F;
+  --orange-dark: #C74A1A;
+  --gray-light: #F6F8FA;
+  --text-light: #FFFFFF;
+  --border-light: #2D3F55;
+}
+
+/* Hiệu ứng đang nhập (3 chấm) */
+.typing-indicator {
+  display: inline-flex;
+  align-items: center;
+  margin-left: 5px;
+}
+
+.dot {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  margin-right: 3px;
+  background-color: var(--orange-primary);
+  border-radius: 50%;
+  animation: bounce 1.4s infinite ease-in-out;
+}
+
+.dot:nth-child(1) {
+  animation-delay: 0s;
+}
+
+.dot:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.dot:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+@keyframes bounce {
+  0%, 60%, 100% {
+    transform: translateY(0);
+    opacity: 0.8;
+  }
+  30% {
+    transform: translateY(-4px);
+    opacity: 1;
+  }
+}
+
+/* Hiệu ứng đánh máy */
+@keyframes cursor-blink {
+  0%, 100% {
+    border-right-color: transparent;
+  }
+  50% {
+    border-right-color: var(--orange-primary);
+  }
+}
+
+.streaming-content p:last-child::after {
+  content: "|";
+  display: inline-block;
+  color: var(--orange-primary);
+  animation: cursor-blink 0.8s infinite;
+  margin-left: 1px;
+  font-weight: normal;
+}
+
+.streaming-text {
+  display: inline;
+}
+
+/* Styling cho markdown */
+.markdown-content {
+  line-height: 1.6;
+}
+
+.markdown-content h1 {
+  @apply text-2xl font-bold my-4;
+  color: var(--navy-blue);
+}
+
+.markdown-content h2 {
+  @apply text-xl font-bold my-3;
+  color: var(--navy-blue);
+}
+
+.markdown-content h3 {
+  @apply text-lg font-semibold my-2;
+  color: var(--navy-blue);
+}
+
+.markdown-content p {
+  @apply my-2;
+}
+
+.markdown-content ul {
+  @apply list-disc pl-5 my-2;
+}
+
+.markdown-content ol {
+  @apply list-decimal pl-5 my-2;
+}
+
+.markdown-content li {
+  @apply my-1;
+}
+
+.markdown-content blockquote {
+  @apply border-l-4 pl-4 italic my-3;
+  border-color: var(--orange-primary);
+  background-color: #FFF8F4;
+}
+
+.markdown-content table {
+  @apply w-full border-collapse my-4;
+}
+
+.markdown-content th,
+.markdown-content td {
+  @apply border p-2;
+  border-color: var(--border-light);
+}
+
+.markdown-content th {
+  background-color: var(--navy-lighter);
+  color: var(--text-light);
+}
+
+.markdown-content a {
+  color: var(--orange-primary);
+  @apply underline hover:opacity-80;
+}
+
+/* Các style cho giao diện chatbot */
+.chat-header {
+  background-color: var(--navy-blue);
+  color: var(--text-light);
+}
+
+.user-message {
+  background-color: #E1F5FE;
+  border-color: #B3E5FC;
+}
+
+.bot-message {
+  background-color: var(--gray-light);
+  border-color: #E1E4E8;
+}
+
+.send-button {
+  background-color: var(--orange-primary);
+}
+
+.send-button:hover {
+  background-color: var(--orange-dark);
+}
+
+.send-button:disabled {
+  background-color: #ccc;
+}
+
+.new-chat-button {
+  color: var(--orange-primary);
+  border-color: var(--orange-primary);
+}
+
+.new-chat-button:hover {
+  background-color: #FFF1EB;
+}
+
+.session-item:hover {
+  border-color: var(--orange-primary);
+}
+
+.session-item.active {
+  background-color: #FFF1EB;
+  border-color: var(--orange-primary);
+}
+
+.session-badge {
+  background-color: var(--navy-blue);
+  color: var(--text-light);
+}
+
+/* Scrollbar tùy chỉnh */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background-color: #f1f1f1;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: var(--navy-lighter);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: var(--navy-blue);
+}
