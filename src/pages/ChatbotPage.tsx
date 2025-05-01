@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { FaRobot, FaPaperPlane, FaHistory, FaTrash, FaPlus, FaArrowLeft, FaInfoCircle } from 'react-icons/fa';
+import { FaRobot, FaPaperPlane, FaHistory, FaTrash } from 'react-icons/fa';
 import axios from 'axios';
 import { API_ENDPOINTS, DEFAULT_HEADERS } from '../config';
 import ReactMarkdown from 'react-markdown';
