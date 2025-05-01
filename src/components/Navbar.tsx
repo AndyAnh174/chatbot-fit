@@ -31,8 +31,8 @@ export function AppNavbar({ children }: { children: React.ReactNode }) {
                     to="/"
                     className={({ isActive }) => 
                       isActive 
-                        ? "px-3 py-2 rounded-md text-sm font-medium text-white bg-opacity-20 flex items-center" 
-                        : "px-3 py-2 rounded-md text-sm font-medium text-gray-300 hover:text-white hover:bg-opacity-10 flex items-center"
+                        ? "px-3 py-2 rounded-md text-lg font-semibold text-white bg-opacity-20 flex items-center" 
+                        : "px-3 py-2 rounded-md text-lg font-semibold text-gray-300 hover:text-white hover:bg-opacity-10 flex items-center"
                     }
                     style={({ isActive }) => ({ 
                       backgroundColor: isActive ? 'var(--orange-primary)' : 'transparent'
@@ -45,8 +45,8 @@ export function AppNavbar({ children }: { children: React.ReactNode }) {
                     to="/chatbot"
                     className={({ isActive }) => 
                       isActive 
-                        ? "px-3 py-2 rounded-md text-sm font-medium text-white bg-opacity-20 flex items-center" 
-                        : "px-3 py-2 rounded-md text-sm font-medium text-gray-300 hover:text-white hover:bg-opacity-10 flex items-center"
+                        ? "px-3 py-2 rounded-md text-lg font-semibold text-white bg-opacity-20 flex items-center" 
+                        : "px-3 py-2 rounded-md text-lg font-semibold text-gray-300 hover:text-white hover:bg-opacity-10 flex items-center"
                     }
                     style={({ isActive }) => ({ 
                       backgroundColor: isActive ? 'var(--orange-primary)' : 'transparent'
@@ -59,8 +59,8 @@ export function AppNavbar({ children }: { children: React.ReactNode }) {
                     to="/about"
                     className={({ isActive }) => 
                       isActive 
-                        ? "px-3 py-2 rounded-md text-sm font-medium text-white bg-opacity-20 flex items-center" 
-                        : "px-3 py-2 rounded-md text-sm font-medium text-gray-300 hover:text-white hover:bg-opacity-10 flex items-center"
+                        ? "px-3 py-2 rounded-md text-lg font-semibold text-white bg-opacity-20 flex items-center" 
+                        : "px-3 py-2 rounded-md text-lg font-semibold text-gray-300 hover:text-white hover:bg-opacity-10 flex items-center"
                     }
                     style={({ isActive }) => ({ 
                       backgroundColor: isActive ? 'var(--orange-primary)' : 'transparent'

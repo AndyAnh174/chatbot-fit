@@ -1,0 +1,28 @@
+<svg width="1200" height="630" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+        <style type="text/css">
+            <![CDATA[
+                .title {
+                    font-family: 'Poppins', 'Arial', sans-serif;
+                    font-size: 70px;
+                    fill: #FFFFFF;
+                    letter-spacing: 2px;
+                }
+                .subtitle {
+                    font-family: 'Poppins', 'Arial', sans-serif;
+                    font-size: 36px;
+                    fill: #FFB385;
+                }
+                .footer {
+                    font-family: 'Poppins', 'Arial', sans-serif;
+                    font-size: 28px;
+                    fill: #E0E0E0;
+                }
+            ]]>
+        </style>
+    </defs>
+    <rect width="1200" height="630" fill="#0A1929"/>
+    <text x="50%" y="38%" class="title" text-anchor="middle" dominant-baseline="middle">Chatbot HCMUTE - FIT</text>
+    <text x="50%" y="52%" class="subtitle" text-anchor="middle" dominant-baseline="middle">Giải đáp thắc mắc về Khoa Công nghệ Thông tin</text>
+    <text x="50%" y="63%" class="footer" text-anchor="middle" dominant-baseline="middle">Trường Đại học Sư phạm Kỹ thuật TP.HCM</text>
+</svg>
