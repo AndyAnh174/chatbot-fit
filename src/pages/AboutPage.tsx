@@ -67,7 +67,7 @@ const AboutPage = () => {
                   Đây là phiên bản beta của Chatbot AI FIT - HCMUTE. Sản phẩm vẫn đang trong quá trình phát triển, 
                   nên có thể còn một số sai sót. Chúng tôi rất mong nhận được góp ý của bạn thông qua{' '}
                   <a 
-                    href="https://forms.gle" 
+                    href="https://forms.gle/G1shmbDAdLjksBef7" 
                     target="_blank" 
                     rel="noopener noreferrer" 
                     className="underline font-medium"
