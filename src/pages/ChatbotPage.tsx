@@ -19,7 +19,11 @@ interface Session {
   title: string;
   timestamp: string;
   preview: string;
+  last_message?: string;
 }
+
+// localStorage key cho lịch sử chat
+const CHAT_HISTORY_STORAGE_KEY = 'chatbot_history';
 
 export function ChatbotPage() {
   const [query, setQuery] = useState('');
@@ -28,7 +32,9 @@ export function ChatbotPage() {
   const [isLoadingHistory, setIsLoadingHistory] = useState(false);
   const [sessionId, setSessionId] = useState<string | null>(null);
   const [chatSessions, setChatSessions] = useState<Session[]>([]);
+  const [localChatSessions, setLocalChatSessions] = useState<Session[]>([]);
   const [isTyping, setIsTyping] = useState(false);
+  const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const messagesContainerRef = useRef<HTMLDivElement>(null);
   const [, setScrollPosition] = useState(0);
@@ -65,17 +71,90 @@ export function ChatbotPage() {
     return processedContent;
   };
 
-  // Lấy danh sách phiên chat khi tải trang
+  // Lưu lịch sử chat vào localStorage
+  const saveLocalChatHistory = (sessionId: string, messages: Message[]) => {
+    try {
+      if (!sessionId || messages.length === 0) return;
+
+      // Lấy lịch sử chat hiện tại từ localStorage
+      const storedHistory = localStorage.getItem(CHAT_HISTORY_STORAGE_KEY);
+      let chatHistory: Record<string, Message[]> = storedHistory ? JSON.parse(storedHistory) : {};
+
+      // Cập nhật hoặc thêm mới phiên chat hiện tại
+      chatHistory[sessionId] = messages;
+
+      // Lưu trở lại localStorage
+      localStorage.setItem(CHAT_HISTORY_STORAGE_KEY, JSON.stringify(chatHistory));
+
+      // Cập nhật danh sách phiên chat của người dùng
+      updateLocalChatSessions();
+    } catch (error) {
+      console.error('Error saving chat history to localStorage:', error);
+    }
+  };
+
+  // Tải lịch sử chat từ localStorage
+  const loadLocalChatHistory = (sessionId: string): Message[] => {
+    try {
+      const storedHistory = localStorage.getItem(CHAT_HISTORY_STORAGE_KEY);
+      if (!storedHistory) return [];
+
+      const chatHistory: Record<string, Message[]> = JSON.parse(storedHistory);
+      return chatHistory[sessionId] || [];
+    } catch (error) {
+      console.error('Error loading chat history from localStorage:', error);
+      return [];
+    }
+  };
+
+  // Cập nhật danh sách phiên chat từ localStorage
+  const updateLocalChatSessions = () => {
+    try {
+      const storedHistory = localStorage.getItem(CHAT_HISTORY_STORAGE_KEY);
+      if (!storedHistory) {
+        setLocalChatSessions([]);
+        return;
+      }
+
+      const chatHistory: Record<string, Message[]> = JSON.parse(storedHistory);
+      const sessions: Session[] = Object.keys(chatHistory).map(sessionId => {
+        const messages = chatHistory[sessionId];
+        const lastMessage = messages[messages.length - 1];
+        const firstUserMessage = messages.find(msg => msg.role === 'human');
+        
+        // Xử lý trường hợp content có thể là undefined
+        const previewContent = firstUserMessage?.content || '';
+        const preview = previewContent.substring(0, 50) + (previewContent.length > 50 ? '...' : '');
+        
+        return {
+          session_id: sessionId,
+          title: `Trò chuyện ${new Date(messages[0].timestamp || new Date()).toLocaleString()}`,
+          timestamp: messages[0].timestamp || new Date().toISOString(),
+          preview: preview || 'Cuộc trò chuyện mới',
+          last_message: lastMessage?.content || ''
+        };
+      });
+
+      // Sắp xếp theo thời gian gần nhất
+      sessions.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
+      setLocalChatSessions(sessions);
+    } catch (error) {
+      console.error('Error updating local chat sessions:', error);
+    }
+  };
+
+  // Tải danh sách phiên chat khi tải trang
   useEffect(() => {
+    updateLocalChatSessions();
     fetchChatSessions();
   }, []);
 
-  // Cuộn xuống tin nhắn mới nhất với điều kiện
+  // Lưu lịch sử chat vào localStorage khi messages thay đổi
   useEffect(() => {
-    if (shouldAutoScroll && messagesEndRef.current) {
-      messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
+    if (sessionId && messages.length > 0) {
+      saveLocalChatHistory(sessionId, messages);
     }
-  }, [messages, shouldAutoScroll]);
+  }, [messages, sessionId]);
 
   // Theo dõi sự kiện cuộn
   useEffect(() => {
@@ -86,7 +165,7 @@ export function ChatbotPage() {
         setScrollPosition(scrollTop);
         
         // Kiểm tra nếu người dùng đã cuộn lên trên
-        const isAtBottom = scrollHeight - scrollTop - clientHeight < 50;
+        const isAtBottom = scrollHeight - scrollTop - clientHeight < 100;
         
         // Chỉ tự động cuộn nếu người dùng đang ở cuối cuộc trò chuyện
         setShouldAutoScroll(isAtBottom);
@@ -96,6 +175,13 @@ export function ChatbotPage() {
     const container = messagesContainerRef.current;
     if (container) {
       container.addEventListener('scroll', handleScroll);
+      
+      // Khi component mount, đặt vị trí cuộn ở cuối
+      setTimeout(() => {
+        if (container.scrollHeight > 0) {
+          container.scrollTop = container.scrollHeight;
+        }
+      }, 100);
     }
 
     return () => {
@@ -105,21 +191,65 @@ export function ChatbotPage() {
     };
   }, []);
 
+  // Cuộn xuống tin nhắn mới nhất với điều kiện
+  useEffect(() => {
+    if (shouldAutoScroll && messagesEndRef.current && !isLoadingHistory) {
+      // Sử dụng timeout để đảm bảo DOM đã cập nhật
+      setTimeout(() => {
+        messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+      }, 100);
+    }
+  }, [messages, shouldAutoScroll, isLoadingHistory]);
+
+  // Thêm hàm xử lý smooth scroll bằng requestAnimationFrame
+  const smoothScrollToBottom = () => {
+    if (messagesContainerRef.current && shouldAutoScroll) {
+      const container = messagesContainerRef.current;
+      const scrollHeight = container.scrollHeight;
+      
+      requestAnimationFrame(() => {
+        container.scrollTop = scrollHeight;
+      });
+    }
+  };
+
+  // Cập nhật lại useEffect theo dõi tin nhắn để sử dụng hàm smoothScrollToBottom
+  useEffect(() => {
+    if (shouldAutoScroll && !isLoadingHistory && messages.length > 0) {
+      // Delay một chút để đảm bảo DOM đã cập nhật
+      setTimeout(smoothScrollToBottom, 50);
+    }
+  }, [messages, shouldAutoScroll, isLoadingHistory]);
+
   // Tạo phiên chat mới
   const createNewSession = async () => {
     try {
+      // Tạo phiên chat mới từ server
       const response = await axios.post(API_ENDPOINTS.NEW_SESSION, {}, {
         headers: DEFAULT_HEADERS,
         withCredentials: true
       });
-      setSessionId(response.data.session_id);
+      
+      const newSessionId = response.data.session_id;
+      setSessionId(newSessionId);
       setMessages([]);
+      
+      // Thêm phiên này vào localStorage
+      saveLocalChatHistory(newSessionId, []);
+      
+      // Đảm bảo đóng sidebar mobile khi tạo mới phiên chat
+      setIsMobileSidebarOpen(false);
     } catch (error) {
       console.error('Error creating new session:', error);
+      // Tạo phiên chat local nếu API lỗi
+      const fallbackSessionId = `local_${new Date().getTime()}`;
+      setSessionId(fallbackSessionId);
+      setMessages([]);
+      saveLocalChatHistory(fallbackSessionId, []);
     }
   };
 
-  // Lấy danh sách phiên chat
+  // Lấy danh sách phiên chat từ server
   const fetchChatSessions = async () => {
     try {
       setIsLoadingHistory(true);
@@ -128,6 +258,7 @@ export function ChatbotPage() {
         withCredentials: true
       });
       if (response.data.sessions) {
+        // NOTE: Lưu lại nhưng không hiện thị dữ liệu này
         setChatSessions(response.data.sessions);
       }
     } catch (error) {
@@ -141,10 +272,36 @@ export function ChatbotPage() {
   const loadChatSession = async (sessionId: string) => {
     try {
       setIsLoadingHistory(true);
+      
+      // Kiểm tra nếu session ID có trong localStorage
+      const localMessages = loadLocalChatHistory(sessionId);
+      if (localMessages && localMessages.length > 0) {
+        setSessionId(sessionId);
+        
+        // Đóng sidebar mobile sau khi chọn phiên chat
+        setIsMobileSidebarOpen(false);
+        
+        // Đặt shouldAutoScroll để cuộn xuống
+        setShouldAutoScroll(true);
+        
+        // Đặt messages sau đó mới tắt loading
+        setMessages(localMessages);
+        
+        // Đợi ngắn để DOM cập nhật trước khi cuộn xuống và tắt loading
+        setTimeout(() => {
+          smoothScrollToBottom();
+          setIsLoadingHistory(false);
+        }, 50);
+        
+        return;
+      }
+      
+      // Nếu không có trong localStorage, tải từ server
       const response = await axios.get(API_ENDPOINTS.CHAT_SESSION(sessionId), {
         headers: DEFAULT_HEADERS,
         withCredentials: true
       });
+      
       if (response.data.chat_history) {
         // Hàm xử lý và sửa nội dung từ lịch sử
         const fixHistoryContent = (content: string): string => {
@@ -203,22 +360,39 @@ export function ChatbotPage() {
         
         setMessages(loadedMessages);
         setSessionId(sessionId);
+        // Đóng sidebar mobile sau khi chọn phiên chat
+        setIsMobileSidebarOpen(false);
+        
+        // Lưu vào localStorage cho lần sau
+        saveLocalChatHistory(sessionId, loadedMessages);
       }
     } catch (error) {
       console.error('Error loading chat session:', error);
-    } finally {
       setIsLoadingHistory(false);
     }
   };
 
-  // Hàm xử lý streaming từng chữ
+  // Sửa lại phần xử lý streaming từng chữ để khôi phục hiệu ứng typing
   const processStreamingText = async (text: string, currentContent: string) => {
     const cleanText = cleanContent(text);
-    // Tận dụng nội dung hiện tại để tránh reset
+    
+    // Thay đổi cách thêm nội dung để tạo hiệu ứng typing
+    // Hiển thị từng ký tự một cách mượt mà
+    const characters = cleanText.split('');
     let processedContent = currentContent;
     
-    for (let i = 0; i < cleanText.length; i++) {
-      processedContent += cleanText[i];
+    // Tạo hiệu ứng typing theo nhóm ký tự để tăng tốc độ hiển thị
+    // Số ký tự hiển thị cùng lúc sẽ tùy thuộc vào độ dài văn bản
+    const chunkSize = characters.length > 300 ? 15 : 
+                     characters.length > 150 ? 10 :
+                     characters.length > 50 ? 5 : 1;
+    
+    for (let i = 0; i < characters.length; i += chunkSize) {
+      // Thêm một nhóm ký tự cùng lúc
+      const chunk = characters.slice(i, i + chunkSize).join('');
+      processedContent += chunk;
+      
+      // Cập nhật nội dung hiện tại trong state
       setMessages(prev => 
         prev.map((msg, idx) => 
           idx === prev.length - 1 && msg.isStreaming 
@@ -226,9 +400,27 @@ export function ChatbotPage() {
             : msg
         )
       );
-      // Giảm thời gian delay để tăng tốc độ streaming
-      await new Promise(resolve => setTimeout(resolve, 10));
+      
+      // Đảm bảo cuộn xuống mỗi khi có nội dung mới
+      if (i % 15 === 0) { // Giảm tần suất cuộn để tăng hiệu năng
+        smoothScrollToBottom();
+      }
+      
+      // Tạo độ trễ giữa các nhóm ký tự để tạo hiệu ứng typing
+      // Tốc độ typing nhanh hơn nhiều cho văn bản dài
+      if (characters.length > 500) { // Đoạn text cực dài
+        await new Promise(resolve => setTimeout(resolve, 2));
+      } else if (characters.length > 200) { // Đoạn text rất dài
+        await new Promise(resolve => setTimeout(resolve, 5));
+      } else if (characters.length > 50) { // Đoạn text dài vừa
+        await new Promise(resolve => setTimeout(resolve, 8));
+      } else {
+        await new Promise(resolve => setTimeout(resolve, 12)); // Đoạn text ngắn, vẫn typing nhanh
+      }
     }
+    
+    // Đảm bảo cuộn xuống sau khi hoàn thành đoạn văn bản
+    setTimeout(smoothScrollToBottom, 10);
     
     return processedContent;
   };
@@ -266,6 +458,23 @@ export function ChatbotPage() {
   const sendMessage = async () => {
     if (!query.trim()) return;
 
+    // Tạo session ID mới nếu chưa có
+    let currentSessionId = sessionId;
+    if (!currentSessionId) {
+      try {
+        const response = await axios.post(API_ENDPOINTS.NEW_SESSION, {}, {
+          headers: DEFAULT_HEADERS,
+          withCredentials: true
+        });
+        currentSessionId = response.data.session_id;
+        setSessionId(currentSessionId);
+      } catch (error) {
+        console.error('Error creating new session:', error);
+        currentSessionId = `local_${new Date().getTime()}`;
+        setSessionId(currentSessionId);
+      }
+    }
+
     // Thêm tin nhắn của người dùng vào danh sách
     const userMessage: Message = { role: 'human', content: query, timestamp: new Date().toISOString() };
     setMessages(prev => [...prev, userMessage]);
@@ -289,7 +498,7 @@ export function ChatbotPage() {
         },
         body: JSON.stringify({
           query: currentQuery,
-          session_id: sessionId,
+          session_id: currentSessionId,
         }),
         credentials: 'include',  // Gửi cookies nếu có
       });
@@ -323,7 +532,8 @@ export function ChatbotPage() {
               
               // Lấy session ID từ response đầu tiên
               if (jsonData.type === 'session_id') {
-                setSessionId(jsonData.session_id);
+                currentSessionId = jsonData.session_id;
+                setSessionId(currentSessionId);
                 continue;
               }
               
@@ -340,6 +550,9 @@ export function ChatbotPage() {
                 setIsTyping(false);
                 // Thêm message ban đầu cho streaming
                 setMessages(prev => [...prev, { role: 'ai', content: '', isStreaming: true, timestamp: new Date().toISOString() }]);
+                
+                // Đảm bảo cuộn xuống khi tin nhắn mới xuất hiện
+                setShouldAutoScroll(true);
               }
               
               // Xử lý format trả về từ API và lưu nội dung hiện tại
@@ -358,6 +571,9 @@ export function ChatbotPage() {
                 setIsTyping(false);
                 // Thêm message ban đầu cho streaming
                 setMessages(prev => [...prev, { role: 'ai', content: '', isStreaming: true, timestamp: new Date().toISOString() }]);
+                
+                // Đảm bảo cuộn xuống khi tin nhắn mới xuất hiện
+                setShouldAutoScroll(true);
               }
               botResponse = await processStreamingText(data, botResponse);
             }
@@ -374,8 +590,21 @@ export function ChatbotPage() {
         )
       );
 
-      // Cập nhật danh sách phiên chat
-      fetchChatSessions();
+      // Tắt loading trước
+      setIsLoading(false);
+      setIsTyping(false);
+      
+      // Đảm bảo cuộn xuống sau khi hoàn thành
+      setShouldAutoScroll(true);
+      
+      // Ngay lập tức gọi hàm cuộn mượt
+      setTimeout(smoothScrollToBottom, 50);
+      
+      // Trì hoãn cập nhật danh sách phiên trò chuyện để tránh ảnh hưởng đến hiệu năng
+      setTimeout(() => {
+        updateLocalChatSessions();
+        fetchChatSessions();
+      }, 500);
       
     } catch (error) {
       console.error('Error sending message:', error);
@@ -386,22 +615,19 @@ export function ChatbotPage() {
       // Thêm tin nhắn lỗi
       setMessages(prev => [...prev, { 
         role: 'ai', 
-        content: 'Đã xảy ra lỗi khi xử lý yêu cầu của bạn.', 
+        content: 'Đã xảy ra lỗi khi xử lý yêu cầu của bạn. Vui lòng thử lại sau.', 
         timestamp: new Date().toISOString() 
       }]);
-    } finally {
-      setIsLoading(false);
-      // Đảm bảo tắt trạng thái đang suy nghĩ khi kết thúc
-      setIsTyping(false);
-      // Đảm bảo cuộn xuống sau khi hoàn thành
-      setShouldAutoScroll(true);
       
-      // Thêm timeout để đảm bảo cuộn xuống sau khi DOM cập nhật
-      setTimeout(() => {
-        if (messagesEndRef.current) {
-          messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
-        }
-      }, 100);
+      // Vẫn lưu vào localStorage
+      if (currentSessionId) {
+        saveLocalChatHistory(currentSessionId, messages);
+      }
+      
+      // Tắt loading và đảm bảo cuộn xuống
+      setIsLoading(false);
+      setIsTyping(false);
+      setTimeout(smoothScrollToBottom, 50);
     }
   };
 
@@ -412,7 +638,7 @@ export function ChatbotPage() {
     }
   };
 
-  // Component hiển thị tin nhắn
+  // Cập nhật component MessageBubble để cải thiện hiển thị markdown
   const MessageBubble = ({ message }: { message: Message }) => {
 
     // Xử lý các liên kết đặc biệt trong nội dung hiển thị
@@ -424,36 +650,186 @@ export function ChatbotPage() {
       if (jsonCheck) {
         processedContent = jsonCheck[1].replace(/\\n/g, '\n').replace(/\\"/g, '"');
       }
+
+      // Xử lý đặc biệt cho trường hợp URLs với nhiều cặp ngoặc lặp đi lặp lại
+      processedContent = processedContent.replace(
+        /\[https:\/\/https:\/\/([^\]]+)\]/g, 
+        '[https://$1]'
+      );
+
+      // Xử lý URL với https:// bị lặp lại
+      processedContent = processedContent.replace(
+        /https:\/\/https:\/\//g,
+        'https://'
+      );
+
+      // Xử lý trường hợp đặc biệt cho các URL phức tạp
+      processedContent = processedContent.replace(
+        /\[(https?:\/\/[^\]]+)\]\((https?:\/\/)[^\)]+\)\((https?:\/\/)[^\)]+\)/g, 
+        '[**$1**](https://$1)'
+      );
+
+      // Xử lý URL lồng nhau đặc biệt được nhận diện trong ảnh
+      processedContent = processedContent.replace(
+        /\[(https?:\/\/(?:https?:\/\/)?[^\]]+)\]\((https?:\/\/(?:https?:\/\/)?[^)]+)\)/g,
+        (match, p1, p2) => {
+          // Loại bỏ các https:// lặp lại
+          const cleanUrl = p1.replace(/https?:\/\/https?:\/\//, 'https://');
+          // Đảm bảo URL không chứa https:// lặp lại
+          return `[**${cleanUrl}**](${cleanUrl})`;
+        }
+      );
+
+      // Xử lý các URL có nhiều lớp ngoặc lặp lại
+      processedContent = processedContent.replace(
+        /\(https?:\/\/https?:\/\/([^)]+)\)/g,
+        '(https://$1)'
+      );
+
+      // Xử lý các URL dạng [https://domain](https://domain)
+      processedContent = processedContent.replace(
+        /\[(https?:\/\/[^\/\]]+(?:\/[^\]]*)?)\]\((https?:\/\/)[^)]+\)/g,
+        '[**$1**]($1)'
+      );
+
+      // Xử lý các liên kết lỗi với nhiều lớp ngoặc
+      processedContent = processedContent.replace(
+        /\(https?:\/\/([^)]+)\)\(https?:\/\/([^)]+)\)/g,
+        '(https://$1)'
+      );
+
+      // Loại bỏ URL trùng lặp - phổ biến trong phản hồi chatbot
+      processedContent = processedContent.replace(
+        /\[(https?:\/\/[^\]]+)\]\((https?:\/\/[^)]+)\)\s*\((https?:\/\/[^)]+)\)/g,
+        '[**$1**]($1)'
+      );
+      
+      // Xử lý URL trùng lặp thứ hai
+      processedContent = processedContent.replace(
+        /\[(https?:\/\/[^\]]+)\]\((https?:\/\/[^)]+)\)/g,
+        '[**$1**]($1)'
+      );
+      
+      // Xử lý liên kết website trong danh sách
+      processedContent = processedContent.replace(
+        /Website:\s*\[(https?:\/\/[^\]]+)\]/g,
+        'Website: [**$1**]($1)'
+      );
+      
+      // Cải thiện hiển thị URL - Website
+      processedContent = processedContent.replace(
+        /Website:\s*(https?:\/\/)?(?:www\.)?([\w.-]+\.[^\s,*]+[^\s,*\/]+)/gi,
+        'Website: [**$2**](https://$2)'
+      );
+      
+      // Sửa lỗi LinkedIn và Facebook dính nhau
+      processedContent = processedContent.replace(
+        /(LinkedIn:\s*(?:https?:\/\/)?(?:www\.)?linkedin\.com\/[^\s*]+)(\s*Facebook:)/gi,
+        '$1\n$2'
+      );
+      
+      // Đảm bảo rằng mỗi mục trong danh sách có dấu xuống dòng rõ ràng
+      processedContent = processedContent.replace(/(\*\s+LinkedIn:.*?)(\*\s+Facebook:)/g, '$1\n$2');
+      processedContent = processedContent.replace(/(\*\s+Facebook:.*?)(\*\s+Email:)/g, '$1\n$2');
+      processedContent = processedContent.replace(/(\*\s+Website:.*?)(\*\s+[A-Za-z]+:)/g, '$1\n$2');
+      processedContent = processedContent.replace(/(\*\s+Trung tâm tin học:.*?)(\*\s+[A-Za-z]+:)/g, '$1\n$2');
+      processedContent = processedContent.replace(/(\*\s+Đoàn hội khoa:.*?)(\*\s+[A-Za-z]+:)/g, '$1\n$2');
+      processedContent = processedContent.replace(/(\*\s+Hotline:.*?)(\*\s+[A-Za-z]+:)/g, '$1\n$2');
+      
+      // Xử lý các URL dính nhau trong danh sách
+      processedContent = processedContent.replace(/(\*\s+[A-Za-z]+:\s*\[.*?\))\s*(\*\s+[A-Za-z]+:)/g, '$1\n$2');
+      
+      // Xử lý email links trong dạng markdown chuẩn
+      processedContent = processedContent.replace(
+        /\[([^@\]]+@[^@\]]+)\]\(mailto:([^)]+)\)/g,
+        '[**$1**](mailto:$1)'
+      );
       
       // Xử lý email với ngoặc bao quanh
       processedContent = processedContent.replace(
         /\(mailto:([\w.-]+@[\w.-]+\.\w+)\)/g,
-        '[$1](mailto:$1)'
+        '[**$1**](mailto:$1)'
       );
       
       // Xử lý email links chưa định dạng
       processedContent = processedContent.replace(
         /(?<!["\(])([\w.-]+@[\w.-]+\.\w+)(?![")\]])/g, 
-        '[mailto:$1](mailto:$1)'
+        '[**$1**](mailto:$1)'
+      );
+      
+      // Cải thiện hiển thị URL - Facebook
+      processedContent = processedContent.replace(
+        /Facebook:\s*(https?:\/\/)?(?:www\.)?(facebook\.com\/[^\s,*]*)/gi,
+        'Facebook: [**$2**](https://$2)'
+      );
+      
+      // Cải thiện hiển thị URL - LinkedIn
+      processedContent = processedContent.replace(
+        /LinkedIn:\s*(https?:\/\/)?(?:www\.)?(linkedin\.com\/[^\s,*]*)/gi,
+        'LinkedIn: [**$2**](https://$2)'
+      );
+      
+      // Xử lý URL Trung tâm tin học
+      processedContent = processedContent.replace(
+        /Trung tâm tin học:\s*(https?:\/\/)?(?:www\.)?(trungtamtinhoc\.hcmute\.edu\.vn[^\s,*]*)/gi,
+        'Trung tâm tin học: [**$2**](https://$2)'
+      );
+
+      // Xử lý URL Đoàn hội khoa
+      processedContent = processedContent.replace(
+        /Đoàn hội khoa:\s*(https?:\/\/)?(?:www\.)?(facebook\.com\/DoanHoiITUTE[^\s,*]*)/gi,
+        'Đoàn hội khoa: [**$2**](https://$2)'
+      );
+      
+      // Xử lý đặc biệt cho các liên kết khi ở dạng danh sách
+      processedContent = processedContent.replace(
+        /(\*\s+LinkedIn:\s*\[.*?\))\s*(\*\s+Facebook:)/g, 
+        '$1\n$2'
+      );
+      processedContent = processedContent.replace(
+        /(\*\s+Facebook:\s*\[.*?\))\s*(\*\s+Email:)/g, 
+        '$1\n$2'
       );
       
       // Sửa liên kết bị lỗi do lặp lại
       processedContent = processedContent.replace(
         /\[https:\/\/([^\]]+)\]\(https:\/\/https:\/\/([^)]+)\)/g,
-        '[https://$1](https://$2)'
+        '[**$1**](https://$1)'
       );
       
       // Sửa liên kết lặp lại hoặc lồng nhau
       processedContent = processedContent.replace(
         /\[\[([^\]]+)\]\]\(([^)]+)\)/g,
-        '[$1]($2)'
+        '[**$1**]($2)'
       );
       
-      // Xử lý URLs thông thường
+      // Xử lý URLs thông thường - phải đặt sau các xử lý cụ thể khác
       processedContent = processedContent.replace(
         /(?<!["\(])(https?:\/\/[^\s"]+)(?![")\]])/g,
-        '[$1]($1)'
+        '[**$1**]($1)'
       );
+
+      // Làm sạch các URL còn sót lại với nhiều lớp https://
+      processedContent = processedContent.replace(
+        /\(https:\/\/https:\/\/([^)]+)\)/g,
+        '(https://$1)'
+      );
+      
+      // Nổi bật một số từ quan trọng bằng cách thêm dấu ** (in đậm)
+      const importantWords = [
+        'HCMUTE', 'FIT', 'Khoa CNTT', 'Đại học', 'Trường', 'Sinh viên', 
+        'Giảng viên', 'Học phí', 'Chương trình', 'Ngành', 'Chuyên ngành', 
+        'Môn học', 'Tuyển sinh', 'Đồ án', 'Thực tập', 'Điểm', 'Học kỳ', 
+        'Năm học', 'Email', 'LinkedIn', 'Facebook', 'ThS', 'TS', 'Tiến sĩ', 
+        'Thạc sĩ', 'PGS', 'GS', 'Phó Giáo sư', 'Giáo sư', 'Khoa Công nghệ Thông tin', 
+        'Link hồ sơ', 'Bộ môn', 'Chức danh', 'Học vị', 'Họ và tên', 'Website', 
+        'Trung tâm tin học', 'Đoàn hội khoa', 'Hotline', 'Thông tin liên hệ trực tuyến'
+      ];
+      
+      importantWords.forEach(word => {
+        const regex = new RegExp(`(?<![*\\w])(${word})(?![*\\w])`, 'g');
+        processedContent = processedContent.replace(regex, '**$1**');
+      });
       
       return processedContent;
     };
@@ -498,9 +874,18 @@ export function ChatbotPage() {
                     remarkPlugins={[remarkGfm]}
                     rehypePlugins={[rehypeRaw, rehypeSanitize]}
                     components={{
-                      a: (props) => (
-                        <a {...props} className="text-blue-600 underline hover:text-blue-800" target="_blank" rel="noopener noreferrer" />
-                      ),
+                      a: (props) => {
+                        // Xử lý đặc biệt cho email links
+                        const isEmail = props.href?.startsWith('mailto:');
+                        return (
+                          <a 
+                            {...props} 
+                            className={`${isEmail ? 'text-green-600 font-medium' : 'text-blue-600'} underline hover:opacity-80`} 
+                            target="_blank" 
+                            rel="noopener noreferrer" 
+                          />
+                        );
+                      },
                       pre: (props) => (
                         <pre {...props} className="bg-gray-800 text-white p-3 rounded my-2 overflow-auto" />
                       ),
@@ -513,10 +898,24 @@ export function ChatbotPage() {
                       },
                       p: ({ children, ...props }) => (
                         <p {...props} className="streaming-text">{children}</p>
-                      )
+                      ),
+                      // Cải thiện hiển thị heading
+                      h1: (props) => <h1 {...props} className="text-xl font-bold mt-2 mb-2" style={{ color: 'var(--navy-blue)' }} />,
+                      h2: (props) => <h2 {...props} className="text-lg font-bold mt-2 mb-1" style={{ color: 'var(--navy-blue)' }} />,
+                      h3: (props) => <h3 {...props} className="text-md font-bold mt-1 mb-1" style={{ color: 'var(--navy-blue)' }} />,
+                      strong: (props) => <strong {...props} className="font-bold" style={{ color: 'var(--orange-primary)' }} />,
+                      // Hiển thị danh sách đẹp hơn
+                      ul: (props) => <ul {...props} className="list-disc pl-5 my-2 space-y-1" />,
+                      ol: (props) => <ol {...props} className="list-decimal pl-5 my-2 space-y-1" />,
+                      li: (props) => <li {...props} className="mb-1" />,
+                      // Hiển thị bảng đẹp hơn
+                      table: (props) => <table {...props} className="border-collapse border border-gray-300 my-2 w-full" />,
+                      thead: (props) => <thead {...props} className="bg-gray-100" />,
+                      th: (props) => <th {...props} className="border border-gray-300 p-2 text-left" />,
+                      td: (props) => <td {...props} className="border border-gray-300 p-2" />
                     }}
                   >
-                    {message.content}
+                    {message.content + '▋'}
                   </ReactMarkdown>
                 </div>
               ) : (
@@ -530,7 +929,7 @@ export function ChatbotPage() {
                       return (
                         <a 
                           {...props} 
-                          className={`${isEmail ? 'text-green-600' : 'text-blue-600'} underline hover:opacity-80`} 
+                          className={`${isEmail ? 'text-green-600 font-medium' : 'text-blue-600'} underline hover:opacity-80`} 
                           target="_blank" 
                           rel="noopener noreferrer"
                         />
@@ -548,8 +947,22 @@ export function ChatbotPage() {
                     },
                     // Xử lý ký tự \n trong văn bản thường
                     p: ({ children, ...props }) => {
-                      return <p {...props}>{children}</p>;
-                    }
+                      return <p {...props} className="my-1">{children}</p>;
+                    },
+                    // Cải thiện hiển thị heading
+                    h1: (props) => <h1 {...props} className="text-xl font-bold mt-3 mb-2" style={{ color: 'var(--navy-blue)' }} />,
+                    h2: (props) => <h2 {...props} className="text-lg font-bold mt-2 mb-1" style={{ color: 'var(--navy-blue)' }} />,
+                    h3: (props) => <h3 {...props} className="text-md font-bold mt-1 mb-1" style={{ color: 'var(--navy-blue)' }} />,
+                    strong: (props) => <strong {...props} className="font-bold" style={{ color: 'var(--orange-primary)' }} />,
+                    // Hiển thị danh sách đẹp hơn
+                    ul: (props) => <ul {...props} className="list-disc pl-5 my-2 space-y-1" />,
+                    ol: (props) => <ol {...props} className="list-decimal pl-5 my-2 space-y-1" />,
+                    li: (props) => <li {...props} className="mb-1" />,
+                    // Hiển thị bảng đẹp hơn
+                    table: (props) => <table {...props} className="border-collapse border border-gray-300 my-2 w-full" />,
+                    thead: (props) => <thead {...props} className="bg-gray-100" />,
+                    th: (props) => <th {...props} className="border border-gray-300 p-2 text-left" />,
+                    td: (props) => <td {...props} className="border border-gray-300 p-2" />
                   }}
                 >
                   {processLinks(message.content)}
@@ -562,8 +975,63 @@ export function ChatbotPage() {
     );
   };
 
+  // Xóa một phiên chat cụ thể khỏi localStorage
+  const deleteLocalChatSession = (sessionIdToDelete: string) => {
+    try {
+      const storedHistory = localStorage.getItem(CHAT_HISTORY_STORAGE_KEY);
+      if (!storedHistory) return;
+
+      const chatHistory: Record<string, Message[]> = JSON.parse(storedHistory);
+      // Xóa phiên chat được chọn
+      delete chatHistory[sessionIdToDelete];
+      
+      // Lưu lại lịch sử đã được cập nhật
+      localStorage.setItem(CHAT_HISTORY_STORAGE_KEY, JSON.stringify(chatHistory));
+      
+      // Cập nhật danh sách phiên chat hiển thị
+      updateLocalChatSessions();
+      
+      // Nếu đang ở phiên chat bị xóa, tạo phiên chat mới
+      if (sessionId === sessionIdToDelete) {
+        createNewSession();
+      }
+    } catch (error) {
+      console.error('Error deleting chat session:', error);
+    }
+  };
+  
+  // Xóa tất cả lịch sử chat
+  const clearAllLocalChatHistory = () => {
+    try {
+      // Xóa dữ liệu khỏi localStorage
+      localStorage.removeItem(CHAT_HISTORY_STORAGE_KEY);
+      
+      // Cập nhật danh sách phiên chat
+      setLocalChatSessions([]);
+      
+      // Tạo phiên chat mới
+      createNewSession();
+    } catch (error) {
+      console.error('Error clearing all chat history:', error);
+    }
+  };
+
+  // Hàm xác nhận và xóa phiên chat
+  const confirmAndDeleteSession = (sessionIdToDelete: string) => {
+    if (window.confirm('Bạn có chắc chắn muốn xóa cuộc trò chuyện này?')) {
+      deleteLocalChatSession(sessionIdToDelete);
+    }
+  };
+  
+  // Hàm xác nhận và xóa tất cả lịch sử
+  const confirmAndClearAllHistory = () => {
+    if (window.confirm('Bạn có chắc chắn muốn xóa tất cả lịch sử trò chuyện? Hành động này không thể hoàn tác.')) {
+      clearAllLocalChatHistory();
+    }
+  };
+
   return (
-    <div className="container mx-auto px-4 pt-4">
+    <div className="container mx-auto px-2 md:px-4 pt-4">
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         {/* Thông báo sản phẩm đang thử nghiệm */}
         <div className="md:col-span-3 mb-4">
@@ -592,36 +1060,132 @@ export function ChatbotPage() {
           </div>
         </div>
 
+        {/* Nút hiển thị sidebar trên mobile */}
+        <div className="md:hidden mb-2 px-2">
+          <button 
+            onClick={() => setIsMobileSidebarOpen(!isMobileSidebarOpen)}
+            className="w-full py-2 px-4 bg-white border border-gray-300 rounded-lg shadow-sm flex items-center justify-center"
+            style={{ borderColor: 'var(--orange-primary)' }}
+          >
+            <FaHistory className="mr-2" style={{ color: 'var(--orange-primary)' }} />
+            <span className="text-sm font-medium" style={{ color: 'var(--navy-blue)' }}>
+              {isMobileSidebarOpen ? 'Đóng lịch sử' : 'Xem lịch sử trò chuyện'}
+            </span>
+          </button>
+        </div>
+
+        {/* Sidebar mobile - hiển thị khi bấm nút */}
+        {isMobileSidebarOpen && (
+          <div className="md:hidden w-full overflow-auto max-h-[60vh] border border-gray-200 rounded-lg shadow-sm mb-4">
+            <div className="chat-header p-3 rounded-t-lg flex justify-between items-center">
+              <h3 className="text-base font-medium text-white">Lịch sử trò chuyện</h3>
+              <div className="flex items-center">
+                {localChatSessions.length > 0 && (
+                  <button 
+                    onClick={confirmAndClearAllHistory}
+                    className="text-white text-xs mr-3 bg-red-600 hover:bg-red-700 px-2 py-1 rounded"
+                  >
+                    Xóa tất cả
+                  </button>
+                )}
+                <button 
+                  onClick={() => setIsMobileSidebarOpen(false)}
+                  className="text-white text-sm"
+                >
+                  Đóng
+                </button>
+              </div>
+            </div>
+            <div className="p-3 bg-white">
+              {isLoadingHistory && localChatSessions.length === 0 ? (
+                <div className="flex items-center justify-center py-6">
+                  <div className="animate-spin rounded-full h-6 w-6 border-t-2 border-b-2" style={{ borderColor: 'var(--orange-primary)' }}></div>
+                </div>
+              ) : localChatSessions.length === 0 ? (
+                <p className="text-gray-500 text-center py-4 text-sm">
+                  Chưa có cuộc trò chuyện nào
+                </p>
+              ) : (
+                <div className="space-y-2">
+                  <h4 className="font-medium text-sm mb-2" style={{ color: 'var(--navy-blue)' }}>Lịch sử trò chuyện của bạn</h4>
+                  {localChatSessions.map((session) => (
+                    <div 
+                      key={session.session_id} 
+                      className={`border rounded-md p-2 cursor-pointer hover:shadow-sm transition-shadow text-sm ${
+                        sessionId === session.session_id ? 'active' : ''
+                      }`}
+                    >
+                      <div className="flex justify-between items-start">
+                        <h4 
+                          className="font-medium text-xs truncate flex-grow"
+                          onClick={() => {
+                            loadChatSession(session.session_id);
+                            setIsMobileSidebarOpen(false);
+                          }}
+                        >{session.title}</h4>
+                        <div className="flex items-center">
+                          <span className="text-xs text-gray-500 mr-2">
+                            {new Date(session.timestamp).toLocaleDateString()}
+                          </span>
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              confirmAndDeleteSession(session.session_id);
+                            }}
+                            className="text-red-500 hover:text-red-700 text-xs"
+                          >
+                            <FaTrash size={12} />
+                          </button>
+                        </div>
+                      </div>
+                      <p 
+                        className="text-xs text-gray-500 truncate"
+                        onClick={() => {
+                          loadChatSession(session.session_id);
+                          setIsMobileSidebarOpen(false);
+                        }}
+                      >
+                        {session.preview}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
         {/* Phần chat chính */}
         <div className="md:col-span-3">
-          <div className="border border-gray-200 rounded-lg shadow-sm flex flex-col h-[calc(100vh-150px)]">
-            <div className="flex justify-between items-center p-4 chat-header rounded-t-lg">
-              <h3 className="text-lg font-medium">
+          <div className="border border-gray-200 rounded-lg shadow-sm flex flex-col h-[calc(100vh-200px)] md:h-[calc(100vh-150px)]">
+            <div className="flex justify-between items-center p-3 md:p-4 chat-header rounded-t-lg">
+              <h3 className="text-base md:text-lg font-medium">
                 {sessionId ? `Phiên chat: ${sessionId.substring(0, 8)}...` : 'Bắt đầu cuộc trò chuyện'}
               </h3>
               <button 
-                className="flex items-center text-sm px-3 py-1.5 bg-white text-gray-700 rounded hover:bg-gray-100"
+                className="flex items-center text-xs md:text-sm px-2 py-1 md:px-3 md:py-1.5 bg-white text-gray-700 rounded hover:bg-gray-100"
                 onClick={createNewSession}
               >
                 <FaTrash className="mr-1" size={12} />
-                Tạo cuộc trò chuyện mới
+                <span className="hidden md:inline">Tạo cuộc trò chuyện mới</span>
+                <span className="inline md:hidden">Mới</span>
               </button>
             </div>
 
             {/* Khu vực hiển thị tin nhắn */}
-            <div className="flex-1 overflow-auto p-4" ref={messagesContainerRef}>
-              {isLoadingHistory ? (
+            <div className="flex-1 overflow-auto p-3 md:p-4" ref={messagesContainerRef}>
+              {isLoadingHistory && messages.length === 0 ? (
                 <div className="flex flex-col items-center justify-center h-full">
-                  <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-orange-500 mb-4" style={{ borderColor: 'var(--orange-primary)' }}></div>
-                  <p className="text-gray-500">Đang tải lịch sử trò chuyện...</p>
+                  <div className="animate-spin rounded-full h-8 w-8 md:h-10 md:w-10 border-t-2 border-b-2 border-orange-500 mb-4" style={{ borderColor: 'var(--orange-primary)' }}></div>
+                  <p className="text-gray-500 text-sm md:text-base">Đang tải lịch sử trò chuyện...</p>
                 </div>
               ) : messages.length === 0 ? (
                 <div className="flex flex-col items-center justify-center h-full opacity-70">
                   <div className="bg-navy-blue p-3 rounded-full mb-4 flex items-center justify-center" style={{ backgroundColor: 'var(--navy-blue)' }}>
-                    <FaRobot className="text-white" size={30} />
+                    <FaRobot className="text-white" size={24} />
                   </div>
-                  <h2 className="text-center text-xl font-semibold mb-2" style={{ color: 'var(--navy-blue)' }}>HCMUTE DSC Chatbot</h2>
-                  <p className="text-center text-gray-600 max-w-md">
+                  <h2 className="text-center text-lg md:text-xl font-semibold mb-2" style={{ color: 'var(--navy-blue)' }}>HCMUTE DSC Chatbot</h2>
+                  <p className="text-center text-gray-600 max-w-md text-sm md:text-base">
                     Chào mừng đến với trợ lý AI của Khoa CNTT - HCMUTE!<br />
                     Hãy đặt câu hỏi để bắt đầu cuộc trò chuyện.
                   </p>
@@ -638,11 +1202,11 @@ export function ChatbotPage() {
             </div>
 
             {/* Khung nhập tin nhắn */}
-            <div className="border-t p-4">
+            <div className="border-t p-3 md:p-4">
               <div className="flex">
                 <input
                   type="text"
-                  className="flex-1 border border-gray-300 rounded-l-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-opacity-50 focus:border-transparent"
+                  className="flex-1 border border-gray-300 rounded-l-lg px-3 md:px-4 py-2 text-sm md:text-base focus:outline-none focus:ring-2 focus:ring-opacity-50 focus:border-transparent"
                   style={{ '--tw-ring-color': 'var(--orange-primary)' } as React.CSSProperties}
                   placeholder="Nhập câu hỏi của bạn..."
                   value={query}
@@ -651,7 +1215,7 @@ export function ChatbotPage() {
                   disabled={isLoading}
                 />
                 <button
-                  className={`flex items-center justify-center px-4 py-2 rounded-r-lg send-button ${
+                  className={`flex items-center justify-center px-3 md:px-4 py-2 rounded-r-lg send-button ${
                     isLoading || !query.trim()
                       ? 'bg-gray-300 cursor-not-allowed'
                       : ''
@@ -660,81 +1224,108 @@ export function ChatbotPage() {
                   disabled={isLoading || !query.trim()}
                 >
                   {isLoading ? (
-                    <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <svg className="animate-spin h-4 w-4 md:h-5 md:w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                       <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                       <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                     </svg>
                   ) : (
-                    <FaPaperPlane size={16} />
+                    <FaPaperPlane size={14} />
                   )}
-                  <span className="ml-2">Gửi</span>
+                  <span className="ml-2 text-sm md:text-base">Gửi</span>
                 </button>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Danh sách phiên chat */}
-        <div className="md:col-span-1">
+        {/* Danh sách phiên chat - desktop */}
+        <div className="hidden md:block md:col-span-1">
           <div className="border border-gray-200 rounded-lg shadow-sm h-[calc(100vh-150px)]">
             <div className="flex items-center justify-between p-4 chat-header rounded-t-lg">
               <div className="flex items-center">
                 <FaHistory className="text-white mr-2" size={16} />
                 <h3 className="text-lg font-medium">Lịch sử trò chuyện</h3>
               </div>
-              <button 
-                className="text-xs text-white hover:text-gray-200 flex items-center"
-                onClick={fetchChatSessions}
-                disabled={isLoadingHistory}
-              >
-                {isLoadingHistory ? (
-                  <div className="animate-spin rounded-full h-3 w-3 border-t-2 border-b-2 border-white mr-1"></div>
-                ) : null}
-                <span>Làm mới</span>
-              </button>
+              <div className="flex items-center">
+                {localChatSessions.length > 0 && (
+                  <button 
+                    className="text-white hover:text-red-200 flex items-center mr-3"
+                    onClick={confirmAndClearAllHistory}
+                    title="Xóa tất cả lịch sử"
+                  >
+                    <FaTrash size={12} />
+                  </button>
+                )}
+                <button 
+                  className="text-xs text-white hover:text-gray-200 flex items-center"
+                  onClick={updateLocalChatSessions}
+                  disabled={isLoadingHistory}
+                >
+                  {isLoadingHistory ? (
+                    <div className="animate-spin rounded-full h-3 w-3 border-t-2 border-b-2 border-white mr-1"></div>
+                  ) : null}
+                  <span>Làm mới</span>
+                </button>
+              </div>
             </div>
             
             <div className="overflow-auto h-[calc(100%-60px)] p-4">
               <div className="space-y-3">
-                {isLoadingHistory && chatSessions.length === 0 ? (
+                {isLoadingHistory && localChatSessions.length === 0 ? (
                   <div className="flex flex-col items-center justify-center py-10">
                     <div className="animate-spin rounded-full h-6 w-6 border-t-2 border-b-2 mb-2" style={{ borderColor: 'var(--orange-primary)' }}></div>
                     <p className="text-gray-500 text-sm">Đang tải...</p>
                   </div>
-                ) : chatSessions.length === 0 ? (
+                ) : localChatSessions.length === 0 ? (
                   <p className="text-gray-500 text-center py-4">
                     Chưa có cuộc trò chuyện nào
                   </p>
                 ) : (
-                  chatSessions.map((session) => (
-                    <div 
-                      key={session.session_id} 
-                      className={`border rounded-md p-3 cursor-pointer hover:shadow-sm transition-shadow session-item ${
-                        sessionId === session.session_id ? 'active' : ''
-                      }`}
-                      onClick={() => loadChatSession(session.session_id)}
-                    >
-                      <div className="flex justify-between items-start mb-1">
-                        <h4 className="font-medium text-sm truncate">{session.title}</h4>
-                        <span className="text-xs text-gray-500">
-                          {new Date(session.timestamp).toLocaleDateString()}
-                        </span>
-                      </div>
-                      <div className="flex flex-col space-y-1">
-                        <div className="flex items-start">
-                          <span className="text-xs session-badge rounded-full px-2 py-0.5 mr-2">
-                            Cuộc hội thoại
-                          </span>
-                          <p className="text-xs text-gray-500 truncate flex-1">
-                            {session.preview}
-                          </p>
+                  <>
+                    <h4 className="font-medium text-sm" style={{ color: 'var(--navy-blue)' }}>Lịch sử trò chuyện của bạn</h4>
+                    {localChatSessions.map((session) => (
+                      <div 
+                        key={session.session_id} 
+                        className={`border rounded-md p-3 cursor-pointer hover:shadow-sm transition-shadow session-item relative ${
+                          sessionId === session.session_id ? 'active' : ''
+                        }`}
+                      >
+                        <div className="absolute top-2 right-2">
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              confirmAndDeleteSession(session.session_id);
+                            }}
+                            className="text-gray-400 hover:text-red-600 transition-colors"
+                            title="Xóa cuộc trò chuyện này"
+                          >
+                            <FaTrash size={12} />
+                          </button>
                         </div>
-                        <div className="text-xs text-gray-400 italic">
-                          Nhấp để xem cuộc trò chuyện đầy đủ
+                        <div 
+                          className="pr-6"
+                          onClick={() => loadChatSession(session.session_id)}
+                        >
+                          <div className="flex justify-between items-start mb-1">
+                            <h4 className="font-medium text-sm truncate">{session.title}</h4>
+                            <span className="text-xs text-gray-500">
+                              {new Date(session.timestamp).toLocaleDateString()}
+                            </span>
+                          </div>
+                          <div className="flex flex-col space-y-1">
+                            <div className="flex items-start">
+                              <span className="text-xs session-badge rounded-full px-2 py-0.5 mr-2">
+                                Cuộc hội thoại
+                              </span>
+                              <p className="text-xs text-gray-500 truncate flex-1">
+                                {session.preview}
+                              </p>
+                            </div>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  ))
+                    ))}
+                  </>
                 )}
               </div>
             </div>

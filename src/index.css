@@ -80,17 +80,17 @@
 }
 
 .markdown-content h1 {
-  @apply text-2xl font-bold my-4;
+  @apply text-xl md:text-2xl font-bold my-4;
   color: var(--navy-blue);
 }
 
 .markdown-content h2 {
-  @apply text-xl font-bold my-3;
+  @apply text-lg md:text-xl font-bold my-3;
   color: var(--navy-blue);
 }
 
 .markdown-content h3 {
-  @apply text-lg font-semibold my-2;
+  @apply text-base md:text-lg font-semibold my-2;
   color: var(--navy-blue);
 }
 
@@ -118,6 +118,9 @@
 
 .markdown-content table {
   @apply w-full border-collapse my-4;
+  max-width: 100%;
+  overflow-x: auto;
+  display: block;
 }
 
 .markdown-content th,
@@ -189,7 +192,7 @@
 
 /* Scrollbar tùy chỉnh */
 ::-webkit-scrollbar {
-  width: 8px;
+  width: 6px;
 }
 
 ::-webkit-scrollbar-track {
@@ -204,4 +207,35 @@
 
 ::-webkit-scrollbar-thumb:hover {
   background-color: var(--navy-blue);
+}
+
+/* Mobile responsive adjustments */
+@media (max-width: 768px) {
+  .user-message, .bot-message {
+    max-width: 85% !important;
+  }
+  
+  .markdown-content pre {
+    max-width: 100%;
+    overflow-x: auto;
+  }
+  
+  .streaming-content {
+    font-size: 14px;
+  }
+  
+  /* Làm nhỏ phần text trong markdown trên mobile */
+  .markdown-content {
+    font-size: 14px;
+  }
+  
+  .markdown-content code {
+    font-size: 12px;
+    word-break: break-word;
+  }
+  
+  /* Điều chỉnh chat bubble trên mobile */
+  .markdown-content table {
+    font-size: 12px;
+  }
 }

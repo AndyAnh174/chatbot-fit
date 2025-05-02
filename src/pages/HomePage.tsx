@@ -30,7 +30,7 @@ const HomePage = () => {
           </p>
           <div className="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-4">
             <Link 
-              to="/chat" 
+              to="/chatbot" 
               className="py-3 px-8 text-lg font-medium rounded-full bg-white text-gray-900 hover:bg-gray-100 transition duration-300 shadow-lg"
             >
               Bắt đầu trò chuyện
