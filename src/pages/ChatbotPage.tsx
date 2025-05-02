@@ -1043,7 +1043,7 @@ export function ChatbotPage() {
               <div>
                 <p className="font-medium mb-1" style={{ color: 'var(--navy-blue)' }}>Sản phẩm đang trong giai đoạn thử nghiệm</p>
                 <p className="text-sm text-gray-600">
-                  Đây là phiên bản beta của Chatbot AI HCMUTE. Sản phẩm vẫn đang trong quá trình phát triển, 
+                  Đây là phiên bản beta của Chatbot AI FIT - HCMUTE. Sản phẩm vẫn đang trong quá trình phát triển, 
                   nên có thể còn một số sai sót. Chúng tôi rất mong nhận được góp ý của bạn thông qua{' '}
                   <a 
                     href="https://forms.gle/VbZnqQKdpFuQDUNh9" 

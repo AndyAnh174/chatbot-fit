@@ -53,26 +53,56 @@ const AboutPage = () => {
 
   return (
     <div className="min-h-screen">
+      {/* Thông báo sản phẩm đang thử nghiệm */}
+      <div className="bg-white py-4">
+        <div className="container mx-auto px-6 md:px-12">
+          <div className="border-l-4 p-4 bg-yellow-50 rounded-r" style={{ borderColor: colors.orangePrimary }}>
+            <div className="flex">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 mr-2" style={{ color: colors.orangePrimary }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <div>
+                <p className="font-medium mb-1" style={{ color: colors.navyBlue }}>Sản phẩm đang trong giai đoạn thử nghiệm</p>
+                <p className="text-sm text-gray-600">
+                  Đây là phiên bản beta của Chatbot AI FIT - HCMUTE. Sản phẩm vẫn đang trong quá trình phát triển, 
+                  nên có thể còn một số sai sót. Chúng tôi rất mong nhận được góp ý của bạn thông qua{' '}
+                  <a 
+                    href="https://forms.gle" 
+                    target="_blank" 
+                    rel="noopener noreferrer" 
+                    className="underline font-medium"
+                    style={{ color: colors.orangePrimary }}
+                  >
+                    biểu mẫu này
+                  </a>.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
       {/* Banner */}
       <div className="relative bg-gradient-to-r from-gray-800 to-gray-900 py-16">
         <div className="absolute inset-0 bg-opacity-50 bg-black"></div>
         <div className="container mx-auto px-6 md:px-12 relative z-10 text-center">
           <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">Về dự án của chúng tôi</h1>
           <p className="text-xl text-gray-300 max-w-4xl mx-auto">
-            Dự án được phát triển bởi Developer Student Club tại Đại học Sư phạm Kỹ thuật TP.HCM
+            Dự án được phát triển bởi <span style={{ color: colors.orangePrimary }}>HCMUTE Developer Student Club</span> tại Trường Đại học Sư phạm Kỹ thuật TP.HCM
           </p>
         </div>
       </div>
+      
 
       {/* Giới thiệu dự án */}
       <div className="py-16 bg-white">
         <div className="container mx-auto px-6 md:px-12">
           <div className="flex flex-col md:flex-row items-start">
-            <div className="md:w-1/3 mb-8 md:mb-0">
-              <h2 className="text-3xl font-bold mb-6" style={{ color: colors.navyBlue }}>Dự án Chatbot AI HCMUTE</h2>
+            <div className="md:w-1/3 mb-9 md:mb-0">
+              <h2 className="text-3xl font-bold mb-6" style={{ color: colors.navyBlue }}>Dự án Trợ lý hỗ trợ sinh viên Khoa Công nghệ Thông tin</h2>
               <div className="h-1 w-20 mb-6" style={{ backgroundColor: colors.orangePrimary }}></div>
               <p className="text-gray-600 mb-4">
-                Trợ lý hỗ trợ sinh viên giải đáp thắc mắc về khoa công nghệ thông tin là một dự án được phát triển nhằm ứng dụng công nghệ trí tuệ nhân tạo vào việc hỗ trợ
+                Trợ lý hỗ trợ sinh viên giải đáp thắc mắc về Khoa Công nghệ Thông tin là một dự án được phát triển nhằm ứng dụng công nghệ trí tuệ nhân tạo vào việc hỗ trợ
                 học sinh, sinh viên, giảng viên và các bên liên quan trong việc tìm kiếm thông tin và giải đáp thắc mắc về trường
                 Đại học Sư phạm Kỹ thuật TP.HCM.
               </p>
@@ -131,7 +161,7 @@ const AboutPage = () => {
                       <div className="mr-3 mt-1">
                         <FaLightbulb style={{ color: colors.bluePrimary }} />
                       </div>
-                      <p>Tạo ra công cụ hỗ trợ hiệu quả cho việc tra cứu thông tin về khoa công nghệ thông tin của trường Đại học Sư phạm Kỹ thuật TP.HCM, giúp tiết kiệm thời gian và nâng cao trải nghiệm</p>
+                      <p>Tạo ra công cụ hỗ trợ hiệu quả cho việc tra cứu thông tin về Khoa Công nghệ Thông tin của trường Đại học Sư phạm Kỹ thuật TP.HCM, giúp tiết kiệm thời gian và nâng cao trải nghiệm</p>
                     </li>
                     <li className="flex items-start">
                       <div className="mr-3 mt-1">
@@ -159,16 +189,16 @@ const AboutPage = () => {
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold mb-4" style={{ color: colors.navyBlue }}>Đội ngũ phát triển</h2>
             <p className="text-gray-600 max-w-3xl mx-auto">
-              Dự án được phát triển bởi những thành viên tài năng và đam mê của DSC HCMUTE, dưới sự hướng dẫn của các giảng viên 
+              Dự án được phát triển bởi những thành viên tài năng và đam mê của HCMUTE Developer Student Club, dưới sự hướng dẫn của các giảng viên 
               Khoa Công nghệ Thông tin.
             </p>
           </div>
           
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4 sm:gap-8">
             {teamMembers.map((member, index) => (
               <div 
                 key={index} 
-                className="bg-white rounded-xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-2xl transform hover:-translate-y-2"
+                className="bg-white rounded-xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-2xl transform hover:-translate-y-2 group"
               >
                 <div className="relative">
                   {/* Overlay gradient khi hover */}
@@ -180,23 +210,25 @@ const AboutPage = () => {
                       src={member.image} 
                       alt={member.name} 
                       className="absolute inset-0 w-full h-full object-cover object-center"
+                      loading="lazy"
                     />
                   </div>
                 </div>
                 
-                <div className="p-6">
-                  <h3 className="text-xl font-bold mb-1" style={{ color: colors.navyBlue }}>{member.name}</h3>
-                  <p className="text-gray-600 mb-4 text-sm font-medium" style={{ color: colors.redPrimary }}>{member.role}</p>
+                <div className="p-4 sm:p-6">
+                  <h3 className="text-lg sm:text-xl font-bold mb-1" style={{ color: colors.navyBlue }}>{member.name}</h3>
+                  <p className="text-sm font-medium" style={{ color: colors.redPrimary }}>{member.role}</p>
                   
-                  <div className="flex justify-start space-x-4 mt-4">
+                  <div className="flex justify-start space-x-4 mt-3 sm:mt-4">
                     <a 
                       href={member.github} 
                       target="_blank" 
                       rel="noopener noreferrer" 
                       className="p-2 rounded-full hover:bg-gray-100 transition-all duration-300"
                       style={{ color: colors.navyBlue }}
+                      aria-label={`GitHub của ${member.name}`}
                     >
-                      <FaGithub size={20} />
+                      <FaGithub size={18} className="sm:text-lg" />
                     </a>
                     <a 
                       href={member.facebook} 
@@ -204,8 +236,9 @@ const AboutPage = () => {
                       rel="noopener noreferrer" 
                       className="p-2 rounded-full hover:bg-gray-100 transition-all duration-300"
                       style={{ color: colors.bluePrimary }}
+                      aria-label={`Facebook của ${member.name}`}
                     >
-                      <FaFacebookSquare size={20} />
+                      <FaFacebookSquare size={18} className="sm:text-lg" />
                     </a>
                   </div>
                 </div>
@@ -232,11 +265,11 @@ const AboutPage = () => {
                 <div className="h-28 flex items-center justify-center mb-6">
                   <img 
                     src={logoDSC} 
-                    alt="Google Developer Student Clubs" 
+                    alt="HCMUTE Developer Student Clubs" 
                     className="max-h-full max-w-full"
                   />
                 </div>
-                <h3 className="text-xl font-semibold mb-3" style={{ color: colors.navyBlue }}>Google Developer Student Clubs</h3>
+                  <h3 className="text-xl font-semibold mb-3" style={{ color: colors.navyBlue }}>HCMUTE Developer Student Club</h3>
                 <p className="text-gray-600 mb-4">Hỗ trợ nguồn lực, đào tạo và công nghệ</p>
                 <p className="text-gray-600 text-sm italic">
                   HCMUTE Developer Student Club là cộng đồng sinh viên công nghệ thông tin của trường Đại học Sư phạm Kỹ thuật TP.HCM, nhằm 
@@ -281,33 +314,33 @@ const AboutPage = () => {
             </p>
           </div>
           
-          <div className="max-w-4xl mx-auto">
+          <div className="max-w-4xl mx-auto px-2">
             <div className="relative">
-              {/* Đường timeline dọc */}
+              {/* Đường timeline dọc - desktop */}
               <div className="hidden md:block absolute left-1/2 transform -translate-x-1/2 h-full w-1 bg-gray-200"></div>
               
-              {/* Responsive timeline cho mobile */}
-              <div className="md:hidden absolute left-16 top-0 h-full w-1 bg-gray-200"></div>
+              {/* Đường timeline dọc - mobile - di chuyển xa hơn cạnh trái */}
+              <div className="md:hidden absolute left-9 top-0 h-full w-1 bg-gray-200"></div>
               
               {/* Giai đoạn 1: Nghiên cứu & Phân tích - Bên phải */}
               <div className="relative mb-16">
                 <div className="flex flex-col md:flex-row items-center">
-                  <div className="md:w-1/2 md:pr-12 mb-6 md:mb-0 text-left md:text-right order-2 md:order-1">
+                  <div className="md:w-1/2 md:pr-12 mb-2 md:mb-0 text-left md:text-right order-2 md:order-1">
                     {/* Khoảng trống để cân bằng layout */}
                   </div>
                   
-                  <div className="flex-shrink-0 z-10 order-1 md:order-2 mb-4 md:mb-0">
-                    <div className="w-12 h-12 rounded-full bg-white border-4 border-gray-200 flex items-center justify-center mx-auto">
-                      <FaLightbulb size={18} style={{ color: colors.redPrimary }} />
+                  <div className="flex-shrink-0 z-10 order-1 md:order-2 mb-2 md:mb-0">
+                    <div className="w-12 h-12 rounded-full bg-white border-4 border-gray-200 flex items-center justify-center mx-auto shadow-md">
+                      <FaLightbulb size={20} style={{ color: colors.redPrimary }} />
                     </div>
                   </div>
                   
-                  <div className="md:w-1/2 md:pl-12 text-left order-3">
-                    <h3 className="text-xl font-semibold mb-3" style={{ color: colors.redPrimary }}>
+                  <div className="md:w-1/2 md:pl-12 text-left order-3 pl-14 md:pl-12 w-full">
+                    <h3 className="text-xl font-semibold mb-2" style={{ color: colors.redPrimary }}>
                       Nghiên cứu & Phân tích
                     </h3>
-                    <p className="text-gray-600">
-                      Giai đoạn nghiên cứu và phân tích nhu cầu thực tế của sinh viên khoa công nghệ thông tin, 
+                    <p className="text-gray-600 text-sm md:text-base">
+                      Giai đoạn nghiên cứu và phân tích nhu cầu thực tế của sinh viên Khoa Công nghệ Thông tin, 
                       xác định các yêu cầu cụ thể và phạm vi của dự án.
                     </p>
                   </div>
@@ -317,23 +350,23 @@ const AboutPage = () => {
               {/* Giai đoạn 2: Xây dựng prototype - Bên trái */}
               <div className="relative mb-16">
                 <div className="flex flex-col md:flex-row items-center">
-                  <div className="md:w-1/2 md:pr-12 mb-6 md:mb-0 text-left md:text-right order-2 md:order-1">
-                    <h3 className="text-xl font-semibold mb-3" style={{ color: colors.bluePrimary }}>
+                  <div className="md:w-1/2 md:pr-12 mb-2 md:mb-0 text-left md:text-right order-2 md:order-1 pl-14 md:pl-0 w-full">
+                    <h3 className="text-xl font-semibold mb-2" style={{ color: colors.bluePrimary }}>
                       Xây dựng prototype
                     </h3>
-                    <p className="text-gray-600">
+                    <p className="text-gray-600 text-sm md:text-base">
                       Phát triển phiên bản prototype đầu tiên, thiết kế kiến trúc hệ thống và xây dựng các 
                       thành phần cốt lõi.
                     </p>
                   </div>
                   
-                  <div className="flex-shrink-0 z-10 order-1 md:order-2 mb-4 md:mb-0">
-                    <div className="w-12 h-12 rounded-full bg-white border-4 border-gray-200 flex items-center justify-center mx-auto">
-                      <FaCode size={18} style={{ color: colors.bluePrimary }} />
+                  <div className="flex-shrink-0 z-10 order-1 md:order-2 mb-2 md:mb-0">
+                    <div className="w-12 h-12 rounded-full bg-white border-4 border-gray-200 flex items-center justify-center mx-auto shadow-md">
+                      <FaCode size={20} style={{ color: colors.bluePrimary }} />
                     </div>
                   </div>
                   
-                  <div className="md:w-1/2 md:pl-12 text-left order-3">
+                  <div className="md:w-1/2 md:pl-12 text-left order-3 hidden md:block">
                     {/* Khoảng trống để cân bằng layout */}
                   </div>
                 </div>
@@ -342,22 +375,22 @@ const AboutPage = () => {
               {/* Giai đoạn 3: Huấn luyện AI - Bên phải */}
               <div className="relative mb-16">
                 <div className="flex flex-col md:flex-row items-center">
-                  <div className="md:w-1/2 md:pr-12 mb-6 md:mb-0 text-left md:text-right order-2 md:order-1">
+                  <div className="md:w-1/2 md:pr-12 mb-2 md:mb-0 text-left md:text-right order-2 md:order-1">
                     {/* Khoảng trống để cân bằng layout */}
                   </div>
                   
-                  <div className="flex-shrink-0 z-10 order-1 md:order-2 mb-4 md:mb-0">
-                    <div className="w-12 h-12 rounded-full bg-white border-4 border-gray-200 flex items-center justify-center mx-auto">
-                      <FaCog size={18} style={{ color: colors.greenPrimary }} />
+                  <div className="flex-shrink-0 z-10 order-1 md:order-2 mb-2 md:mb-0">
+                    <div className="w-12 h-12 rounded-full bg-white border-4 border-gray-200 flex items-center justify-center mx-auto shadow-md">
+                      <FaCog size={20} style={{ color: colors.greenPrimary }} />
                     </div>
                   </div>
                   
-                  <div className="md:w-1/2 md:pl-12 text-left order-3">
-                    <h3 className="text-xl font-semibold mb-3" style={{ color: colors.greenPrimary }}>
+                  <div className="md:w-1/2 md:pl-12 text-left order-3 pl-14 md:pl-12 w-full">
+                    <h3 className="text-xl font-semibold mb-2" style={{ color: colors.greenPrimary }}>
                       Huấn luyện AI
                     </h3>
-                    <p className="text-gray-600">
-                      Huấn luyện mô hình AI với dữ liệu chuyên biệt về khoa công nghệ thông tin của 
+                    <p className="text-gray-600 text-sm md:text-base">
+                      Huấn luyện mô hình AI với dữ liệu chuyên biệt về Khoa Công nghệ Thông tin của 
                       trường Đại học Sư phạm Kỹ thuật TP.HCM, tinh chỉnh và đánh giá hiệu suất để đảm bảo 
                       chất lượng.
                     </p>
@@ -368,23 +401,23 @@ const AboutPage = () => {
               {/* Giai đoạn 4: Triển khai & Cải tiến - Bên trái */}
               <div className="relative">
                 <div className="flex flex-col md:flex-row items-center">
-                  <div className="md:w-1/2 md:pr-12 mb-6 md:mb-0 text-left md:text-right order-2 md:order-1">
-                    <h3 className="text-xl font-semibold mb-3" style={{ color: colors.orangePrimary }}>
+                  <div className="md:w-1/2 md:pr-12 mb-2 md:mb-0 text-left md:text-right order-2 md:order-1 pl-14 md:pl-0 w-full">
+                    <h3 className="text-xl font-semibold mb-2" style={{ color: colors.orangePrimary }}>
                       Triển khai & Cải tiến
                     </h3>
-                    <p className="text-gray-600">
+                    <p className="text-gray-600 text-sm md:text-base">
                       Triển khai hệ thống và liên tục cải tiến dựa trên phản hồi của người dùng, 
                       đảm bảo chất lượng và tính ổn định của hệ thống.
                     </p>
                   </div>
                   
-                  <div className="flex-shrink-0 z-10 order-1 md:order-2 mb-4 md:mb-0">
-                    <div className="w-12 h-12 rounded-full bg-white border-4 border-gray-200 flex items-center justify-center mx-auto">
-                      <FaRocket size={18} style={{ color: colors.orangePrimary }} />
+                  <div className="flex-shrink-0 z-10 order-1 md:order-2 mb-2 md:mb-0">
+                    <div className="w-12 h-12 rounded-full bg-white border-4 border-gray-200 flex items-center justify-center mx-auto shadow-md">
+                      <FaRocket size={20} style={{ color: colors.orangePrimary }} />
                     </div>
                   </div>
                   
-                  <div className="md:w-1/2 md:pl-12 text-left order-3">
+                  <div className="md:w-1/2 md:pl-12 text-left order-3 hidden md:block">
                     {/* Khoảng trống để cân bằng layout */}
                   </div>
                 </div>
@@ -440,7 +473,7 @@ const AboutPage = () => {
       {/* Footer */}
       <div className="bg-gray-900 text-white py-8">
         <div className="container mx-auto px-6 md:px-12 text-center">
-          <p>© {new Date().getFullYear()} Trợ lý hỗ trợ sinh viên giải đáp thắc mắc về khoa công nghệ thông tin của trường Đại học Sư phạm Kỹ thuật TP.HCM - Một dự án của HCMUTE Developer Student Club</p>
+          <p>© {new Date().getFullYear()} Trợ lý hỗ trợ sinh viên giải đáp thắc mắc về Khoa Công nghệ Thông tin của Trường Đại học Sư phạm Kỹ thuật TP.HCM - Một dự án của HCMUTE Developer Student Club</p>
         </div>
       </div>
     </div>

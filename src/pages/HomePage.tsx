@@ -13,19 +13,48 @@ const HomePage = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
+      {/* Thông báo sản phẩm đang thử nghiệm */}
+      <div className="bg-white py-4">
+        <div className="container mx-auto px-6 md:px-12">
+          <div className="border-l-4 p-4 bg-yellow-50 rounded-r" style={{ borderColor: colors.orangePrimary }}>
+            <div className="flex">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 mr-2" style={{ color: colors.orangePrimary }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <div>
+                <p className="font-medium mb-1" style={{ color: colors.navyBlue }}>Sản phẩm đang trong giai đoạn thử nghiệm</p>
+                <p className="text-sm text-gray-600">
+                  Đây là phiên bản beta của Chatbot AI FIT - HCMUTE. Sản phẩm vẫn đang trong quá trình phát triển, 
+                  nên có thể còn một số sai sót. Chúng tôi rất mong nhận được góp ý của bạn thông qua{' '}
+                  <a 
+                    href="https://forms.gle/VbZnqQKdpFuQDUNh9" 
+                    target="_blank" 
+                    rel="noopener noreferrer" 
+                    className="underline font-medium"
+                    style={{ color: colors.orangePrimary }}
+                  >
+                    biểu mẫu này
+                  </a>.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
       {/* Hero Section */}
       <div className="relative bg-gradient-to-r from-gray-800 to-gray-900 py-20">
         <div className="absolute inset-0 bg-opacity-50 bg-black"></div>
         <div className="container mx-auto px-6 md:px-12 relative z-10 text-center">
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-tight mb-6">
-            <span className="block">Trợ lý hỗ trợ sinh viên HCMUTE - FIT</span>
+            <span className="block">Trợ lý hỗ trợ sinh viên FIT - HCMUTE</span>
             <span className="block text-2xl md:text-3xl lg:text-4xl mt-3 font-normal">
-              Hỗ trợ sinh viên giải đáp thắc mắc về khoa công nghệ thông tin
+              Hỗ trợ sinh viên giải đáp thắc mắc về Khoa Công nghệ Thông tin
             </span>
           </h1>
           <p className="text-lg md:text-xl text-gray-200 mb-10 max-w-4xl mx-auto">
             Trợ lý thông minh được phát triển bởi <span style={{ color: colors.orangePrimary }}>HCMUTE Developer Student Club</span>, 
-            được đào tạo với dữ liệu chuyên biệt về khoa công nghệ thông tin thuộc trường Đại học Sư phạm Kỹ thuật TP.HCM, 
+            được đào tạo với dữ liệu chuyên biệt về Khoa Công nghệ Thông tin thuộc trường Đại học Sư phạm Kỹ thuật TP.HCM, 
             giúp sinh viên và giảng viên tìm kiếm thông tin nhanh chóng và chính xác.
           </p>
           <div className="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-4">
@@ -53,7 +82,7 @@ const HomePage = () => {
               Tính năng nổi bật
             </h2>
             <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-              Khám phá những tính năng độc đáo giúp trợ lý hỗ trợ sinh viên khoa công nghệ thông tin trở thành trợ lý hoàn hảo cho bạn.
+              Khám phá những tính năng độc đáo giúp trợ lý hỗ trợ sinh viên Khoa Công nghệ Thông tin trở thành trợ lý hoàn hảo cho bạn.
             </p>
           </div>
 
@@ -80,7 +109,7 @@ const HomePage = () => {
                 Luôn cập nhật
               </h3>
               <p className="text-gray-600 text-center">
-                Liên tục được cập nhật với thông tin mới nhất về khoa công nghệ thông tin, đảm bảo bạn luôn nhận được thông tin chính xác và cập nhật nhất.
+                Liên tục được cập nhật với thông tin mới nhất về Khoa Công nghệ Thông tin, đảm bảo bạn luôn nhận được thông tin chính xác và cập nhật nhất.
               </p>
             </div>
 
@@ -107,7 +136,7 @@ const HomePage = () => {
             Sẵn sàng trải nghiệm?
           </h2>
           <p className="text-lg text-gray-600 mb-8 max-w-3xl mx-auto">
-            Hãy bắt đầu trò chuyện với trợ lý AI của chúng tôi ngay hôm nay và khám phá cách nó có thể hỗ trợ bạn trong hành trình học tập tại khoa công nghệ thông tin.
+            Hãy bắt đầu trò chuyện với trợ lý AI của chúng tôi ngay hôm nay và khám phá cách nó có thể hỗ trợ bạn trong hành trình học tập tại Khoa Công nghệ Thông tin.
           </p>
           <Link 
             to="/chat" 
@@ -132,15 +161,15 @@ const HomePage = () => {
                 </h2>
               </div>
               <h3 className="text-xl font-semibold mb-4" style={{ color: colors.orangePrimary }}>
-                Khoa Công nghệ thông tin, trường Đại học Sư phạm Kỹ thuật TP.HCM
+                Khoa Công nghệ Thông tin, trường Đại học Sư phạm Kỹ thuật TP.HCM
               </h3>
               <p className="text-gray-600 mb-6">
                 Developer Student Club (DSC) là một cộng đồng học tập của sinh viên thuộc khoa, trường Đại học Sư phạm Kỹ thuật TP.HCM, 
                 nơi sinh viên phát triển kỹ năng, ứng dụng, và giải pháp kỹ thuật để giải quyết các thách thức thực tế.
               </p>
               <p className="text-gray-600">
-                Dự án trợ lý hỗ trợ sinh viên giải đáp thắc mắc về khoa công nghệ thông tin là một trong những dự án tiêu biểu của HCMUTE Developer Student Club, được phát triển nhằm hỗ trợ 
-                cộng đồng sinh viên và giảng viên ngoài ra còn hỗ trợ học sinh hoặc phụ huynh muốn tìm hiểu đến khoa công nghệ thông tin của trường Đại học Sư phạm Kỹ thuật TP.HCM.
+                Dự án trợ lý hỗ trợ sinh viên giải đáp thắc mắc về Khoa Công nghệ Thông tin là một trong những dự án tiêu biểu của HCMUTE Developer Student Club, được phát triển nhằm hỗ trợ 
+                cộng đồng sinh viên và giảng viên ngoài ra còn hỗ trợ học sinh hoặc phụ huynh muốn tìm hiểu đến Khoa Công nghệ Thông tin của trường Đại học Sư phạm Kỹ thuật TP.HCM.
               </p>
             </div>
             <div className="md:w-1/2">
@@ -178,7 +207,7 @@ const HomePage = () => {
       {/* Footer */}
       <div className="bg-gray-900 text-white py-8">
         <div className="container mx-auto px-6 md:px-12 text-center">
-          <p>© {new Date().getFullYear()} Trợ lý hỗ trợ sinh viên giải đáp thắc mắc về khoa công nghệ thông tin - Một dự án của HCM UTE Developer Student Club </p>
+            <p>© {new Date().getFullYear()} Trợ lý hỗ trợ sinh viên giải đáp thắc mắc về Khoa Công nghệ Thông tin - Một dự án của HCM UTE Developer Student Club </p>
         </div>
       </div>
     </div>
