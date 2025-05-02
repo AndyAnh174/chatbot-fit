@@ -31,7 +31,7 @@ export function ChatbotPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [isLoadingHistory, setIsLoadingHistory] = useState(false);
   const [sessionId, setSessionId] = useState<string | null>(null);
-  const [chatSessions, setChatSessions] = useState<Session[]>([]);
+  const [, setChatSessions] = useState<Session[]>([]);
   const [localChatSessions, setLocalChatSessions] = useState<Session[]>([]);
   const [isTyping, setIsTyping] = useState(false);
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
@@ -672,7 +672,7 @@ export function ChatbotPage() {
       // Xử lý URL lồng nhau đặc biệt được nhận diện trong ảnh
       processedContent = processedContent.replace(
         /\[(https?:\/\/(?:https?:\/\/)?[^\]]+)\]\((https?:\/\/(?:https?:\/\/)?[^)]+)\)/g,
-        (match, p1, p2) => {
+        (_match, p1, _p2) => {
           // Loại bỏ các https:// lặp lại
           const cleanUrl = p1.replace(/https?:\/\/https?:\/\//, 'https://');
           // Đảm bảo URL không chứa https:// lặp lại
