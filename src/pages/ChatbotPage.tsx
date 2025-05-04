@@ -670,7 +670,7 @@ export function ChatbotPage() {
 
       // Xử lý trường hợp URL phức tạp bị lồng nhau
       const urlRegex = /\[(https?:\/\/[^\]]+)\]\((https?:\/\/[^)]+)\)/g;
-      processedContent = processedContent.replace(urlRegex, (match, url) => {
+      processedContent = processedContent.replace(urlRegex, (_match, url) => {
         // Làm sạch URL, loại bỏ bất kỳ protocol trùng lặp
         const cleanUrl = url.replace(/https?:\/\/https?:\/\//, 'https://');
         return `[${cleanUrl}](${cleanUrl})`;
