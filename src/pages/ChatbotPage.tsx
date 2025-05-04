@@ -775,7 +775,7 @@ export function ChatbotPage() {
                       target="_blank" 
                       rel="noopener noreferrer" 
                       className={`${message.role === 'human' ? 'text-orange-200 hover:text-orange-100' : 'text-orange-600 hover:text-orange-700'} underline`}
-                      style={message.role === 'human' ? {} : {color: '#F47B4F', hoverColor: '#E06A3E'}}
+                      style={message.role === 'human' ? {} : {color: '#F47B4F'}}
                       {...props}
                     />
                   ),
