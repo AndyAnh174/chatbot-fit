@@ -44,6 +44,10 @@ export function ChatbotPage() {
   const cleanContent = (content: string): string => {
     let processedContent = content;
     
+    // Xử lý các URL bị cắt ngang đặc biệt
+    processedContent = processedContent.replace(/\((https?:\/\/[^)]+)\)/g, '[**$1**]($1)'); 
+    processedContent = processedContent.replace(/^\s*s:\/\/([^\s]+)/gm, '[**https://$1**](https://$1)');
+    
     // Kiểm tra và trích xuất nội dung từ dạng JSON
     const jsonRegex = /\{"content"\s*:\s*"([^"]*?)"\s*,\s*"format_type"\s*:\s*"([^"]*?)"\}/g;
     const jsonMatch = jsonRegex.exec(processedContent);
@@ -57,13 +61,13 @@ export function ChatbotPage() {
     processedContent = processedContent.replace(/\\n/g, '\n');
     
     // Xử lý URL bị lồng nhau
-    processedContent = processedContent.replace(/\[(https?:\/\/[^\]]+)\]\((https?:\/\/[^)]+)\)/g, '[$1]($1)');
+    processedContent = processedContent.replace(/\[(https?:\/\/[^\]]+)\]\((https?:\/\/[^)]+)\)/g, '[**$1**]($1)');
     
     // Xử lý URL bị lặp lại
     processedContent = processedContent.replace(/\(https?:\/\/\[https?:\/\/(.*?)\]\(https?:\/\/(.*?)\)\)/g, '(https://$2)');
     
     // Xử lý email
-    processedContent = processedContent.replace(/\[([^@\]]+@[^@\]]+)\]\(mailto:([^)]+)\)/g, '[$1](mailto:$1)');
+    processedContent = processedContent.replace(/\[([^@\]]+@[^@\]]+)\]\(mailto:([^)]+)\)/g, '[**$1**](mailto:$1)');
     
     // Loại bỏ các chuỗi lặp lại trong URL
     processedContent = processedContent.replace(/\(https?:\/\/https?:\/\//g, '(https://');
@@ -73,6 +77,12 @@ export function ChatbotPage() {
     
     // Sửa lỗi URL với nhiều dấu ngoặc
     processedContent = processedContent.replace(/\(https?:\/\/\((.+?)\)\)/g, '(https://$1)');
+    
+    // Xử lý nếu Facebook và Trung tâm tin học xuất hiện liền nhau
+    processedContent = processedContent.replace(
+      /(Facebook[^:]*):?\s*\*?(https?:\/\/[^\s*\n]+)\*?\s*\*\s+(Trung tâm tin học[^:]*)/gi,
+      '$1: [**$2**]($2)\n\n* $3'
+    );
     
     // Sửa các dạng markdown bị lỗi
     processedContent = processedContent.replace(/\]\[/g, '] [');
@@ -383,7 +393,8 @@ export function ChatbotPage() {
 
   // Sửa lại phần xử lý streaming từng chữ để khôi phục hiệu ứng typing
   const processStreamingText = async (text: string, currentContent: string) => {
-    const cleanText = cleanContent(text);
+    // Làm sạch nội dung trước khi hiển thị
+    const cleanText = text;
     
     // Thay đổi cách thêm nội dung để tạo hiệu ứng typing
     // Hiển thị từng ký tự một cách mượt mà
@@ -393,8 +404,8 @@ export function ChatbotPage() {
     // Tạo hiệu ứng typing theo nhóm ký tự để tăng tốc độ hiển thị
     // Số ký tự hiển thị cùng lúc sẽ tùy thuộc vào độ dài văn bản
     const chunkSize = characters.length > 300 ? 15 : 
-                     characters.length > 150 ? 10 :
-                     characters.length > 50 ? 5 : 1;
+                      characters.length > 150 ? 10 :
+                      characters.length > 50 ? 5 : 1;
     
     for (let i = 0; i < characters.length; i += chunkSize) {
       // Thêm một nhóm ký tự cùng lúc
@@ -440,7 +451,7 @@ export function ChatbotPage() {
       <div className="flex mb-4 w-full">
         <div className="relative max-w-[80%] p-3 rounded-lg bg-gray-100 border-2 border-gray-200">
           <div className="absolute -top-2 -left-2 w-6 h-6 bg-white rounded-full flex items-center justify-center shadow-sm">
-            <FaRobot className="text-blue-600" size={14} />
+            <FaRobot className="text-orange-600" size={14} />
           </div>
           
           <div className="text-xs font-semibold mb-1">
@@ -649,7 +660,6 @@ export function ChatbotPage() {
 
   // Cập nhật component MessageBubble để cải thiện hiển thị markdown
   const MessageBubble = ({ message }: { message: Message }) => {
-
     // Xử lý các liên kết đặc biệt trong nội dung hiển thị
     const processLinks = (content: string): string => {
       let processedContent = content;
@@ -662,124 +672,61 @@ export function ChatbotPage() {
         return processedContent;
       }
       
-      // Kiểm tra nếu đang ở định dạng JSON và trích xuất nội dung
-      const jsonCheck = processedContent.match(/^\s*{"content"\s*:\s*"(.+?)"\s*,\s*"format_type"\s*:\s*"(.+?)"\s*}\s*$/);
-      if (jsonCheck) {
-        processedContent = jsonCheck[1].replace(/\\n/g, '\n').replace(/\\"/g, '"');
-      }
-
-      // Xử lý trường hợp URL phức tạp bị lồng nhau
-      const urlRegex = /\[(https?:\/\/[^\]]+)\]\((https?:\/\/[^)]+)\)/g;
-      processedContent = processedContent.replace(urlRegex, (_match, url) => {
-        // Làm sạch URL, loại bỏ bất kỳ protocol trùng lặp
-        const cleanUrl = url.replace(/https?:\/\/https?:\/\//, 'https://');
-        return `[${cleanUrl}](${cleanUrl})`;
-      });
-      
-      // Xử lý các URL có dấu ngoặc vuông lồng nhau [url[url]]
-      processedContent = processedContent.replace(/\[([^\[\]]*)\[([^\[\]]+)\]([^\[\]]*)\]/g, '[$1$2$3]');
-      
-      // Xử lý trường hợp GitHub/Facebook bị lặp lại URL
-      processedContent = processedContent.replace(/\[(https?:\/\/github\.com\/[^\]]+)\](\([^)]+\))(\([^)]+\))/g, '[$1]($1)');
-      processedContent = processedContent.replace(/\[(https?:\/\/(?:www\.)?facebook\.com\/[^\]]+)\](\([^)]+\))(\([^)]+\))/g, '[$1]($1)');
-      
-      // Xử lý các URL thuộc nhiều domain
-      ['github.com', 'facebook.com', 'linkedin.com', 'scholar.google.com'].forEach(domain => {
-        const domainRegex = new RegExp(`\\[(https?:\\/\\/(?:www\\.)?${domain.replace('.', '\\.')}[^\\]]+)\\]\\(https?:\\/\\/(?:www\\.)?${domain.replace('.', '\\.')}[^)]+\\)`, 'g');
-        processedContent = processedContent.replace(domainRegex, '[$1]($1)');
-      });
-
-      // Xử lý URL với https:// bị lặp lại
+      // Xử lý pattern "** Tiêu đề:**" rất phổ biến trong kết quả API
       processedContent = processedContent.replace(
-        /https:\/\/https:\/\//g,
-        'https://'
+        /\*\*\s+([^*:]+):\*\*/g, 
+        '**$1:**'
+      );
+      
+      // Xử lý trường hợp ** thừa ở đầu dòng danh sách
+      processedContent = processedContent.replace(
+        /^\s*\*\s+\*\*\s+([^*:]+):/gm, 
+        '* **$1:**'
+      );
+      
+      // Xử lý dấu ** thừa trong URL được trả về từ API
+      processedContent = processedContent.replace(
+        /\*\*(https?:\/\/[^*\s]+)\*\*/g,
+        '$1'
+      );
+      
+      // Xử lý trường hợp Email:** **email@example.com
+      processedContent = processedContent.replace(
+        /\*\*([^*:]+):\*\*\s+\*\*([^*\s]+@[^*\s]+)\*\*/g,
+        '**$1:** [$2](mailto:$2)'
+      );
+      
+      // Loại bỏ dấu ** thừa trong email
+      processedContent = processedContent.replace(
+        /\*\*([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})\*\*/g,
+        '[$1](mailto:$1)'
+      );
+      
+      // Loại bỏ xử lý phức tạp, đơn giản hóa xử lý markdown
+      // Xử lý các URL trong danh sách
+      processedContent = processedContent.replace(
+        /\* (.*?):\s*\[(https?:\/\/[^\]]+)\]/g,
+        '* **$1:** [$2]($2)'
+      );
+      
+      // Xử lý email trong danh sách
+      processedContent = processedContent.replace(
+        /\* (Email):\s*([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})/g,
+        '* **$1:** [$2](mailto:$2)'
+      );
+      
+      // Đảm bảo tiêu đề trong danh sách luôn được in đậm
+      processedContent = processedContent.replace(
+        /\* ([^:*]+):/g, 
+        '* **$1:**'
+      );
+      
+      // Xử lý header level 3 (nếu có)
+      processedContent = processedContent.replace(
+        /### ([^\n]+)/g,
+        '### **$1**'
       );
 
-      // Xử lý trường hợp đặc biệt cho các URL phức tạp
-      processedContent = processedContent.replace(
-        /\[(https?:\/\/[^\]]+)\]\((https?:\/\/)[^\)]+\)\((https?:\/\/)[^\)]+\)/g, 
-        '[**$1**]($1)'
-      );
-
-      // Xử lý URL lồng nhau đặc biệt được nhận diện trong ảnh
-      processedContent = processedContent.replace(
-        /\[(https?:\/\/(?:https?:\/\/)?[^\]]+)\]\((https?:\/\/(?:https?:\/\/)?[^)]+)\)/g,
-        (_match, p1, _p2) => {
-          // Loại bỏ các https:// lặp lại
-          const cleanUrl = p1.replace(/https?:\/\/https?:\/\//, 'https://');
-          // Đảm bảo URL không chứa https:// lặp lại
-          return `[${cleanUrl}](${cleanUrl})`;
-        }
-      );
-
-      // Xử lý các URLs thông thường - phải đặt sau các xử lý cụ thể khác
-      processedContent = processedContent.replace(
-        /(?<!["\(])(https?:\/\/[^\s"]+)(?![")\]])/g,
-        '[**$1**]($1)'
-      );
-
-      // Làm sạch các URL còn sót lại với nhiều lớp https://
-      processedContent = processedContent.replace(
-        /\(https:\/\/https:\/\/([^)]+)\)/g,
-        '(https://$1)'
-      );
-      
-      // Xử lý email links 
-      processedContent = processedContent.replace(
-        /\[([^@\]]+@[^@\]]+)\]\(mailto:([^)]+)\)/g,
-        '[**$1**](mailto:$1)'
-      );
-      
-      // Xử lý email với ngoặc bao quanh
-      processedContent = processedContent.replace(
-        /\(mailto:([\w.-]+@[\w.-]+\.\w+)\)/g,
-        '[**$1**](mailto:$1)'
-      );
-      
-      // Xử lý email links chưa định dạng
-      processedContent = processedContent.replace(
-        /(?<!["\(])([\w.-]+@[\w.-]+\.\w+)(?![")\]])/g, 
-        '[**$1**](mailto:$1)'
-      );
-      
-      // Xử lý đặc biệt cho Email:
-      processedContent = processedContent.replace(
-        /Email: ([^<\s,]+@[^<\s,]+\.[^<\s,]+)/g,
-        'Email: [**$1**](mailto:$1)'
-      );
-      
-      // Cải thiện hiển thị URL - Facebook, GitHub, LinkedIn
-      processedContent = processedContent.replace(
-        /Facebook: (https?:\/\/)?(?:www\.)?(facebook\.com\/[^\s,]*)/gi,
-        'Facebook: [**$2**](https://$2)'
-      );
-      
-      processedContent = processedContent.replace(
-        /Github: (https?:\/\/)?(?:www\.)?(github\.com\/[^\s,]*)/gi,
-        'Github: [**$2**](https://$2)'
-      );
-      
-      processedContent = processedContent.replace(
-        /LinkedIn: (https?:\/\/)?(?:www\.)?(linkedin\.com\/[^\s,]*)/gi,
-        'LinkedIn: [**$2**](https://$2)'
-      );
-      
-      // Nổi bật một số từ quan trọng bằng cách thêm dấu ** (in đậm)
-      const importantWords = [
-        'HCMUTE', 'FIT', 'Khoa CNTT', 'Đại học', 'Trường', 'Sinh viên', 
-        'Giảng viên', 'Học phí', 'Chương trình', 'Ngành', 'Chuyên ngành', 
-        'Môn học', 'Tuyển sinh', 'Đồ án', 'Thực tập', 'Điểm', 'Học kỳ', 
-        'Năm học', 'Email', 'LinkedIn', 'Facebook', 'ThS', 'TS', 'Tiến sĩ', 
-        'Thạc sĩ', 'PGS', 'GS', 'Phó Giáo sư', 'Giáo sư', 'Khoa Công nghệ Thông tin', 
-        'Link hồ sơ', 'Bộ môn', 'Chức danh', 'Học vị', 'Họ và tên', 'Website', 
-        'Trung tâm tin học', 'Đoàn hội khoa', 'Hotline', 'Thông tin liên hệ trực tuyến', 'Github'
-      ];
-      
-      importantWords.forEach(word => {
-        const regex = new RegExp(`(?<![*\\w])(${word})(?![*\\w])`, 'g');
-        processedContent = processedContent.replace(regex, '**$1**');
-      });
-      
       return processedContent;
     };
 
@@ -790,25 +737,25 @@ export function ChatbotPage() {
         <div
           className={`relative ${
             message.role === 'human'
-              ? 'bg-blue-500 text-white rounded-tl-xl rounded-tr-xl rounded-bl-xl'
+              ? 'bg-orange-500 text-white rounded-tl-xl rounded-tr-xl rounded-bl-xl'
               : 'bg-gray-100 border-2 border-gray-200 rounded-tl-xl rounded-tr-xl rounded-br-xl'
           } p-3 max-w-[80%] whitespace-pre-wrap break-words`}
         >
           {/* Avatar và tên người dùng/bot */}
           <div className={`absolute ${message.role === 'human' ? '-top-2 -right-2' : '-top-2 -left-2'} w-6 h-6 ${
-            message.role === 'human' ? 'bg-blue-600' : 'bg-white'
+            message.role === 'human' ? 'bg-orange-600' : 'bg-white'
           } rounded-full flex items-center justify-center shadow-sm`}>
             {message.role === 'human' ? (
               <span className="text-white text-xs font-bold">U</span>
             ) : (
-              <FaRobot className="text-blue-600" size={14} />
+              <FaRobot className="text-orange-600" size={14} />
             )}
           </div>
           
           {/* Tên người dùng/bot và thời gian */}
           <div className="text-xs font-semibold mb-1">
             {message.role === 'human' ? 'Bạn' : 'Chat Bot'}
-            <span className={`text-xs font-normal ${message.role === 'human' ? 'text-blue-100' : 'text-gray-500'} ml-2`}>
+            <span className={`text-xs font-normal ${message.role === 'human' ? 'text-orange-100' : 'text-gray-500'} ml-2`}>
               {message.timestamp
                 ? new Date(message.timestamp).toLocaleTimeString()
                 : new Date().toLocaleTimeString()
@@ -827,7 +774,8 @@ export function ChatbotPage() {
                     <a 
                       target="_blank" 
                       rel="noopener noreferrer" 
-                      className={`${message.role === 'human' ? 'text-orange-200 hover:text-orange-100' : 'text-orange-600 hover:text-orange-800'} underline`}
+                      className={`${message.role === 'human' ? 'text-orange-200 hover:text-orange-100' : 'text-orange-600 hover:text-orange-700'} underline`}
+                      style={message.role === 'human' ? {} : {color: '#F47B4F', hoverColor: '#E06A3E'}}
                       {...props}
                     />
                   ),
@@ -838,17 +786,27 @@ export function ChatbotPage() {
                     <code className="bg-gray-800 text-white px-1 py-0.5 rounded" {...props} />
                   ),
                   strong: ({node, ...props}) => (
-                    <strong className="text-orange-600 font-bold" {...props} />
+                    <strong 
+                      className={message.role === 'human' ? 'text-white font-bold' : 'font-bold'} 
+                      style={message.role === 'human' ? {} : {color: '#F47B4F'}}
+                      {...props} 
+                    />
                   ),
                   ul: ({node, ...props}) => (
-                    <ul className="list-disc pl-5 my-2" {...props} />
+                    <ul className="list-disc pl-5 my-2 space-y-1" {...props} />
                   ),
                   ol: ({node, ...props}) => (
-                    <ol className="list-decimal pl-5 my-2" {...props} />
+                    <ol className="list-decimal pl-5 my-2 space-y-1" {...props} />
+                  ),
+                  li: ({node, ...props}) => (
+                    <li className="mb-1" {...props} />
+                  ),
+                  p: ({node, ...props}) => (
+                    <p className="mb-2 leading-relaxed" {...props} />
                   ),
                   table: ({node, ...props}) => (
                     <div className="overflow-x-auto my-2">
-                      <table className="border-collapse border border-gray-300" {...props} />
+                      <table className="border-collapse border border-gray-300 w-full" {...props} />
                     </div>
                   ),
                   th: ({node, ...props}) => (

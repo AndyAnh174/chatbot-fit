@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 :root {
-  --navy-blue: #0A1929;
+  --navy-blue: #1A2A48;
   --navy-lighter: #122640;
   --orange-primary: #EA5B21;
   --orange-lighter: #F47B4F;
@@ -9,6 +9,9 @@
   --gray-light: #F6F8FA;
   --text-light: #FFFFFF;
   --border-light: #2D3F55;
+  --red-primary: #DB4437;
+  --blue-primary: #4285F4;
+  --green-primary: #0F9D58;
 }
 
 /* Hiệu ứng đang nhập (3 chấm) */
@@ -141,8 +144,8 @@
 
 /* Các style cho giao diện chatbot */
 .chat-header {
-  background-color: var(--navy-blue);
-  color: var(--text-light);
+  background-color: var(--orange-primary);
+  color: white;
 }
 
 .user-message {
@@ -157,10 +160,11 @@
 
 .send-button {
   background-color: var(--orange-primary);
+  color: white;
 }
 
 .send-button:hover {
-  background-color: var(--orange-dark);
+  background-color: #e09e00;
 }
 
 .send-button:disabled {
@@ -186,8 +190,9 @@
 }
 
 .session-badge {
-  background-color: var(--navy-blue);
-  color: var(--text-light);
+  background-color: var(--orange-primary);
+  color: white;
+  font-size: 0.65rem;
 }
 
 /* Scrollbar tùy chỉnh */
