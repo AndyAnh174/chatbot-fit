@@ -668,11 +668,26 @@ export function ChatbotPage() {
         processedContent = jsonCheck[1].replace(/\\n/g, '\n').replace(/\\"/g, '"');
       }
 
-      // Xử lý đặc biệt cho trường hợp URLs với nhiều cặp ngoặc lặp đi lặp lại
-      processedContent = processedContent.replace(
-        /\[https:\/\/https:\/\/([^\]]+)\]/g, 
-        '[https://$1]'
-      );
+      // Xử lý trường hợp URL phức tạp bị lồng nhau
+      const urlRegex = /\[(https?:\/\/[^\]]+)\]\((https?:\/\/[^)]+)\)/g;
+      processedContent = processedContent.replace(urlRegex, (match, url) => {
+        // Làm sạch URL, loại bỏ bất kỳ protocol trùng lặp
+        const cleanUrl = url.replace(/https?:\/\/https?:\/\//, 'https://');
+        return `[${cleanUrl}](${cleanUrl})`;
+      });
+      
+      // Xử lý các URL có dấu ngoặc vuông lồng nhau [url[url]]
+      processedContent = processedContent.replace(/\[([^\[\]]*)\[([^\[\]]+)\]([^\[\]]*)\]/g, '[$1$2$3]');
+      
+      // Xử lý trường hợp GitHub/Facebook bị lặp lại URL
+      processedContent = processedContent.replace(/\[(https?:\/\/github\.com\/[^\]]+)\](\([^)]+\))(\([^)]+\))/g, '[$1]($1)');
+      processedContent = processedContent.replace(/\[(https?:\/\/(?:www\.)?facebook\.com\/[^\]]+)\](\([^)]+\))(\([^)]+\))/g, '[$1]($1)');
+      
+      // Xử lý các URL thuộc nhiều domain
+      ['github.com', 'facebook.com', 'linkedin.com', 'scholar.google.com'].forEach(domain => {
+        const domainRegex = new RegExp(`\\[(https?:\\/\\/(?:www\\.)?${domain.replace('.', '\\.')}[^\\]]+)\\]\\(https?:\\/\\/(?:www\\.)?${domain.replace('.', '\\.')}[^)]+\\)`, 'g');
+        processedContent = processedContent.replace(domainRegex, '[$1]($1)');
+      });
 
       // Xử lý URL với https:// bị lặp lại
       processedContent = processedContent.replace(
@@ -683,7 +698,7 @@ export function ChatbotPage() {
       // Xử lý trường hợp đặc biệt cho các URL phức tạp
       processedContent = processedContent.replace(
         /\[(https?:\/\/[^\]]+)\]\((https?:\/\/)[^\)]+\)\((https?:\/\/)[^\)]+\)/g, 
-        '[**$1**](https://$1)'
+        '[**$1**]($1)'
       );
 
       // Xử lý URL lồng nhau đặc biệt được nhận diện trong ảnh
@@ -693,70 +708,23 @@ export function ChatbotPage() {
           // Loại bỏ các https:// lặp lại
           const cleanUrl = p1.replace(/https?:\/\/https?:\/\//, 'https://');
           // Đảm bảo URL không chứa https:// lặp lại
-          return `[**${cleanUrl}**](${cleanUrl})`;
+          return `[${cleanUrl}](${cleanUrl})`;
         }
       );
 
-      // Xử lý các URL có nhiều lớp ngoặc lặp lại
+      // Xử lý các URLs thông thường - phải đặt sau các xử lý cụ thể khác
       processedContent = processedContent.replace(
-        /\(https?:\/\/https?:\/\/([^)]+)\)/g,
+        /(?<!["\(])(https?:\/\/[^\s"]+)(?![")\]])/g,
+        '[**$1**]($1)'
+      );
+
+      // Làm sạch các URL còn sót lại với nhiều lớp https://
+      processedContent = processedContent.replace(
+        /\(https:\/\/https:\/\/([^)]+)\)/g,
         '(https://$1)'
       );
-
-      // Xử lý các URL dạng [https://domain](https://domain)
-      processedContent = processedContent.replace(
-        /\[(https?:\/\/[^\/\]]+(?:\/[^\]]*)?)\]\((https?:\/\/)[^)]+\)/g,
-        '[**$1**]($1)'
-      );
-
-      // Xử lý các liên kết lỗi với nhiều lớp ngoặc
-      processedContent = processedContent.replace(
-        /\(https?:\/\/([^)]+)\)\(https?:\/\/([^)]+)\)/g,
-        '(https://$1)'
-      );
-
-      // Loại bỏ URL trùng lặp - phổ biến trong phản hồi chatbot
-      processedContent = processedContent.replace(
-        /\[(https?:\/\/[^\]]+)\]\((https?:\/\/[^)]+)\)\s*\((https?:\/\/[^)]+)\)/g,
-        '[**$1**]($1)'
-      );
       
-      // Xử lý URL trùng lặp thứ hai
-      processedContent = processedContent.replace(
-        /\[(https?:\/\/[^\]]+)\]\((https?:\/\/[^)]+)\)/g,
-        '[**$1**]($1)'
-      );
-      
-      // Xử lý liên kết website trong danh sách
-      processedContent = processedContent.replace(
-        /Website:\s*\[(https?:\/\/[^\]]+)\]/g,
-        'Website: [**$1**]($1)'
-      );
-      
-      // Cải thiện hiển thị URL - Website
-      processedContent = processedContent.replace(
-        /Website:\s*(https?:\/\/)?(?:www\.)?([\w.-]+\.[^\s,*]+[^\s,*\/]+)/gi,
-        'Website: [**$2**](https://$2)'
-      );
-      
-      // Sửa lỗi LinkedIn và Facebook dính nhau
-      processedContent = processedContent.replace(
-        /(LinkedIn:\s*(?:https?:\/\/)?(?:www\.)?linkedin\.com\/[^\s*]+)(\s*Facebook:)/gi,
-        '$1\n$2'
-      );
-      
-      // Đảm bảo rằng mỗi mục trong danh sách có dấu xuống dòng rõ ràng
-      processedContent = processedContent.replace(/(\*\s+LinkedIn:.*?)(\*\s+Facebook:)/g, '$1\n$2');
-      processedContent = processedContent.replace(/(\*\s+Facebook:.*?)(\*\s+Email:)/g, '$1\n$2');
-      processedContent = processedContent.replace(/(\*\s+Website:.*?)(\*\s+[A-Za-z]+:)/g, '$1\n$2');
-      processedContent = processedContent.replace(/(\*\s+Trung tâm tin học:.*?)(\*\s+[A-Za-z]+:)/g, '$1\n$2');
-      processedContent = processedContent.replace(/(\*\s+Đoàn hội khoa:.*?)(\*\s+[A-Za-z]+:)/g, '$1\n$2');
-      processedContent = processedContent.replace(/(\*\s+Hotline:.*?)(\*\s+[A-Za-z]+:)/g, '$1\n$2');
-      
-      // Xử lý các URL dính nhau trong danh sách
-      processedContent = processedContent.replace(/(\*\s+[A-Za-z]+:\s*\[.*?\))\s*(\*\s+[A-Za-z]+:)/g, '$1\n$2');
-      
-      // Xử lý email links trong dạng markdown chuẩn
+      // Xử lý email links 
       processedContent = processedContent.replace(
         /\[([^@\]]+@[^@\]]+)\]\(mailto:([^)]+)\)/g,
         '[**$1**](mailto:$1)'
@@ -774,62 +742,26 @@ export function ChatbotPage() {
         '[**$1**](mailto:$1)'
       );
       
-      // Cải thiện hiển thị URL - Facebook
+      // Xử lý đặc biệt cho Email:
       processedContent = processedContent.replace(
-        /Facebook:\s*(https?:\/\/)?(?:www\.)?(facebook\.com\/[^\s,*]*)/gi,
+        /Email: ([^<\s,]+@[^<\s,]+\.[^<\s,]+)/g,
+        'Email: [**$1**](mailto:$1)'
+      );
+      
+      // Cải thiện hiển thị URL - Facebook, GitHub, LinkedIn
+      processedContent = processedContent.replace(
+        /Facebook: (https?:\/\/)?(?:www\.)?(facebook\.com\/[^\s,]*)/gi,
         'Facebook: [**$2**](https://$2)'
       );
       
-      // Cải thiện hiển thị URL - LinkedIn
       processedContent = processedContent.replace(
-        /LinkedIn:\s*(https?:\/\/)?(?:www\.)?(linkedin\.com\/[^\s,*]*)/gi,
+        /Github: (https?:\/\/)?(?:www\.)?(github\.com\/[^\s,]*)/gi,
+        'Github: [**$2**](https://$2)'
+      );
+      
+      processedContent = processedContent.replace(
+        /LinkedIn: (https?:\/\/)?(?:www\.)?(linkedin\.com\/[^\s,]*)/gi,
         'LinkedIn: [**$2**](https://$2)'
-      );
-      
-      // Xử lý URL Trung tâm tin học
-      processedContent = processedContent.replace(
-        /Trung tâm tin học:\s*(https?:\/\/)?(?:www\.)?(trungtamtinhoc\.hcmute\.edu\.vn[^\s,*]*)/gi,
-        'Trung tâm tin học: [**$2**](https://$2)'
-      );
-
-      // Xử lý URL Đoàn hội khoa
-      processedContent = processedContent.replace(
-        /Đoàn hội khoa:\s*(https?:\/\/)?(?:www\.)?(facebook\.com\/DoanHoiITUTE[^\s,*]*)/gi,
-        'Đoàn hội khoa: [**$2**](https://$2)'
-      );
-      
-      // Xử lý đặc biệt cho các liên kết khi ở dạng danh sách
-      processedContent = processedContent.replace(
-        /(\*\s+LinkedIn:\s*\[.*?\))\s*(\*\s+Facebook:)/g, 
-        '$1\n$2'
-      );
-      processedContent = processedContent.replace(
-        /(\*\s+Facebook:\s*\[.*?\))\s*(\*\s+Email:)/g, 
-        '$1\n$2'
-      );
-      
-      // Sửa liên kết bị lỗi do lặp lại
-      processedContent = processedContent.replace(
-        /\[https:\/\/([^\]]+)\]\(https:\/\/https:\/\/([^)]+)\)/g,
-        '[**$1**](https://$1)'
-      );
-      
-      // Sửa liên kết lặp lại hoặc lồng nhau
-      processedContent = processedContent.replace(
-        /\[\[([^\]]+)\]\]\(([^)]+)\)/g,
-        '[**$1**]($2)'
-      );
-      
-      // Xử lý URLs thông thường - phải đặt sau các xử lý cụ thể khác
-      processedContent = processedContent.replace(
-        /(?<!["\(])(https?:\/\/[^\s"]+)(?![")\]])/g,
-        '[**$1**]($1)'
-      );
-
-      // Làm sạch các URL còn sót lại với nhiều lớp https://
-      processedContent = processedContent.replace(
-        /\(https:\/\/https:\/\/([^)]+)\)/g,
-        '(https://$1)'
       );
       
       // Nổi bật một số từ quan trọng bằng cách thêm dấu ** (in đậm)
@@ -840,7 +772,7 @@ export function ChatbotPage() {
         'Năm học', 'Email', 'LinkedIn', 'Facebook', 'ThS', 'TS', 'Tiến sĩ', 
         'Thạc sĩ', 'PGS', 'GS', 'Phó Giáo sư', 'Giáo sư', 'Khoa Công nghệ Thông tin', 
         'Link hồ sơ', 'Bộ môn', 'Chức danh', 'Học vị', 'Họ và tên', 'Website', 
-        'Trung tâm tin học', 'Đoàn hội khoa', 'Hotline', 'Thông tin liên hệ trực tuyến'
+        'Trung tâm tin học', 'Đoàn hội khoa', 'Hotline', 'Thông tin liên hệ trực tuyến', 'Github'
       ];
       
       importantWords.forEach(word => {
@@ -895,7 +827,7 @@ export function ChatbotPage() {
                     <a 
                       target="_blank" 
                       rel="noopener noreferrer" 
-                      className={`${message.role === 'human' ? 'text-blue-200 hover:text-blue-100' : 'text-blue-600 hover:text-blue-800'} underline`}
+                      className={`${message.role === 'human' ? 'text-orange-200 hover:text-orange-100' : 'text-orange-600 hover:text-orange-800'} underline`}
                       {...props}
                     />
                   ),
@@ -904,6 +836,9 @@ export function ChatbotPage() {
                   ),
                   code: ({node, ...props}) => (
                     <code className="bg-gray-800 text-white px-1 py-0.5 rounded" {...props} />
+                  ),
+                  strong: ({node, ...props}) => (
+                    <strong className="text-orange-600 font-bold" {...props} />
                   ),
                   ul: ({node, ...props}) => (
                     <ul className="list-disc pl-5 my-2" {...props} />
