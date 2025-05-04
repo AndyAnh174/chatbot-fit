@@ -671,62 +671,106 @@ export function ChatbotPage() {
         processedContent = jsonMatch[1].replace(/\\n/g, '\n').replace(/\\"/g, '"');
         return processedContent;
       }
+
+      // Xử lý các trường hợp đặc biệt về xuống dòng
+      processedContent = processedContent.replace(/\\n/g, '\n');
       
-      // Xử lý pattern "** Tiêu đề:**" rất phổ biến trong kết quả API
+      // Xử lý mẫu đặc biệt "** ** Email:*" có trong ảnh
+      processedContent = processedContent.replace(
+        /\*\*\s?\*\*\s?Email:\*\*/g,
+        '**Email:**'
+      );
+      
+      // Xử lý mẫu "** Tiêu đề:*" rất phổ biến như trong ảnh
       processedContent = processedContent.replace(
         /\*\*\s+([^*:]+):\*\*/g, 
         '**$1:**'
       );
       
-      // Xử lý trường hợp ** thừa ở đầu dòng danh sách
+      // Xử lý trường hợp "** Tiêu đề:**"
       processedContent = processedContent.replace(
-        /^\s*\*\s+\*\*\s+([^*:]+):/gm, 
-        '* **$1:**'
+        /\*\*\s([^*:]+):\*\*/g, 
+        '**$1:**'
       );
       
-      // Xử lý dấu ** thừa trong URL được trả về từ API
+      // Xử lý các dấu ** lặp lại ở đầu dòng
       processedContent = processedContent.replace(
-        /\*\*(https?:\/\/[^*\s]+)\*\*/g,
-        '$1'
+        /^(\s*)\*\*\s([^*:]+):/gm, 
+        '$1**$2:'
       );
       
-      // Xử lý trường hợp Email:** **email@example.com
+      // Xử lý mẫu "** Tiêu đề:" thiếu dấu ** cuối
       processedContent = processedContent.replace(
-        /\*\*([^*:]+):\*\*\s+\*\*([^*\s]+@[^*\s]+)\*\*/g,
-        '**$1:** [$2](mailto:$2)'
+        /\*\*\s([^*:]+):/g, 
+        '**$1:**'
       );
       
-      // Loại bỏ dấu ** thừa trong email
+      // Xử lý pattern "**** Email:**" đặc biệt 
       processedContent = processedContent.replace(
-        /\*\*([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})\*\*/g,
+        /\*\*\*\*\s?([^*:]+):\*\*/g, 
+        '**$1:**'
+      );
+      
+      // Xử lý email được bọc trong **
+      processedContent = processedContent.replace(
+        /\*\*(([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5}))\*\*/g, 
         '[$1](mailto:$1)'
       );
       
-      // Loại bỏ xử lý phức tạp, đơn giản hóa xử lý markdown
-      // Xử lý các URL trong danh sách
+      // Xử lý email trong text
       processedContent = processedContent.replace(
-        /\* (.*?):\s*\[(https?:\/\/[^\]]+)\]/g,
-        '* **$1:** [$2]($2)'
+        /([^*[\]])(([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5}))([^*[\]])/g, 
+        '$1[$2](mailto:$2)$6'
       );
       
-      // Xử lý email trong danh sách
+      // Xử lý URLs với "https**://" lỗi
       processedContent = processedContent.replace(
-        /\* (Email):\s*([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})/g,
-        '* **$1:** [$2](mailto:$2)'
+        /https\*\*:\/\//g,
+        'https://'
+      );
+      
+      // Xử lý URLs đặc biệt trong văn bản
+      processedContent = processedContent.replace(
+        /\*\*(https?:\/\/[^*\s]+)\*\*/g,
+        '[$1]($1)'
+      );
+      
+      // Dọn dẹp URLs
+      processedContent = processedContent.replace(
+        /\[(https?:\/\/[^\]]+)\]\((https?:\/\/[^)]+)\)\((https?:\/\/[^)]+)\)/g,
+        '[$1]($1)'
+      );
+      
+      // Xử lý trường hợp ** Tiêu đề:** trong danh sách
+      processedContent = processedContent.replace(
+        /^\s*\*\s+\*\*\s+([^*:]+):\*\*/gm, 
+        '* **$1:**'
+      );
+      
+      // Xử lý URL bị dư ( ở cuối 
+      processedContent = processedContent.replace(
+        /\(https?:\/\/([^)]+)\)\(/g,
+        '(https://$1)('
       );
       
       // Đảm bảo tiêu đề trong danh sách luôn được in đậm
       processedContent = processedContent.replace(
-        /\* ([^:*]+):/g, 
+        /\*\s+([^*:]+):/g, 
         '* **$1:**'
       );
       
-      // Xử lý header level 3 (nếu có)
+      // Đảm bảo URLs được xử lý đúng trong danh sách
       processedContent = processedContent.replace(
-        /### ([^\n]+)/g,
-        '### **$1**'
+        /\*\s+\*\*([^:*]+):\*\*\s+https?:\/\/([^\s]+)/g,
+        '* **$1:** [https://$2](https://$2)'
       );
-
+      
+      // Xử lý URLs đặc biệt cho ảnh
+      processedContent = processedContent.replace(
+        /^\s*\*\*([^*:]+):\*\*\s*\*\*(https?:\/\/[^\s*]+)\*\*$/gm,
+        '* **$1:** [$2]($2)'
+      );
+      
       return processedContent;
     };
 
