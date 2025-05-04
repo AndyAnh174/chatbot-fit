@@ -44,6 +44,15 @@ export function ChatbotPage() {
   const cleanContent = (content: string): string => {
     let processedContent = content;
     
+    // Kiểm tra và trích xuất nội dung từ dạng JSON
+    const jsonRegex = /\{"content"\s*:\s*"([^"]*?)"\s*,\s*"format_type"\s*:\s*"([^"]*?)"\}/g;
+    const jsonMatch = jsonRegex.exec(processedContent);
+    if (jsonMatch) {
+      // Lấy chỉ phần nội dung từ JSON
+      processedContent = jsonMatch[1];
+      // console.log("Đã tìm thấy và xử lý JSON:", processedContent);
+    }
+    
     // Thay thế ký tự xuống dòng
     processedContent = processedContent.replace(/\\n/g, '\n');
     
@@ -645,6 +654,14 @@ export function ChatbotPage() {
     const processLinks = (content: string): string => {
       let processedContent = content;
       
+      // Kiểm tra và xử lý trường hợp JSON từ server
+      const jsonPattern = /\{"content":\s*"(.+?)"\s*,\s*"format_type":\s*"(.+?)"\}/;
+      const jsonMatch = jsonPattern.exec(processedContent);
+      if (jsonMatch) {
+        processedContent = jsonMatch[1].replace(/\\n/g, '\n').replace(/\\"/g, '"');
+        return processedContent;
+      }
+      
       // Kiểm tra nếu đang ở định dạng JSON và trích xuất nội dung
       const jsonCheck = processedContent.match(/^\s*{"content"\s*:\s*"(.+?)"\s*,\s*"format_type"\s*:\s*"(.+?)"\s*}\s*$/);
       if (jsonCheck) {
@@ -839,135 +856,78 @@ export function ChatbotPage() {
         className={`flex ${message.role === 'human' ? 'justify-end' : 'justify-start'} mb-4 w-full`}
       >
         <div
-          className={`relative max-w-[80%] p-3 rounded-lg ${
+          className={`relative ${
             message.role === 'human'
-              ? 'user-message ml-auto'
-              : 'bot-message'
-          }`}
+              ? 'bg-blue-500 text-white rounded-tl-xl rounded-tr-xl rounded-bl-xl'
+              : 'bg-gray-100 border-2 border-gray-200 rounded-tl-xl rounded-tr-xl rounded-br-xl'
+          } p-3 max-w-[80%] whitespace-pre-wrap break-words`}
         >
-          {message.role === 'ai' ? (
-            <div className="absolute -top-2 -left-2 w-6 h-6 bg-white rounded-full flex items-center justify-center shadow-sm">
-              <FaRobot style={{ color: 'var(--navy-blue)' }} size={14} />
-            </div>
-          ) : (
-            <div className="absolute -top-2 -right-2 w-6 h-6 rounded-full flex items-center justify-center shadow-sm" style={{ backgroundColor: 'var(--orange-primary)' }}>
+          {/* Avatar và tên người dùng/bot */}
+          <div className={`absolute ${message.role === 'human' ? '-top-2 -right-2' : '-top-2 -left-2'} w-6 h-6 ${
+            message.role === 'human' ? 'bg-blue-600' : 'bg-white'
+          } rounded-full flex items-center justify-center shadow-sm`}>
+            {message.role === 'human' ? (
               <span className="text-white text-xs font-bold">U</span>
-            </div>
-          )}
-          
-          <div className="text-xs font-semibold mb-1">
-            {message.role === 'human' ? 'Bạn' : 'Chat Bot'}
-            {message.timestamp && (
-              <span className="text-xs font-normal text-gray-500 ml-2">
-                {new Date(message.timestamp).toLocaleTimeString()}
-              </span>
+            ) : (
+              <FaRobot className="text-blue-600" size={14} />
             )}
           </div>
           
-          <div className="text-gray-800 markdown-content">
-            {message.role === 'human' ? (
-              <p>{message.content}</p>
+          {/* Tên người dùng/bot và thời gian */}
+          <div className="text-xs font-semibold mb-1">
+            {message.role === 'human' ? 'Bạn' : 'Chat Bot'}
+            <span className={`text-xs font-normal ${message.role === 'human' ? 'text-blue-100' : 'text-gray-500'} ml-2`}>
+              {message.timestamp
+                ? new Date(message.timestamp).toLocaleTimeString()
+                : new Date().toLocaleTimeString()
+              }
+            </span>
+          </div>
+          
+          {/* Nội dung tin nhắn */}
+          <div className={message.role === 'human' ? 'text-white' : 'text-gray-800'}>
+            {message.content ? (
+              <ReactMarkdown
+                remarkPlugins={[remarkGfm]}
+                rehypePlugins={[rehypeRaw, rehypeSanitize]}
+                components={{
+                  a: ({node, ...props}) => (
+                    <a 
+                      target="_blank" 
+                      rel="noopener noreferrer" 
+                      className={`${message.role === 'human' ? 'text-blue-200 hover:text-blue-100' : 'text-blue-600 hover:text-blue-800'} underline`}
+                      {...props}
+                    />
+                  ),
+                  pre: ({node, ...props}) => (
+                    <pre className="bg-gray-800 text-white p-2 rounded my-2 overflow-auto" {...props} />
+                  ),
+                  code: ({node, ...props}) => (
+                    <code className="bg-gray-800 text-white px-1 py-0.5 rounded" {...props} />
+                  ),
+                  ul: ({node, ...props}) => (
+                    <ul className="list-disc pl-5 my-2" {...props} />
+                  ),
+                  ol: ({node, ...props}) => (
+                    <ol className="list-decimal pl-5 my-2" {...props} />
+                  ),
+                  table: ({node, ...props}) => (
+                    <div className="overflow-x-auto my-2">
+                      <table className="border-collapse border border-gray-300" {...props} />
+                    </div>
+                  ),
+                  th: ({node, ...props}) => (
+                    <th className="border border-gray-300 p-2 bg-gray-100" {...props} />
+                  ),
+                  td: ({node, ...props}) => (
+                    <td className="border border-gray-300 p-2" {...props} />
+                  ),
+                }}
+              >
+                {processLinks(message.content)}
+              </ReactMarkdown>
             ) : (
-              message.isStreaming ? (
-                <div className="streaming-content">
-                  <ReactMarkdown
-                    remarkPlugins={[remarkGfm]}
-                    rehypePlugins={[rehypeRaw, rehypeSanitize]}
-                    components={{
-                      a: (props) => {
-                        // Xử lý đặc biệt cho email links
-                        const isEmail = props.href?.startsWith('mailto:');
-                        return (
-                          <a 
-                            {...props} 
-                            className={`${isEmail ? 'text-green-600 font-medium' : 'text-blue-600'} underline hover:opacity-80`} 
-                            target="_blank" 
-                            rel="noopener noreferrer" 
-                          />
-                        );
-                      },
-                      pre: (props) => (
-                        <pre {...props} className="bg-gray-800 text-white p-3 rounded my-2 overflow-auto" />
-                      ),
-                      code: ({ className, children, ...props }: any) => {
-                        return !className ? (
-                          <code {...props} className="bg-gray-200 px-1 py-0.5 rounded">{children}</code>
-                        ) : (
-                          <code {...props} className={className}>{children}</code>
-                        );
-                      },
-                      p: ({ children, ...props }) => (
-                        <p {...props} className="streaming-text">{children}</p>
-                      ),
-                      // Cải thiện hiển thị heading
-                      h1: (props) => <h1 {...props} className="text-xl font-bold mt-2 mb-2" style={{ color: 'var(--navy-blue)' }} />,
-                      h2: (props) => <h2 {...props} className="text-lg font-bold mt-2 mb-1" style={{ color: 'var(--navy-blue)' }} />,
-                      h3: (props) => <h3 {...props} className="text-md font-bold mt-1 mb-1" style={{ color: 'var(--navy-blue)' }} />,
-                      strong: (props) => <strong {...props} className="font-bold" style={{ color: 'var(--orange-primary)' }} />,
-                      // Hiển thị danh sách đẹp hơn
-                      ul: (props) => <ul {...props} className="list-disc pl-5 my-2 space-y-1" />,
-                      ol: (props) => <ol {...props} className="list-decimal pl-5 my-2 space-y-1" />,
-                      li: (props) => <li {...props} className="mb-1" />,
-                      // Hiển thị bảng đẹp hơn
-                      table: (props) => <table {...props} className="border-collapse border border-gray-300 my-2 w-full" />,
-                      thead: (props) => <thead {...props} className="bg-gray-100" />,
-                      th: (props) => <th {...props} className="border border-gray-300 p-2 text-left" />,
-                      td: (props) => <td {...props} className="border border-gray-300 p-2" />
-                    }}
-                  >
-                    {message.content + '▋'}
-                  </ReactMarkdown>
-                </div>
-              ) : (
-                <ReactMarkdown
-                  remarkPlugins={[remarkGfm]}
-                  rehypePlugins={[rehypeRaw, rehypeSanitize]}
-                  components={{
-                    a: (props) => {
-                      // Xử lý đặc biệt cho email links
-                      const isEmail = props.href?.startsWith('mailto:');
-                      return (
-                        <a 
-                          {...props} 
-                          className={`${isEmail ? 'text-green-600 font-medium' : 'text-blue-600'} underline hover:opacity-80`} 
-                          target="_blank" 
-                          rel="noopener noreferrer"
-                        />
-                      );
-                    },
-                    pre: (props) => (
-                      <pre {...props} className="bg-gray-800 text-white p-3 rounded my-2 overflow-auto" />
-                    ),
-                    code: ({ className, children, ...props }: any) => {
-                      return !className ? (
-                        <code {...props} className="bg-gray-200 px-1 py-0.5 rounded">{children}</code>
-                      ) : (
-                        <code {...props} className={className}>{children}</code>
-                      );
-                    },
-                    // Xử lý ký tự \n trong văn bản thường
-                    p: ({ children, ...props }) => {
-                      return <p {...props} className="my-1">{children}</p>;
-                    },
-                    // Cải thiện hiển thị heading
-                    h1: (props) => <h1 {...props} className="text-xl font-bold mt-3 mb-2" style={{ color: 'var(--navy-blue)' }} />,
-                    h2: (props) => <h2 {...props} className="text-lg font-bold mt-2 mb-1" style={{ color: 'var(--navy-blue)' }} />,
-                    h3: (props) => <h3 {...props} className="text-md font-bold mt-1 mb-1" style={{ color: 'var(--navy-blue)' }} />,
-                    strong: (props) => <strong {...props} className="font-bold" style={{ color: 'var(--orange-primary)' }} />,
-                    // Hiển thị danh sách đẹp hơn
-                    ul: (props) => <ul {...props} className="list-disc pl-5 my-2 space-y-1" />,
-                    ol: (props) => <ol {...props} className="list-decimal pl-5 my-2 space-y-1" />,
-                    li: (props) => <li {...props} className="mb-1" />,
-                    // Hiển thị bảng đẹp hơn
-                    table: (props) => <table {...props} className="border-collapse border border-gray-300 my-2 w-full" />,
-                    thead: (props) => <thead {...props} className="bg-gray-100" />,
-                    th: (props) => <th {...props} className="border border-gray-300 p-2 text-left" />,
-                    td: (props) => <td {...props} className="border border-gray-300 p-2" />
-                  }}
-                >
-                  {processLinks(message.content)}
-                </ReactMarkdown>
-              )
+              <p>Không có nội dung</p>
             )}
           </div>
         </div>
