@@ -11,7 +11,7 @@ services:
     env_file:
       - .env
     environment:
-      - VITE_API_URL=https://apichatbotfit.andyanh.id.vn
+      - VITE_API_URL=https://apichatbot.andyanh.id.vn
       - VITE_APP_NAME=Chatbot HCMUTE - FIT
       - VITE_APP_DESCRIPTION=Chatbot trả lời các câu hỏi, thắc mắc liên quan đến Khoa CNTT SPKT TPHCM
       - VITE_APP_URL=https://chatbot.andyanh.id.vn

@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 import { FaComment, FaLightbulb, FaBrain, FaUserGraduate, FaUniversity, FaUsers } from 'react-icons/fa';
 
 const HomePage = () => {
-  // Màu sắc DSC HCMUTE
+  // Màu sắc Khoa CNTT - HCMUTE
   const colors = {
     orangePrimary: '#F4B400',
     redPrimary: '#DB4437',
@@ -27,7 +27,7 @@ const HomePage = () => {
                   Đây là phiên bản beta của Chatbot AI FIT - HCMUTE. Sản phẩm vẫn đang trong quá trình phát triển, 
                   nên có thể còn một số sai sót. Chúng tôi rất mong nhận được góp ý của bạn thông qua{' '}
                   <a 
-                    href="https://forms.gle/G1shmbDAdLjksBef7" 
+                    href="https://forms.gle/Kz7WFbVmEhMjkMB3A" 
                     target="_blank" 
                     rel="noopener noreferrer" 
                     className="underline font-medium"
@@ -53,7 +53,7 @@ const HomePage = () => {
             </span>
           </h1>
           <p className="text-lg md:text-xl text-gray-200 mb-10 max-w-4xl mx-auto">
-            Trợ lý thông minh được phát triển bởi <span style={{ color: colors.orangePrimary }}>HCMUTE Developer Student Club</span>, 
+            Trợ lý thông minh được phát triển bởi <span style={{ color: colors.orangePrimary }}>Khoa Công nghệ Thông tin</span>, 
             được đào tạo với dữ liệu chuyên biệt về Khoa Công nghệ Thông tin thuộc trường Đại học Sư phạm Kỹ thuật TP.HCM, 
             giúp sinh viên và giảng viên tìm kiếm thông tin nhanh chóng và chính xác.
           </p>
@@ -157,19 +157,19 @@ const HomePage = () => {
               <div className="flex items-center mb-4">
                 <FaUniversity className="text-3xl mr-3" style={{ color: colors.bluePrimary }} />
                 <h2 className="text-3xl font-bold" style={{ color: colors.navyBlue }}>
-                  Developer Student Club
+                  Khoa Công nghệ Thông tin
                 </h2>
               </div>
               <h3 className="text-xl font-semibold mb-4" style={{ color: colors.orangePrimary }}>
-                Khoa Công nghệ Thông tin, trường Đại học Sư phạm Kỹ thuật TP.HCM
+                Trường Đại học Sư phạm Kỹ thuật TP.HCM
               </h3>
               <p className="text-gray-600 mb-6">
-                Developer Student Club (DSC) là một cộng đồng học tập của sinh viên thuộc khoa, trường Đại học Sư phạm Kỹ thuật TP.HCM, 
-                nơi sinh viên phát triển kỹ năng, ứng dụng, và giải pháp kỹ thuật để giải quyết các thách thức thực tế.
+                Khoa Công nghệ Thông tin (FIT) là một trong những khoa lớn của trường Đại học Sư phạm Kỹ thuật TP.HCM, 
+                nơi đào tạo ra những sinh viên tài năng trong lĩnh vực công nghệ thông tin, đáp ứng nhu cầu của xã hội và doanh nghiệp.
               </p>
               <p className="text-gray-600">
-                Dự án trợ lý hỗ trợ sinh viên giải đáp thắc mắc về Khoa Công nghệ Thông tin là một trong những dự án tiêu biểu của HCMUTE Developer Student Club, được phát triển nhằm hỗ trợ 
-                cộng đồng sinh viên và giảng viên ngoài ra còn hỗ trợ học sinh hoặc phụ huynh muốn tìm hiểu đến Khoa Công nghệ Thông tin của trường Đại học Sư phạm Kỹ thuật TP.HCM.
+                Dự án trợ lý hỗ trợ sinh viên giải đáp thắc mắc về Khoa Công nghệ Thông tin được phát triển nhằm hỗ trợ 
+                cộng đồng sinh viên, giảng viên, học sinh và phụ huynh muốn tìm hiểu thêm về Khoa Công nghệ Thông tin của trường Đại học Sư phạm Kỹ thuật TP.HCM.
               </p>
             </div>
             <div className="md:w-1/2">
@@ -179,22 +179,22 @@ const HomePage = () => {
                   <div className="flex items-center mb-6">
                     <FaUsers className="text-2xl mr-3" style={{ color: colors.redPrimary }} />
                     <h3 className="text-xl font-semibold" style={{ color: colors.navyBlue }}>
-                      Tham gia cùng chúng tôi
+                      Tìm hiểu thêm
                     </h3>
                   </div>
                   <p className="text-gray-600 mb-6">
-                    HCMUTE Developer Student Club luôn chào đón những sinh viên có đam mê với công nghệ và mong muốn phát triển các kỹ năng lập trình, 
+                    Khoa Công nghệ Thông tin trường Đại học Sư phạm Kỹ thuật TP.HCM luôn chào đón những sinh viên có đam mê với công nghệ và mong muốn phát triển các kỹ năng lập trình, 
                     thiết kế và quản lý dự án.
                   </p>
                   <div className="flex justify-center">
                     <a 
-                      href="https://www.facebook.com/hcmute.dsc" 
+                      href="https://fit.hcmute.edu.vn" 
                       target="_blank" 
                       rel="noopener noreferrer" 
                       className="py-2 px-6 rounded-full text-white font-medium transition duration-300"
                       style={{ backgroundColor: colors.greenPrimary }}
                     >
-                      Tìm hiểu thêm về DSC
+                      Trang web Khoa CNTT
                     </a>
                   </div>
                 </div>

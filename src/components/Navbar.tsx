@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link, NavLink, Outlet } from 'react-router-dom';
 import { FaBars, FaTimes, FaRobot, FaHome, FaInfoCircle } from 'react-icons/fa';
-import logoDSC from '../assets/LogoDSC.png';
+import logoCNTT from '../assets/logo-cntt2021.png';
 
 export function AppNavbar({ children }: { children: React.ReactNode }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -19,9 +19,9 @@ export function AppNavbar({ children }: { children: React.ReactNode }) {
                   </div>
 
                   <img 
-                    src={logoDSC} 
-                    alt="DSC HCMUTE Logo" 
-                    className="h-32 w-auto mr-2" 
+                    src={logoCNTT} 
+                    alt="FIT HCMUTE Logo" 
+                    className="h-12 w-auto mr-2" 
                   />
                 </Link>
               </div>

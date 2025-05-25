@@ -1,4 +1,6 @@
-# React + TypeScript + Vite
+# Chatbot FIT HCMUTE
+
+Hướng dẫn sử dụng Docker cho dự án Chatbot FIT HCMUTE
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 

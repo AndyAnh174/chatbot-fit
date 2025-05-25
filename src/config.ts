@@ -1,5 +1,5 @@
 // Cấu hình cho API endpoints
-const API_BASE = import.meta.env.VITE_API_URL || 'https://apichatbotfit.andyanh.id.vn';
+const API_BASE = import.meta.env.VITE_API_URL || 'https://apichatbot.andyanh.id.vn';
 
 export const API_URL = API_BASE;
 
@@ -18,7 +18,7 @@ export const DEFAULT_HEADERS = {
 
 // Thông tin ứng dụng
 export const APP_INFO = {
-  NAME: import.meta.env.VITE_APP_NAME || 'Chatbot HCMUTE - FIT',
+  NAME: import.meta.env.VITE_APP_NAME || 'Chatbot FIT-HCMUTE',
   DESCRIPTION: import.meta.env.VITE_APP_DESCRIPTION || 'Chatbot trả lời các câu hỏi, thắc mắc liên quan đến Khoa CNTT SPKT TPHCM',
   VERSION: import.meta.env.VITE_APP_VERSION || '1.0.0',
   URL: import.meta.env.VITE_APP_URL || 'https://chatbot.andyanh.id.vn',

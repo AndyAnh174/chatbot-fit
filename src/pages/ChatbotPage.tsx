@@ -943,7 +943,7 @@ export function ChatbotPage() {
                   Đây là phiên bản beta của Chatbot AI FIT - HCMUTE. Sản phẩm vẫn đang trong quá trình phát triển, 
                   nên có thể còn một số sai sót. Chúng tôi rất mong nhận được góp ý của bạn thông qua{' '}
                   <a 
-                    href="https://forms.gle/G1shmbDAdLjksBef7" 
+                    href="https://forms.gle/Kz7WFbVmEhMjkMB3A" 
                     target="_blank" 
                     rel="noopener noreferrer" 
                     className="underline font-medium"
@@ -1081,7 +1081,7 @@ export function ChatbotPage() {
                   <div className="bg-navy-blue p-3 rounded-full mb-4 flex items-center justify-center" style={{ backgroundColor: 'var(--navy-blue)' }}>
                     <FaRobot className="text-white" size={24} />
                   </div>
-                  <h2 className="text-center text-lg md:text-xl font-semibold mb-2" style={{ color: 'var(--navy-blue)' }}>HCMUTE DSC Chatbot</h2>
+                  <h2 className="text-center text-lg md:text-xl font-semibold mb-2" style={{ color: 'var(--navy-blue)' }}>Chatbot FIT-HCMUTE</h2>
                   <p className="text-center text-gray-600 max-w-md text-sm md:text-base">
                     Chào mừng đến với trợ lý AI của Khoa CNTT - HCMUTE!<br />
                     Hãy đặt câu hỏi để bắt đầu cuộc trò chuyện.

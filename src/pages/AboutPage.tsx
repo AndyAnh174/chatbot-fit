@@ -1,5 +1,4 @@
 import { FaCog, FaLightbulb, FaCode, FaRocket, FaGithub, FaFacebookSquare  } from 'react-icons/fa';
-import logoDSC from '../assets/logo_dsc.png';
 import logoCNTT from '../assets/logo-cntt2021.png';
 import VA from '../assets/logo-phattrien/VA.jpg';
 import QA from '../assets/logo-phattrien/QA.jpg';
@@ -8,7 +7,7 @@ import hung from '../assets/logo-phattrien/hung.jpg';
 
 
 const AboutPage = () => {
-  // Màu sắc DSC HCMUTE
+  // Màu sắc FIT-HCMUTE
   const colors = {
     orangePrimary: '#F4B400',
     redPrimary: '#DB4437',
@@ -67,7 +66,7 @@ const AboutPage = () => {
                   Đây là phiên bản beta của Chatbot AI FIT - HCMUTE. Sản phẩm vẫn đang trong quá trình phát triển, 
                   nên có thể còn một số sai sót. Chúng tôi rất mong nhận được góp ý của bạn thông qua{' '}
                   <a 
-                    href="https://forms.gle/G1shmbDAdLjksBef7" 
+                    href="https://forms.gle/Kz7WFbVmEhMjkMB3A" 
                     target="_blank" 
                     rel="noopener noreferrer" 
                     className="underline font-medium"
@@ -88,7 +87,7 @@ const AboutPage = () => {
         <div className="container mx-auto px-6 md:px-12 relative z-10 text-center">
           <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">Về dự án của chúng tôi</h1>
           <p className="text-xl text-gray-300 max-w-4xl mx-auto">
-            Dự án được phát triển bởi <span style={{ color: colors.orangePrimary }}>HCMUTE Developer Student Club</span> tại Trường Đại học Sư phạm Kỹ thuật TP.HCM
+            Dự án được phát triển bởi <span style={{ color: colors.orangePrimary }}>Khoa Công nghệ Thông tin</span> tại Trường Đại học Sư phạm Kỹ thuật TP.HCM
           </p>
         </div>
       </div>
@@ -107,8 +106,7 @@ const AboutPage = () => {
                 Đại học Sư phạm Kỹ thuật TP.HCM.
               </p>
               <p className="text-gray-600">
-                Dự án này được khởi xướng và phát triển bởi HCMUTE Developer Student Club, với sự hỗ trợ từ Khoa Công nghệ 
-                Thông tin và các đơn vị liên quan của trường.
+                Dự án này được khởi xướng và phát triển bởi Khoa Công nghệ Thông tin và các đơn vị liên quan của trường.
               </p>
             </div>
             <div className="md:w-2/3 md:pl-16">
@@ -189,7 +187,7 @@ const AboutPage = () => {
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold mb-4" style={{ color: colors.navyBlue }}>Đội ngũ phát triển</h2>
             <p className="text-gray-600 max-w-3xl mx-auto">
-              Dự án được phát triển bởi những thành viên tài năng và đam mê của HCMUTE Developer Student Club, dưới sự hướng dẫn của các giảng viên 
+              Dự án được phát triển bởi những thành viên tài năng và đam mê của Khoa Công nghệ Thông tin, dưới sự hướng dẫn của các giảng viên 
               Khoa Công nghệ Thông tin.
             </p>
           </div>
@@ -264,28 +262,12 @@ const AboutPage = () => {
               <div className="bg-gray-50 rounded-lg p-8 text-center transition-all hover:shadow-md">
                 <div className="h-28 flex items-center justify-center mb-6">
                   <img 
-                    src={logoDSC} 
-                    alt="HCMUTE Developer Student Clubs" 
-                    className="max-h-full max-w-full"
-                  />
-                </div>
-                  <h3 className="text-xl font-semibold mb-3" style={{ color: colors.navyBlue }}>HCMUTE Developer Student Club</h3>
-                <p className="text-gray-600 mb-4">Hỗ trợ nguồn lực, đào tạo và công nghệ</p>
-                <p className="text-gray-600 text-sm italic">
-                  HCMUTE Developer Student Club là cộng đồng sinh viên công nghệ thông tin của trường Đại học Sư phạm Kỹ thuật TP.HCM, nhằm 
-                  phát triển kỹ năng lãnh đạo, kỹ năng phát triển và giải quyết các vấn đề thực tế.
-                </p>
-              </div>
-              
-              <div className="bg-gray-50 rounded-lg p-8 text-center transition-all hover:shadow-md">
-                <div className="h-28 flex items-center justify-center mb-6">
-                  <img 
                     src={logoCNTT} 
                     alt="Khoa CNTT - HCMUTE" 
                     className="max-h-full max-w-full"
                   />
                 </div>
-                <h3 className="text-xl font-semibold mb-3" style={{ color: colors.navyBlue }}>Khoa CNTT - HCMUTE</h3>
+                  <h3 className="text-xl font-semibold mb-3" style={{ color: colors.navyBlue }}>Khoa CNTT - HCMUTE</h3>
                 <p className="text-gray-600 mb-4">Hỗ trợ về dữ liệu và tài nguyên</p>
                 <p className="text-gray-600 text-sm italic">
                   Khoa Công nghệ Thông tin - trường Đại học Sư phạm Kỹ thuật TP.HCM đóng vai trò quan trọng trong việc cung cấp kiến thức chuyên môn, 
@@ -429,43 +411,67 @@ const AboutPage = () => {
 
       {/* Liên hệ */}
       <div className="py-16 bg-white">
-        <div className="container mx-auto px-6 md:px-12 text-center">
-          <h2 className="text-3xl font-bold mb-6" style={{ color: colors.navyBlue }}>Liên hệ với chúng tôi</h2>
-          <p className="text-gray-600 mb-8 max-w-3xl mx-auto">
-            Nếu bạn có câu hỏi, góp ý hoặc muốn hợp tác với dự án, vui lòng liên hệ với chúng tôi qua các kênh sau:
-          </p>
-          <div className="flex flex-col md:flex-row justify-center space-y-4 md:space-y-0 md:space-x-6">
-            <a 
-              href="mailto:clb.dsc@student.hcmute.edu.vn" 
-              className="inline-flex items-center justify-center py-3 px-6 bg-white border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50"
-            >
-              <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
-              </svg>
-              Email
-            </a>
-            <a 
-              href="https://www.facebook.com/hcmute.dsc" 
-              target="_blank" 
-              rel="noopener noreferrer" 
-              className="inline-flex items-center justify-center py-3 px-6 rounded-lg text-white hover:bg-blue-600"
-              style={{ backgroundColor: colors.bluePrimary }}
-            >
-              <svg className="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
-              </svg>
-              Facebook
-            </a>
-            <a 
-              href="https://github.com/HCMUTE-DSC" 
-              target="_blank" 
-              rel="noopener noreferrer" 
-              className="inline-flex items-center justify-center py-3 px-6 rounded-lg text-white"
-              style={{ backgroundColor: colors.navyBlue }}
-            >
-              <FaGithub className="mr-2" />
-              GitHub
-            </a>
+        <div className="container mx-auto px-6 md:px-12">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold mb-4" style={{ color: colors.navyBlue }}>Liên hệ với chúng tôi</h2>
+            <p className="text-gray-600 max-w-3xl mx-auto">
+              Nếu bạn có bất kỳ câu hỏi nào về dự án hoặc muốn đóng góp ý kiến, vui lòng liên hệ với chúng tôi qua các kênh sau:
+            </p>
+          </div>
+
+          <div className="max-w-4xl mx-auto">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              <div className="text-center p-6 rounded-lg border border-gray-200 hover:shadow-lg transition-shadow">
+                <div className="w-16 h-16 mx-auto bg-pink-50 rounded-full flex items-center justify-center mb-4">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" style={{ color: colors.redPrimary }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                  </svg>
+                </div>
+                <h3 className="text-xl font-semibold mb-2" style={{ color: colors.navyBlue }}>Email</h3>
+                <p className="text-gray-600 mb-4">Gửi email cho chúng tôi để được hỗ trợ</p>
+                <a 
+                  href="mailto:fitadm@hcmute.edu.vn" 
+                  className="text-base font-medium inline-flex items-center"
+                  style={{ color: colors.bluePrimary }}
+                >
+                  fitadm@hcmute.edu.vn
+                </a>
+              </div>
+
+              <div className="text-center p-6 rounded-lg border border-gray-200 hover:shadow-lg transition-shadow">
+                <div className="w-16 h-16 mx-auto bg-blue-50 rounded-full flex items-center justify-center mb-4">
+                  <FaFacebookSquare className="h-8 w-8" style={{ color: colors.bluePrimary }} />
+                </div>
+                <h3 className="text-xl font-semibold mb-2" style={{ color: colors.navyBlue }}>Facebook</h3>
+                <p className="text-gray-600 mb-4">Theo dõi chúng tôi trên Facebook</p>
+                <a 
+                  href="https://www.facebook.com/fithcmute" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="text-base font-medium inline-flex items-center"
+                  style={{ color: colors.bluePrimary }}
+                >
+                  <span>Fanpage Khoa CNTT</span>
+                </a>
+              </div>
+
+              <div className="text-center p-6 rounded-lg border border-gray-200 hover:shadow-lg transition-shadow">
+                <div className="w-16 h-16 mx-auto bg-gray-50 rounded-full flex items-center justify-center mb-4">
+                  <FaGithub className="h-8 w-8" style={{ color: colors.navyBlue }} />
+                </div>
+                <h3 className="text-xl font-semibold mb-2" style={{ color: colors.navyBlue }}>Website</h3>
+                <p className="text-gray-600 mb-4">Truy cập trang web của Khoa CNTT</p>
+                <a 
+                  href="https://fit.hcmute.edu.vn" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="text-base font-medium inline-flex items-center"
+                  style={{ color: colors.bluePrimary }}
+                >
+                  <span>fit.hcmute.edu.vn</span>
+                </a>
+              </div>
+            </div>
           </div>
         </div>
       </div>
