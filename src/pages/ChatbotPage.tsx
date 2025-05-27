@@ -564,7 +564,6 @@ export function ChatbotPage() {
 
       let botResponse = '';
       let receivedFirstChunk = false;
-      let streamingMessageIndex = -1;
 
       while (true) {
         const { done, value } = await reader.read();
@@ -610,7 +609,6 @@ export function ChatbotPage() {
                     isStreaming: true, 
                     timestamp: new Date().toISOString() 
                   }];
-                  streamingMessageIndex = newMessages.length - 1;
                   return newMessages;
                 });
               }
@@ -637,7 +635,6 @@ export function ChatbotPage() {
                     isStreaming: true, 
                     timestamp: new Date().toISOString() 
                   }];
-                  streamingMessageIndex = newMessages.length - 1;
                   return newMessages;
                 });
               }
