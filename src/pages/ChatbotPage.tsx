@@ -37,6 +37,7 @@ export function ChatbotPage() {
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const messagesContainerRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
   const [, setScrollPosition] = useState(0);
   const [shouldAutoScroll, setShouldAutoScroll] = useState(true);
 
@@ -168,6 +169,13 @@ export function ChatbotPage() {
     fetchChatSessions();
   }, []);
 
+  // Auto-focus input khi component mount
+  useEffect(() => {
+    if (inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, []);
+
   // Lưu lịch sử chat vào localStorage khi messages thay đổi
   useEffect(() => {
     if (sessionId && messages.length > 0) {
@@ -212,13 +220,13 @@ export function ChatbotPage() {
 
   // Cuộn xuống tin nhắn mới nhất với điều kiện
   useEffect(() => {
-    if (shouldAutoScroll && messagesEndRef.current && !isLoadingHistory) {
+    if (shouldAutoScroll && messagesEndRef.current && !isLoadingHistory && messages.length > 0) {
       // Sử dụng timeout để đảm bảo DOM đã cập nhật
       setTimeout(() => {
         messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
       }, 100);
     }
-  }, [messages, shouldAutoScroll, isLoadingHistory]);
+  }, [messages.length, shouldAutoScroll, isLoadingHistory]); // Chỉ theo dõi length thay vì toàn bộ messages array
 
   // Thêm hàm xử lý smooth scroll bằng requestAnimationFrame
   const smoothScrollToBottom = () => {
@@ -231,14 +239,6 @@ export function ChatbotPage() {
       });
     }
   };
-
-  // Cập nhật lại useEffect theo dõi tin nhắn để sử dụng hàm smoothScrollToBottom
-  useEffect(() => {
-    if (shouldAutoScroll && !isLoadingHistory && messages.length > 0) {
-      // Delay một chút để đảm bảo DOM đã cập nhật
-      setTimeout(smoothScrollToBottom, 50);
-    }
-  }, [messages, shouldAutoScroll, isLoadingHistory]);
 
   // Tạo phiên chat mới
   const createNewSession = async () => {
@@ -397,50 +397,63 @@ export function ChatbotPage() {
     const cleanText = text;
     
     // Thay đổi cách thêm nội dung để tạo hiệu ứng typing
-    // Hiển thị từng ký tự một cách mượt mà
     const characters = cleanText.split('');
     let processedContent = currentContent;
     
     // Tạo hiệu ứng typing theo nhóm ký tự để tăng tốc độ hiển thị
-    // Số ký tự hiển thị cùng lúc sẽ tùy thuộc vào độ dài văn bản
-    const chunkSize = characters.length > 300 ? 15 : 
-                      characters.length > 150 ? 10 :
-                      characters.length > 50 ? 5 : 1;
+    const chunkSize = characters.length > 300 ? 20 : 
+                      characters.length > 150 ? 15 :
+                      characters.length > 50 ? 8 : 3;
     
     for (let i = 0; i < characters.length; i += chunkSize) {
       // Thêm một nhóm ký tự cùng lúc
       const chunk = characters.slice(i, i + chunkSize).join('');
       processedContent += chunk;
       
-      // Cập nhật nội dung hiện tại trong state
-      setMessages(prev => 
-        prev.map((msg, idx) => 
-          idx === prev.length - 1 && msg.isStreaming 
-            ? { ...msg, content: processedContent } 
-            : msg
-        )
-      );
-      
-      // Đảm bảo cuộn xuống mỗi khi có nội dung mới
-      if (i % 15 === 0) { // Giảm tần suất cuộn để tăng hiệu năng
-        smoothScrollToBottom();
+      // Cập nhật nội dung - giảm tần suất update
+      if (i % (chunkSize * 2) === 0 || i >= characters.length - chunkSize) {
+        setMessages(prev => {
+          const lastMessage = prev[prev.length - 1];
+          if (lastMessage && lastMessage.isStreaming) {
+            const newMessages = [...prev];
+            newMessages[newMessages.length - 1] = { ...lastMessage, content: processedContent };
+            return newMessages;
+          }
+          return prev;
+        });
+        
+        // Cuộn xuống nếu cần
+        if (shouldAutoScroll) {
+          setTimeout(() => {
+            if (messagesContainerRef.current) {
+              messagesContainerRef.current.scrollTop = messagesContainerRef.current.scrollHeight;
+            }
+          }, 0);
+        }
       }
       
-      // Tạo độ trễ giữa các nhóm ký tự để tạo hiệu ứng typing
-      // Tốc độ typing nhanh hơn nhiều cho văn bản dài
-      if (characters.length > 500) { // Đoạn text cực dài
-        await new Promise(resolve => setTimeout(resolve, 2));
-      } else if (characters.length > 200) { // Đoạn text rất dài
+      // Giảm độ trễ để tăng tốc
+      if (characters.length > 500) {
+        await new Promise(resolve => setTimeout(resolve, 1));
+      } else if (characters.length > 200) {
+        await new Promise(resolve => setTimeout(resolve, 3));
+      } else if (characters.length > 50) {
         await new Promise(resolve => setTimeout(resolve, 5));
-      } else if (characters.length > 50) { // Đoạn text dài vừa
-        await new Promise(resolve => setTimeout(resolve, 8));
       } else {
-        await new Promise(resolve => setTimeout(resolve, 12)); // Đoạn text ngắn, vẫn typing nhanh
+        await new Promise(resolve => setTimeout(resolve, 8));
       }
     }
     
-    // Đảm bảo cuộn xuống sau khi hoàn thành đoạn văn bản
-    setTimeout(smoothScrollToBottom, 10);
+    // Cập nhật cuối cùng để đảm bảo nội dung hoàn chỉnh
+    setMessages(prev => {
+      const lastMessage = prev[prev.length - 1];
+      if (lastMessage && lastMessage.isStreaming) {
+        const newMessages = [...prev];
+        newMessages[newMessages.length - 1] = { ...lastMessage, content: processedContent };
+        return newMessages;
+      }
+      return prev;
+    });
     
     return processedContent;
   };
@@ -476,7 +489,7 @@ export function ChatbotPage() {
 
   // Gửi tin nhắn đến chatbot
   const sendMessage = async () => {
-    if (!query.trim()) return;
+    if (!query.trim() || isLoading) return;
 
     // Tạo session ID mới nếu chưa có
     let currentSessionId = sessionId;
@@ -495,15 +508,30 @@ export function ChatbotPage() {
       }
     }
 
+    // Lưu query hiện tại và clear input
+    const currentQuery = query;
+    setQuery('');
+
+    // Auto-focus vào input ngay sau khi clear
+    setTimeout(() => {
+      if (inputRef.current) {
+        inputRef.current.focus();
+      }
+    }, 0);
+
     // Thêm tin nhắn của người dùng vào danh sách
-    const userMessage: Message = { role: 'human', content: query, timestamp: new Date().toISOString() };
+    const userMessage: Message = { 
+      role: 'human', 
+      content: currentQuery, 
+      timestamp: new Date().toISOString() 
+    };
+    
+    // Cập nhật messages với user message
     setMessages(prev => [...prev, userMessage]);
     
     // Bắt đầu hiển thị trạng thái đang suy nghĩ
     setIsLoading(true);
     setIsTyping(true);
-    const currentQuery = query;
-    setQuery('');
 
     // Đảm bảo cuộn xuống sau khi thêm tin nhắn người dùng
     setShouldAutoScroll(true);
@@ -520,7 +548,7 @@ export function ChatbotPage() {
           query: currentQuery,
           session_id: currentSessionId,
         }),
-        credentials: 'include',  // Gửi cookies nếu có
+        credentials: 'include',
       });
 
       // Kiểm tra response
@@ -530,10 +558,13 @@ export function ChatbotPage() {
 
       // Xử lý dữ liệu stream
       const reader = response.body?.getReader();
-      if (!reader) return;
+      if (!reader) {
+        throw new Error('Response body reader not available');
+      }
 
       let botResponse = '';
       let receivedFirstChunk = false;
+      let streamingMessageIndex = -1;
 
       while (true) {
         const { done, value } = await reader.read();
@@ -546,6 +577,9 @@ export function ChatbotPage() {
         for (const line of lines) {
           if (line.startsWith('data: ')) {
             const data = line.substring(6);
+            
+            // Bỏ qua nếu data rỗng
+            if (!data.trim()) continue;
             
             try {
               const jsonData = JSON.parse(data);
@@ -560,42 +594,58 @@ export function ChatbotPage() {
               // Xử lý lỗi
               if (jsonData.type === 'error') {
                 console.error('Error from server:', jsonData.message);
-                continue;
+                throw new Error(jsonData.message);
               }
               
               // Khi nhận được dữ liệu đầu tiên, tắt trạng thái đang suy nghĩ và bắt đầu streaming
               if (!receivedFirstChunk) {
                 receivedFirstChunk = true;
-                // Tắt chỉ báo "đang suy nghĩ"
                 setIsTyping(false);
-                // Thêm message ban đầu cho streaming
-                setMessages(prev => [...prev, { role: 'ai', content: '', isStreaming: true, timestamp: new Date().toISOString() }]);
                 
-                // Đảm bảo cuộn xuống khi tin nhắn mới xuất hiện
-                setShouldAutoScroll(true);
+                // Thêm message streaming
+                setMessages(prev => {
+                  const newMessages = [...prev, { 
+                    role: 'ai' as const, 
+                    content: '', 
+                    isStreaming: true, 
+                    timestamp: new Date().toISOString() 
+                  }];
+                  streamingMessageIndex = newMessages.length - 1;
+                  return newMessages;
+                });
               }
               
-              // Xử lý format trả về từ API và lưu nội dung hiện tại
+              // Xử lý format trả về từ API
               if (jsonData.content && jsonData.format_type === 'markdown') {
-                // Sử dụng nội dung hiện tại để tiếp tục streaming
                 botResponse = await processStreamingText(jsonData.content, botResponse);
-              } else if (typeof data === 'string') {
-                // Vẫn xử lý trường hợp data là string thông thường
-                botResponse = await processStreamingText(data, botResponse);
+              } else if (jsonData.content) {
+                botResponse = await processStreamingText(jsonData.content, botResponse);
+              } else if (typeof jsonData === 'string') {
+                botResponse = await processStreamingText(jsonData, botResponse);
               }
-            } catch (e) {
-              // Nếu không phải JSON, xem như là text thường
+            } catch (parseError) {
+              // Nếu không phải JSON hợp lệ, xử lý như text thường
               if (!receivedFirstChunk) {
                 receivedFirstChunk = true;
-                // Tắt chỉ báo "đang suy nghĩ"
                 setIsTyping(false);
-                // Thêm message ban đầu cho streaming
-                setMessages(prev => [...prev, { role: 'ai', content: '', isStreaming: true, timestamp: new Date().toISOString() }]);
                 
-                // Đảm bảo cuộn xuống khi tin nhắn mới xuất hiện
-                setShouldAutoScroll(true);
+                // Thêm message streaming
+                setMessages(prev => {
+                  const newMessages = [...prev, { 
+                    role: 'ai' as const, 
+                    content: '', 
+                    isStreaming: true, 
+                    timestamp: new Date().toISOString() 
+                  }];
+                  streamingMessageIndex = newMessages.length - 1;
+                  return newMessages;
+                });
               }
-              botResponse = await processStreamingText(data, botResponse);
+              
+              // Xử lý data như text thường
+              if (data && data.trim()) {
+                botResponse = await processStreamingText(data, botResponse);
+              }
             }
           }
         }
@@ -605,49 +655,61 @@ export function ChatbotPage() {
       setMessages(prev => 
         prev.map((msg, idx) => 
           idx === prev.length - 1 && msg.isStreaming 
-            ? { role: 'ai', content: botResponse, isStreaming: false, timestamp: msg.timestamp || new Date().toISOString() } 
+            ? { 
+                role: 'ai' as const, 
+                content: cleanContent(botResponse), 
+                isStreaming: false, 
+                timestamp: msg.timestamp || new Date().toISOString() 
+              } 
             : msg
         )
       );
 
-      // Tắt loading trước
+      // Tắt loading
       setIsLoading(false);
       setIsTyping(false);
       
       // Đảm bảo cuộn xuống sau khi hoàn thành
       setShouldAutoScroll(true);
+      setTimeout(smoothScrollToBottom, 100);
       
-      // Ngay lập tức gọi hàm cuộn mượt
-      setTimeout(smoothScrollToBottom, 50);
+      // Auto-focus vào input sau khi có lỗi
+      setTimeout(() => {
+        if (inputRef.current) {
+          inputRef.current.focus();
+        }
+      }, 200);
       
-      // Trì hoãn cập nhật danh sách phiên trò chuyện để tránh ảnh hưởng đến hiệu năng
+      // Cập nhật danh sách phiên trò chuyện
       setTimeout(() => {
         updateLocalChatSessions();
-        fetchChatSessions();
       }, 500);
       
     } catch (error) {
       console.error('Error sending message:', error);
+      
       // Xóa tin nhắn đang streaming nếu có
       setMessages(prev => prev.filter(msg => !msg.isStreaming));
+      
       // Tắt trạng thái đang suy nghĩ
       setIsTyping(false);
+      setIsLoading(false);
+      
       // Thêm tin nhắn lỗi
       setMessages(prev => [...prev, { 
-        role: 'ai', 
+        role: 'ai' as const, 
         content: 'Đã xảy ra lỗi khi xử lý yêu cầu của bạn. Vui lòng thử lại sau.', 
         timestamp: new Date().toISOString() 
       }]);
       
-      // Vẫn lưu vào localStorage
+      // Lưu vào localStorage với messages hiện tại
       if (currentSessionId) {
-        saveLocalChatHistory(currentSessionId, messages);
+        const currentMessages = [...messages, userMessage];
+        saveLocalChatHistory(currentSessionId, currentMessages);
       }
       
-      // Tắt loading và đảm bảo cuộn xuống
-      setIsLoading(false);
-      setIsTyping(false);
-      setTimeout(smoothScrollToBottom, 50);
+      // Đảm bảo cuộn xuống
+      setTimeout(smoothScrollToBottom, 100);
     }
   };
 
@@ -1110,6 +1172,7 @@ export function ChatbotPage() {
                   onChange={(e) => setQuery(e.target.value)}
                   onKeyPress={handleKeyPress}
                   disabled={isLoading}
+                  ref={inputRef}
                 />
                 <button
                   className={`flex items-center justify-center px-3 md:px-4 py-2 rounded-r-lg send-button ${
