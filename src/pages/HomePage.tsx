@@ -3,7 +3,6 @@ import {
   FaComment, 
   FaLightbulb, 
   FaBrain, 
-  FaUserGraduate, 
   FaUniversity, 
   FaUsers, 
   FaArrowRight, 
@@ -33,6 +32,14 @@ const HomePage = () => {
         staggerChildren: 0.1
       }
     }
+  };
+
+  // Thêm hàm xử lý scroll
+  const handleScrollToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
   };
 
   return (
@@ -93,6 +100,7 @@ const HomePage = () => {
             >
               <Link 
                 to="/chatbot" 
+                onClick={handleScrollToTop}
                 className="group flex items-center px-8 py-4 bg-white text-gray-900 rounded-full font-semibold text-lg hover:bg-gray-100 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105"
               >
                 <FaRobot className="mr-3 text-xl text-blue-500" />
@@ -330,9 +338,10 @@ const HomePage = () => {
             <motion.p variants={fadeInUp} className="text-xl text-gray-300 mb-12 max-w-3xl mx-auto">
               Hãy bắt đầu trò chuyện với ChatBot FIT ngay hôm nay và trải nghiệm sự tiện lợi của trợ lý AI thông minh
             </motion.p>
-            <motion.div variants={fadeInUp}>
+            <motion.div variants={fadeInUp} className="mt-20 text-center">
               <Link 
                 to="/chatbot" 
+                onClick={handleScrollToTop}
                 className="inline-flex items-center px-10 py-4 bg-white text-gray-900 rounded-full font-semibold text-xl hover:bg-gray-100 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105"
               >
                 <FaComment className="mr-3 text-2xl text-blue-500" />

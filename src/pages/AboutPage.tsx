@@ -11,16 +11,12 @@ import {
   FaGraduationCap,
   FaEnvelope,
   FaGlobe,
-  FaStar,
   FaCheckCircle,
   FaQuoteLeft
 } from 'react-icons/fa';
 import { motion } from 'framer-motion';
 import logoCNTT from '../assets/logo-cntt2021.png';
-import VA from '../assets/logo-phattrien/VA.jpg';
-import QA from '../assets/logo-phattrien/QA.jpg';
-import Quan from '../assets/logo-phattrien/Quan.jpg';
-import hung from '../assets/logo-phattrien/hung.jpg';
+
 
 const AboutPage = () => {
   const fadeInUp = {
@@ -39,36 +35,6 @@ const AboutPage = () => {
   };
 
   // Đội ngũ phát triển
-  const teamMembers = [
-    {
-      name: 'Hồ Việt Anh',
-      role: 'Trưởng nhóm & Full-stack Developer',
-      image: VA,
-      github: 'https://github.com/AndyAnh174',
-      facebook: 'https://www.facebook.com/andy.anh17405'
-    },
-    {
-      name: 'Nguyễn Đăng Quốc Anh',
-      role: 'UI/UX Designer',
-      image: QA,
-      github: 'https://github.com/Quocanh1508',
-      facebook: 'https://www.facebook.com/quocanh.nguyendang.35'
-    },
-    {
-      name: 'Phạm Minh Quân',
-      role: 'Front-end Developer',
-      image: Quan,
-      github: 'https://github.com/Quan-min211',
-      facebook: 'https://www.facebook.com/profile.php?id=100037351623134'
-    },
-    {
-      name: 'Đỗ Kiến Hưng',
-      role: 'Data Engineer',
-      image: hung,
-      github: 'https://github.com/darktheDE',
-      facebook: 'https://www.facebook.com/dkh1105'
-    }
-  ];
 
   const developmentSteps = [
     {
@@ -603,7 +569,7 @@ const AboutPage = () => {
                     href="mailto:fitadm@hcmute.edu.vn" 
                     className="text-gray-300 hover:text-white font-medium text-lg transition-colors duration-300 hover:underline"
                   >
-                    fitadm@hcmute.edu.vn
+                    ptic@hcmute.fit
                   </a>
                 </motion.div>
               </motion.div>
@@ -618,7 +584,7 @@ const AboutPage = () => {
                   </div>
                   <h3 className="text-2xl font-bold text-white mb-6 group-hover:text-blue-300 transition-colors duration-300">Facebook</h3>
                   <a 
-                    href="https://www.facebook.com/fithcmute" 
+                    href="https://www.facebook.com/hcmute.ptic" 
                     target="_blank" 
                     rel="noopener noreferrer"
                     className="text-gray-300 hover:text-white font-medium text-lg transition-colors duration-300 hover:underline"
@@ -712,7 +678,7 @@ const AboutPage = () => {
               <p className="text-gray-400">
                 Trường Đại học Sư phạm Kỹ thuật TP.HCM × 
                 <a href="http://cfacebook.com/hcmute.ptic" target="_blank" rel="noopener noreferrer">
-  <span className="font-bold text-white">PTIC</span>
+  <span className="font-bold text-white"> PTIC</span>
 </a>
 
               </p>

@@ -1,11 +1,12 @@
 import { useState, useEffect, useRef } from 'react';
-import { FaRobot, FaPaperPlane, FaHistory, FaTrash, FaPlus, FaTimes, FaSync, FaInfoCircle, FaLightbulb, FaGraduationCap, FaBook, FaUsers } from 'react-icons/fa';
+import { FaRobot, FaPaperPlane, FaHistory, FaTrash, FaPlus, FaTimes, FaInfoCircle} from 'react-icons/fa';
 import axios from 'axios';
 import { API_ENDPOINTS, DEFAULT_HEADERS } from '../config';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import rehypeRaw from 'rehype-raw';
 import rehypeSanitize from 'rehype-sanitize';
+import logoFIT from '../assets/logo-cntt2021.png';
 
 // CSS cho typing animation
 const typingCSS = `
@@ -68,32 +69,6 @@ interface Session {
 const CHAT_HISTORY_STORAGE_KEY = 'chatbot_history';
 
 // Chat suggestions
-const CHAT_SUGGESTIONS = [
-  {
-    icon: FaGraduationCap,
-    title: "Thông tin tuyển sinh",
-    description: "Tìm hiểu về điều kiện tuyển sinh, học phí và thời gian đăng ký",
-    prompt: "Cho tôi biết thông tin về tuyển sinh Khoa CNTT - HCMUTE, bao gồm điều kiện tuyển sinh và học phí năm 2024?"
-  },
-  {
-    icon: FaBook,
-    title: "Chương trình đào tạo",
-    description: "Khám phá các ngành học và chương trình đào tạo hiện đại",
-    prompt: "Khoa CNTT - HCMUTE có những ngành đào tạo nào? Chương trình học như thế nào?"
-  },
-  {
-    icon: FaUsers,
-    title: "Hoạt động sinh viên",
-    description: "Tìm hiểu về các câu lạc bộ, hoạt động ngoại khóa và cơ hội thực tập",
-    prompt: "Sinh viên Khoa CNTT có những hoạt động ngoại khóa và cơ hội thực tập nào?"
-  },
-  {
-    icon: FaLightbulb,
-    title: "Cơ sở vật chất",
-    description: "Thông tin về phòng lab, thư viện và các tiện ích khác",
-    prompt: "Cơ sở vật chất của Khoa CNTT - HCMUTE như thế nào? Có những phòng lab và thiết bị gì?"
-  }
-];
 
 export function ChatbotPage() {
   const [query, setQuery] = useState('');
@@ -110,6 +85,7 @@ export function ChatbotPage() {
   const inputRef = useRef<HTMLInputElement>(null);
   const [, setScrollPosition] = useState(0);
   const [shouldAutoScroll, setShouldAutoScroll] = useState(true);
+  const MAX_INPUT_LENGTH = 1000; // Thêm giới hạn ký tự tối đa
 
   // Hàm xử lý và làm sạch nội dung
   const cleanContent = (content: string): string => {
@@ -376,11 +352,16 @@ export function ChatbotPage() {
         // Đặt messages sau đó mới tắt loading
         setMessages(localMessages);
         
-        // Đợi ngắn để DOM cập nhật trước khi cuộn xuống và tắt loading
+        // Scroll lên đầu tin nhắn
         setTimeout(() => {
-          smoothScrollToBottom();
+          if (messagesContainerRef.current) {
+            messagesContainerRef.current.scrollTo({
+              top: 0,
+              behavior: 'smooth'
+            });
+          }
           setIsLoadingHistory(false);
-        }, 50);
+        }, 100);
         
         return;
       }
@@ -454,10 +435,34 @@ export function ChatbotPage() {
         
         // Lưu vào localStorage cho lần sau
         saveLocalChatHistory(sessionId, loadedMessages);
+
+        // Scroll lên đầu tin nhắn
+        setTimeout(() => {
+          if (messagesContainerRef.current) {
+            messagesContainerRef.current.scrollTo({
+              top: 0,
+              behavior: 'smooth'
+            });
+          }
+          setIsLoadingHistory(false);
+        }, 100);
       }
     } catch (error) {
       console.error('Error loading chat session:', error);
       setIsLoadingHistory(false);
+    }
+  };
+
+  // Thêm hàm xử lý scroll cho lịch sử chat
+  const handleHistoryScroll = (e: React.UIEvent<HTMLDivElement>) => {
+    const target = e.target as HTMLDivElement;
+    const { scrollTop, scrollHeight, clientHeight } = target;
+    
+    // Nếu đã scroll đến cuối, tự động cuộn xuống tin nhắn mới nhất
+    if (scrollHeight - scrollTop - clientHeight < 50) {
+      setShouldAutoScroll(true);
+    } else {
+      setShouldAutoScroll(false);
     }
   };
 
@@ -1180,6 +1185,14 @@ export function ChatbotPage() {
     }
   };
 
+  // Thêm hàm xử lý input change
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    if (value.length <= MAX_INPUT_LENGTH) {
+      setQuery(value);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-100">
       {/* Subtle Background Pattern */}
@@ -1211,7 +1224,7 @@ export function ChatbotPage() {
           </div>
 
           {/* Chat History */}
-          <div className="flex-1 overflow-y-auto p-4">
+          <div className="flex-1 overflow-y-auto p-4" onScroll={handleHistoryScroll}>
             <div className="text-xs text-gray-400 uppercase tracking-wider mb-4 px-2 font-medium">Lịch sử trò chuyện</div>
             {localChatSessions.length === 0 ? (
               <div className="text-center py-12">
@@ -1258,13 +1271,17 @@ export function ChatbotPage() {
           </div>
 
           {/* Sidebar Footer */}
-          <div className="p-6 border-t border-gray-100">
+          <div className="p-4 sm:p-6 border-t border-gray-100">
             <div className="flex items-center justify-between">
-              <div className="flex items-center">
-                <div className="w-8 h-8 bg-gradient-to-r from-green-500 to-blue-500 rounded-full flex items-center justify-center mr-3 shadow-sm">
-                  <span className="text-white text-xs font-bold">FIT</span>
+              <div className="flex items-center space-x-3">
+                <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-r rounded-full flex items-center justify-center shadow-sm">
+                  <img 
+                    src={logoFIT} 
+                    alt="FIT Logo" 
+                    className="w-5 h-5 sm:w-6 sm:h-6 object-contain"
+                  />
                 </div>
-                <div>
+                <div className="hidden sm:block">
                   <p className="text-sm font-medium text-gray-800">HCMUTE</p>
                   <p className="text-xs text-gray-500">Khoa CNTT</p>
                 </div>
@@ -1360,14 +1377,17 @@ export function ChatbotPage() {
                         ref={inputRef}
                         type="text"
                         value={query}
-                        onChange={(e) => setQuery(e.target.value)}
+                        onChange={handleInputChange}
                         onKeyPress={handleKeyPress}
                         placeholder="Nhập câu hỏi của bạn cho ChatBot FIT..."
                         className="flex-1 px-6 py-4 bg-transparent border-0 focus:outline-none text-gray-800 placeholder-gray-500 text-lg"
                         disabled={isLoading}
+                        maxLength={MAX_INPUT_LENGTH}
                       />
                       <div className="flex items-center mr-4 text-gray-400 text-sm">
-                        <span>0/1000</span>
+                        <span className={`${query.length >= MAX_INPUT_LENGTH ? 'text-red-500' : ''}`}>
+                          {query.length}/{MAX_INPUT_LENGTH}
+                        </span>
                         <div className="mx-3 w-px h-6 bg-gray-300"></div>
                         <button className="p-1 hover:bg-gray-100 rounded transition-colors">
                           <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
@@ -1475,11 +1495,12 @@ export function ChatbotPage() {
                     ref={inputRef}
                     type="text"
                     value={query}
-                    onChange={(e) => setQuery(e.target.value)}
+                    onChange={handleInputChange}
                     onKeyPress={handleKeyPress}
                     placeholder="Nhập câu hỏi của bạn cho ChatBot FIT..."
                     className="flex-1 px-6 py-4 bg-transparent border-0 focus:outline-none text-gray-800 placeholder-gray-500 text-lg"
                     disabled={isLoading}
+                    maxLength={MAX_INPUT_LENGTH}
                   />
                   <button
                     className={`m-2 p-4 rounded-xl transition-all duration-200 ${

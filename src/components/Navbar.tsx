@@ -7,6 +7,14 @@ export function AppNavbar({ children }: { children: React.ReactNode }) {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
+  // Thêm hàm xử lý scroll lên đầu trang
+  const handleScrollToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
+  };
+
   useEffect(() => {
     const handleScroll = () => {
       const isScrolled = window.scrollY > 10;
@@ -32,7 +40,7 @@ export function AppNavbar({ children }: { children: React.ReactNode }) {
           <div className="flex items-center justify-between h-20">
             <div className="flex items-center">
               <div className="flex-shrink-0">
-                <Link to="/" className="flex items-center group">
+                <Link to="/" className="flex items-center group" onClick={handleScrollToTop}>
                   <div className="flex items-center space-x-4">
                     {/* Logo FIT */}
                     <div className="relative">
@@ -79,6 +87,7 @@ export function AppNavbar({ children }: { children: React.ReactNode }) {
                           : "text-gray-600 hover:text-gray-900"
                       }`
                     }
+                    onClick={handleScrollToTop}
                   >
                     {({ isActive }) => (
                       <>
@@ -103,6 +112,7 @@ export function AppNavbar({ children }: { children: React.ReactNode }) {
                           : "text-gray-600 hover:text-gray-900"
                       }`
                     }
+                    onClick={handleScrollToTop}
                   >
                     {({ isActive }) => (
                       <>
@@ -127,6 +137,7 @@ export function AppNavbar({ children }: { children: React.ReactNode }) {
                           : "text-gray-600 hover:text-gray-900"
                       }`
                     }
+                    onClick={handleScrollToTop}
                   >
                     {({ isActive }) => (
                       <>
@@ -175,7 +186,10 @@ export function AppNavbar({ children }: { children: React.ReactNode }) {
                     : "text-gray-600 hover:text-gray-900 hover:bg-gray-50"
                 }`
               }
-              onClick={() => setIsOpen(false)}
+              onClick={() => {
+                setIsOpen(false);
+                handleScrollToTop();
+              }}
             >
               <FaHome className="mr-3 text-lg" />
               <span>Trang chủ</span>
@@ -190,7 +204,10 @@ export function AppNavbar({ children }: { children: React.ReactNode }) {
                     : "text-gray-600 hover:text-gray-900 hover:bg-gray-50"
                 }`
               }
-              onClick={() => setIsOpen(false)}
+              onClick={() => {
+                setIsOpen(false);
+                handleScrollToTop();
+              }}
             >
               <FaRobot className="mr-3 text-lg" />
               <span>Hỏi đáp với AI</span>
@@ -205,7 +222,10 @@ export function AppNavbar({ children }: { children: React.ReactNode }) {
                     : "text-gray-600 hover:text-gray-900 hover:bg-gray-50"
                 }`
               }
-              onClick={() => setIsOpen(false)}
+              onClick={() => {
+                setIsOpen(false);
+                handleScrollToTop();
+              }}
             >
               <FaInfoCircle className="mr-3 text-lg" />
               <span>Giới thiệu</span>
