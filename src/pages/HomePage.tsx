@@ -68,9 +68,9 @@ const HomePage = () => {
               variants={fadeInUp}
               className="text-5xl md:text-6xl lg:text-7xl font-bold text-white leading-tight mb-8"
             >
-              <span className="block mb-2">ChatBot</span>
+              <span className="block mb-2">Trợ lý ảo</span>
               <span className="block bg-gradient-to-r from-blue-400 via-purple-400 to-green-400 bg-clip-text text-transparent">
-                FIT HCMUTE
+                Khoa Công nghệ Thông tin
               </span>
             </motion.h1>
 
@@ -148,7 +148,7 @@ const HomePage = () => {
                 Tính năng vượt trội
               </h2>
               <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-                Khám phá những tính năng tiên tiến giúp ChatBot FIT trở thành trợ lý hoàn hảo cho sinh viên
+                Khám phá những tính năng tiên tiến giúp Trợ lý ảo Khoa CNTT trở thành trợ lý hoàn hảo cho sinh viên
               </p>
             </motion.div>
 
@@ -257,7 +257,7 @@ const HomePage = () => {
                 Cách thức hoạt động
               </h2>
               <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-                Chỉ với 3 bước đơn giản, bạn có thể bắt đầu trò chuyện với ChatBot FIT
+                Chỉ với 3 bước đơn giản, bạn có thể bắt đầu trò chuyện với Trợ lý ảo Khoa CNTT
               </p>
             </motion.div>
 
@@ -328,7 +328,7 @@ const HomePage = () => {
               Sẵn sàng khám phá?
             </motion.h2>
             <motion.p variants={fadeInUp} className="text-xl text-gray-300 mb-12 max-w-3xl mx-auto">
-              Hãy bắt đầu trò chuyện với ChatBot FIT ngay hôm nay và trải nghiệm sự tiện lợi của trợ lý AI thông minh
+              Hãy bắt đầu trò chuyện với Trợ lý ảo Khoa CNTT ngay hôm nay và trải nghiệm sự tiện lợi của trợ lý AI thông minh
             </motion.p>
             <motion.div variants={fadeInUp}>
               <Link 
@@ -366,7 +366,7 @@ const HomePage = () => {
                   Khoa Công nghệ Thông tin × PTIC
                 </h3>
                 <p className="text-lg text-gray-600 mb-6 leading-relaxed">
-                  ChatBot FIT là sản phẩm được phát triển bởi sự hợp tác giữa{' '}
+                  Trợ lý ảo Khoa CNTT là sản phẩm được phát triển bởi sự hợp tác giữa{' '}
                   <span className="font-semibold text-gray-900">Khoa Công nghệ Thông tin - HCMUTE</span>{' '}
                   và{' '}
                   <span className="font-semibold text-gray-900">PTIC (Pioneers of Technology and Innovation Club)</span>.
@@ -437,7 +437,7 @@ const HomePage = () => {
           <div className="text-center">
             <div className="flex justify-center items-center mb-6">
               <FaRobot className="text-3xl text-blue-400 mr-3" />
-              <h3 className="text-2xl font-bold">ChatBot FIT</h3>
+              <h3 className="text-2xl font-bold">Trợ lý ảo Khoa CNTT</h3>
             </div>
             <p className="text-lg text-gray-300 mb-4">
               © {new Date().getFullYear()} Khoa Công nghệ Thông tin - Trường Đại học Sư phạm Kỹ thuật TP.HCM

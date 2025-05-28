@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { FaRobot, FaPaperPlane, FaHistory, FaTrash, FaPlus, FaTimes, FaInfoCircle, FaGraduationCap, FaBook, FaUsers, FaCopy, FaCheck, FaKeyboard, FaBars, FaChevronLeft } from 'react-icons/fa';
+import { FaRobot, FaPaperPlane, FaHistory, FaTrash, FaPlus, FaTimes, FaInfoCircle, FaCopy, FaCheck, FaKeyboard, FaBars, FaChevronLeft } from 'react-icons/fa';
 import axios from 'axios';
 import { API_ENDPOINTS, DEFAULT_HEADERS } from '../config';
 import ReactMarkdown from 'react-markdown';
@@ -366,16 +366,16 @@ export function ChatbotPage() {
   const [query, setQuery] = useState('');
   const [messages, setMessages] = useState<Message[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [isLoadingHistory, setIsLoadingHistory] = useState(false);
+  const [, setIsLoadingHistory] = useState(false);
   const [sessionId, setSessionId] = useState<string | null>(null);
-  const [, setChatSessions] = useState<Session[]>([]);
+  const [] = useState<Session[]>([]);
   const [localChatSessions, setLocalChatSessions] = useState<Session[]>([]);
   const [isTyping, setIsTyping] = useState(false);
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const messagesContainerRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
-  const [, setScrollPosition] = useState(0);
+  const [] = useState(0);
   const [shouldAutoScroll, setShouldAutoScroll] = useState(true);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [deleteSessionId, setDeleteSessionId] = useState<string | null>(null);
@@ -383,7 +383,7 @@ export function ChatbotPage() {
   const [copiedMessageId, setCopiedMessageId] = useState<string | null>(null);
   const [showKeyboardShortcuts, setShowKeyboardShortcuts] = useState(false);
   const [isOnline, setIsOnline] = useState(navigator.onLine);
-  const [connectionError, setConnectionError] = useState(false);
+  const [, setConnectionError] = useState(false);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [showScrollToBottom, setShowScrollToBottom] = useState(false);
   
@@ -391,8 +391,7 @@ export function ChatbotPage() {
   const [currentTime, setCurrentTime] = useState(new Date());
   const [wordCount, setWordCount] = useState(0);
   const [sessionStartTime, setSessionStartTime] = useState<Date | null>(null);
-  const [totalTokens, setTotalTokens] = useState(0);
-  const [showMobileActions, setShowMobileActions] = useState(false);
+
 
   // Real-time clock update
   useEffect(() => {
@@ -689,25 +688,6 @@ export function ChatbotPage() {
     }
   };
 
-  // Lấy danh sách phiên chat từ server
-  const fetchChatSessions = async () => {
-    try {
-      setIsLoadingHistory(true);
-      const response = await axios.get(API_ENDPOINTS.CHAT_HISTORY, {
-        headers: DEFAULT_HEADERS,
-        withCredentials: true
-      });
-      if (response.data.sessions) {
-        // NOTE: Lưu lại nhưng không hiện thị dữ liệu này
-        setChatSessions(response.data.sessions);
-      }
-    } catch (error) {
-      console.error('Error fetching chat sessions:', error);
-    } finally {
-      setIsLoadingHistory(false);
-    }
-  };
-
   // Lấy lịch sử chat của một phiên cụ thể
   const loadChatSession = async (sessionId: string) => {
     try {
@@ -905,7 +885,7 @@ export function ChatbotPage() {
           <div className="flex items-center space-x-2">
            
             <span className="text-xs bg-gradient-to-r from-blue-50 to-indigo-50 text-blue-700 px-2 py-1 rounded-full border border-blue-200 font-medium animate-pulse">
-              AI is thinking
+              Trợ lý ảo Khoa CNTT đang suy nghĩ
             </span>
             <span className="text-xs text-gray-400 font-medium">
               {new Date().toLocaleTimeString('vi-VN', {
@@ -923,7 +903,7 @@ export function ChatbotPage() {
             <div className="bg-gradient-to-r from-blue-50 to-indigo-50 px-4 py-2 border-b border-gray-100">
               <div className="flex items-center space-x-2">
                 <div className="w-1.5 h-1.5 bg-blue-400 rounded-full animate-pulse"></div>
-                <span className="text-xs font-medium text-blue-700">Processing your request</span>
+                <span className="text-xs font-medium text-blue-700">Đang xử lý yêu cầu của bạn</span>
               </div>
             </div>
 
@@ -935,7 +915,7 @@ export function ChatbotPage() {
                   <div className="w-2 h-2 bg-indigo-400 rounded-full animate-bounce" style={{animationDelay: '150ms'}}></div>
                   <div className="w-2 h-2 bg-purple-400 rounded-full animate-bounce" style={{animationDelay: '300ms'}}></div>
                 </div>
-                <span className="text-sm font-medium text-gray-700">AI is analyzing and generating response</span>
+                <span className="text-sm font-medium text-gray-700">AI đang phân tích và tạo phản hồi</span>
               </div>
               
               {/* Progress bar animation */}
@@ -1295,7 +1275,7 @@ export function ChatbotPage() {
                 <div className="flex items-center space-x-1 sm:space-x-2">
                  
                   <span className="text-xs bg-gradient-to-r from-blue-50 to-indigo-50 text-blue-700 px-2 py-1 rounded-full border border-blue-200 font-medium shadow-sm">
-                  AI Assistant
+                  Trợ lý AI
                   </span>
                   <span className="text-xs text-gray-500 font-medium">
                     {message.timestamp
@@ -1436,7 +1416,7 @@ export function ChatbotPage() {
                   {/* Content Footer with actions */}
                   <div className="bg-gray-50 px-3 sm:px-4 py-2 border-t border-gray-100">
                     <div className="flex items-center justify-between text-xs text-gray-500">
-                      <span>Được tạo bởi ChatBot FIT</span>
+                      <span>Được tạo bởi Trợ lý ảo Khoa CNTT</span>
                       <div className="flex items-center space-x-2">
                         <button
                           onClick={() => copyMessage(message.content, `message-${index}`)}
@@ -1681,7 +1661,7 @@ export function ChatbotPage() {
               </div>
               
               <div className="flex justify-between items-center">
-                <span className="text-sm text-gray-700">Tắt/mở sidebar</span>
+                <span className="text-sm text-gray-700">Tắt/mở thanh bên</span>
                 <div className="flex items-center space-x-1">
                   <kbd className="px-2 py-1 bg-gray-100 rounded text-xs font-mono">Ctrl</kbd>
                   <span className="text-xs text-gray-500">+</span>
@@ -1690,7 +1670,7 @@ export function ChatbotPage() {
               </div>
               
               <div className="flex justify-between items-center">
-                <span className="text-sm text-gray-700">Đóng modal</span>
+                <span className="text-sm text-gray-700">Đóng cửa sổ</span>
                 <kbd className="px-2 py-1 bg-gray-100 rounded text-xs font-mono">Esc</kbd>
               </div>
               
@@ -1732,8 +1712,8 @@ export function ChatbotPage() {
                     <FaRobot className="text-white text-sm md:text-base" />
                   </div>
                   <div>
-                    <h2 className="font-bold text-sm md:text-base text-gray-800">ChatBot FIT</h2>
-                    <p className="text-xs text-gray-500">Trợ lý AI thông minh</p>
+                    <h2 className="font-bold text-sm md:text-base text-gray-800">Trợ lý ảo Khoa CNTT</h2>
+                    <p className="text-xs text-gray-500">Trợ lý ảo thông minh</p>
                   </div>
                 </div>
                 <button
@@ -1768,7 +1748,7 @@ export function ChatbotPage() {
                   <div className="w-4 h-4 md:w-5 md:h-5 bg-gradient-to-br from-blue-100 to-indigo-100 rounded-lg flex items-center justify-center">
                     <FaHistory className="text-blue-600 text-xs" />
                   </div>
-                  <span className="text-xs md:text-sm font-bold text-gray-700">Chat History</span>
+                  <span className="text-xs md:text-sm font-bold text-gray-700">Lịch sử trò chuyện</span>
                 </div>
                 <div className="text-xs bg-blue-50 text-blue-600 px-2 py-1 rounded-full font-medium">
                   {localChatSessions.length}
@@ -1782,16 +1762,16 @@ export function ChatbotPage() {
                   <div className="w-16 h-16 md:w-20 md:h-20 bg-gradient-to-br from-gray-100 to-gray-200 rounded-2xl md:rounded-3xl flex items-center justify-center mx-auto mb-3 md:mb-4 shadow-lg">
                     <FaHistory className="text-gray-400 text-lg md:text-2xl" />
                   </div>
-                  <h3 className="font-bold text-gray-700 text-sm md:text-base mb-2">No conversations yet</h3>
+                  <h3 className="font-bold text-gray-700 text-sm md:text-base mb-2">Không có cuộc trò chuyện nào</h3>
                   <p className="text-gray-500 text-xs md:text-sm leading-relaxed px-2">
-                    Start your first conversation<br />
-                    to build your chat history
+                    Bắt đầu cuộc trò chuyện đầu tiên<br />
+                    để xây dựng lịch sử trò chuyện của bạn
                   </p>
                   <button
                     onClick={createNewSession}
                     className="mt-3 md:mt-4 px-3 md:px-4 py-2 bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-lg md:rounded-xl text-xs md:text-sm font-medium hover:from-blue-600 hover:to-indigo-700 transition-all duration-200 shadow-lg hover:shadow-xl"
                   >
-                    Start Chatting
+                    Bắt đầu trò chuyện
                   </button>
                 </div>
               )
@@ -1962,7 +1942,7 @@ export function ChatbotPage() {
                   </div>
                   <div>
                     <p className="text-xs font-medium text-gray-800">HCMUTE</p>
-                    <p className="text-xs text-gray-500">Khoa CNTT</p>
+                    <p className="text-xs text-gray-500">Khoa Công nghệ Thông tin</p>
                   </div>
                 </div>
               </div>
@@ -2005,7 +1985,7 @@ export function ChatbotPage() {
               {/* Session Info */}
               {sessionStartTime && (
                 <div className="flex items-center space-x-2 px-3 py-1 bg-white/60 rounded-lg border border-gray-200/60">
-                  <span className="text-xs text-gray-600">Session:</span>
+                  <span className="text-xs text-gray-600">Phiên trò chuyện:</span>
                   <span className="text-xs font-medium text-blue-600">
                     {Math.floor((currentTime.getTime() - sessionStartTime.getTime()) / 60000)}m
                   </span>
@@ -2014,7 +1994,7 @@ export function ChatbotPage() {
               
               {/* Message Count */}
               <div className="flex items-center space-x-2 px-3 py-1 bg-white/60 rounded-lg border border-gray-200/60">
-                <span className="text-xs text-gray-600">Messages:</span>
+                <span className="text-xs text-gray-600">Tin nhắn:</span>
                 <span className="text-xs font-medium text-indigo-600">{messages.length}</span>
               </div>
             </div>
@@ -2028,9 +2008,9 @@ export function ChatbotPage() {
                   'bg-green-400'
                 }`}></div>
                 <span className="text-xs font-medium text-gray-700">
-                  {isLoading || isTyping ? 'Thinking...' : 
-                   messages.some(msg => msg.isStreaming) ? 'Responding...' : 
-                   'Ready'}
+                  {isLoading || isTyping ? 'AI đang suy nghĩ...' : 
+                   messages.some(msg => msg.isStreaming) ? 'AI đang trả lời...' : 
+                   'Sẵn sàng trò chuyện'}
                 </span>
               </div>
               
@@ -2038,7 +2018,7 @@ export function ChatbotPage() {
               <div className="flex items-center space-x-2">
                 <div className={`w-2 h-2 rounded-full ${isOnline ? 'bg-green-400' : 'bg-red-400'}`}></div>
                 <span className="text-xs font-medium text-gray-700">
-                  {isOnline ? 'Online' : 'Offline'}
+                  {isOnline ? 'Trực tuyến' : 'Ngoại tuyến'}
                 </span>
               </div>
             </div>
@@ -2053,7 +2033,7 @@ export function ChatbotPage() {
               <FaHistory size={14} className="text-gray-600" />
             </button>
             <div className="text-center flex-1 mx-4">
-              <h1 className="font-bold text-base sm:text-lg text-gray-800">ChatBot FIT</h1>
+              <h1 className="font-bold text-base sm:text-lg text-gray-800">Trợ lý ảo Khoa CNTT</h1>
               <div className="flex items-center justify-center space-x-2 mt-1">
                 <div className={`w-1.5 h-1.5 rounded-full ${
                   isLoading || isTyping ? 'bg-amber-400 animate-pulse' : 
@@ -2098,7 +2078,7 @@ export function ChatbotPage() {
                       <div>
                         <h3 className="font-bold text-amber-800 mb-1 text-sm">Phiên bản Beta</h3>
                         <p className="text-amber-700 leading-relaxed text-xs">
-                          Chào mừng bạn đến với ChatBot FIT - Trợ lý AI tiên tiến của Khoa CNTT - HCMUTE. 
+                          Chào mừng bạn đến với Trợ lý ảo Khoa Công nghệ Thông tin - Trợ lý AI tiên tiến của Khoa Công nghệ Thông tin - HCMUTE. 
                           Đây là phiên bản thử nghiệm, vui lòng góp ý qua{' '}
                           <a 
                             href="https://forms.gle/Kz7WFbVmEhMjkMB3A" 
@@ -2226,41 +2206,41 @@ export function ChatbotPage() {
             {messages.length > 0 && (
               <div className="max-w-4xl mx-auto px-4 pt-3">
                 <div className="flex items-center space-x-2 overflow-x-auto scrollbar-hide">
-                  <span className="text-xs text-gray-500 font-medium whitespace-nowrap mr-2">Quick actions:</span>
+                  <span className="text-xs text-gray-500 font-medium whitespace-nowrap mr-2">Hành động nhanh:</span>
                   
                   <button
-                    onClick={() => setQuery("Explain this in simple terms")}
+                    onClick={() => setQuery("Giải thích điều này một cách đơn giản")}
                     className="px-3 py-1.5 bg-blue-50 hover:bg-blue-100 text-blue-700 text-xs rounded-full border border-blue-200/60 transition-all duration-200 whitespace-nowrap min-h-8"
                   >
-                    🔍 Explain Simply
+                    🔍 Giải thích đơn giản
                   </button>
                   
                   <button
-                    onClick={() => setQuery("Give me more details about this")}
+                    onClick={() => setQuery("Cung cấp thêm chi tiết về điều này")}
                     className="px-3 py-1.5 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 text-xs rounded-full border border-indigo-200/60 transition-all duration-200 whitespace-nowrap min-h-8"
                   >
-                    📚 More Details
+                    📚 Thêm chi tiết
                   </button>
                   
                   <button
-                    onClick={() => setQuery("What are the advantages and disadvantages?")}
+                    onClick={() => setQuery("Đâu là ưu và nhược điểm?")}
                     className="px-3 py-1.5 bg-purple-50 hover:bg-purple-100 text-purple-700 text-xs rounded-full border border-purple-200/60 transition-all duration-200 whitespace-nowrap min-h-8"
                   >
-                    ⚖️ Pros & Cons
+                    ⚖️ Ưu & Nhược điểm
                   </button>
                   
                   <button
-                    onClick={() => setQuery("Can you summarize this?")}
+                    onClick={() => setQuery("Bạn có thể tóm tắt điều này không?")}
                     className="px-3 py-1.5 bg-green-50 hover:bg-green-100 text-green-700 text-xs rounded-full border border-green-200/60 transition-all duration-200 whitespace-nowrap min-h-8"
                   >
-                    📝 Summarize
+                    📝 Tóm tắt
                   </button>
                   
                   <button
                     onClick={createNewSession}
                     className="px-3 py-1.5 bg-gray-50 hover:bg-gray-100 text-gray-700 text-xs rounded-full border border-gray-200/60 transition-all duration-200 whitespace-nowrap min-h-8"
                   >
-                    🔄 New Chat
+                    🔄 Cuộc trò chuyện mới
                   </button>
                 </div>
               </div>
@@ -2276,7 +2256,7 @@ export function ChatbotPage() {
                       <div className="w-1.5 h-1.5 bg-blue-400 rounded-full animate-bounce" style={{animationDelay: '150ms'}}></div>
                       <div className="w-1.5 h-1.5 bg-blue-400 rounded-full animate-bounce" style={{animationDelay: '300ms'}}></div>
                     </div>
-                    <p className="text-xs sm:text-sm text-blue-700 font-medium">ChatBot FIT is composing response...</p>
+                    <p className="text-xs sm:text-sm text-blue-700 font-medium">Trợ lý ảo đang phản hồi...</p>
                   </div>
                 </div>
               )}
@@ -2292,7 +2272,7 @@ export function ChatbotPage() {
                     }
                   }}
                     onKeyPress={handleKeyPress}
-                  placeholder={!isOnline ? "No internet connection..." : "Ask ChatBot FIT anything..."}
+                  placeholder={!isOnline ? "Không có kết nối internet..." : "Hỏi Trợ lý ảo Khoa Công nghệ Thông tin bất cứ điều gì..."}
                   className="flex-1 px-4 sm:px-6 py-3 sm:py-4 bg-transparent border-0 focus:outline-none text-gray-800 placeholder-gray-500 text-sm sm:text-base min-h-12"
                   disabled={isLoading || !isOnline}
                 />
@@ -2301,7 +2281,7 @@ export function ChatbotPage() {
                 <div className="hidden sm:flex items-center space-x-3 mr-4 text-sm">
                   {/* Word Count */}
                   <div className="flex items-center space-x-1">
-                    <span className="text-xs text-gray-400">Words:</span>
+                    <span className="text-xs text-gray-400">Từ:</span>
                     <span className={`text-xs font-semibold ${
                       wordCount > 50 ? 'text-amber-500' : 'text-gray-600'
                     }`}>
@@ -2311,7 +2291,7 @@ export function ChatbotPage() {
                   
                   {/* Character Count */}
                   <div className="flex items-center space-x-1">
-                    <span className="text-xs text-gray-400">Chars:</span>
+                    <span className="text-xs text-gray-400">Ký tự:</span>
                     <span className={`text-xs font-semibold ${
                       query.length > 900 ? 'text-red-500' : 
                       query.length > 800 ? 'text-amber-500' : 
@@ -2343,10 +2323,10 @@ export function ChatbotPage() {
               {/* Enhanced Status Row */}
               <div className="flex flex-col sm:flex-row items-center justify-between mt-2 sm:mt-3 text-xs space-y-2 sm:space-y-0">
                 <div className="flex items-center space-x-2 sm:space-x-4 text-gray-500">
-                  <span className="hidden sm:inline">💡 Press Ctrl+Enter to send</span>
-                  <span className="sm:hidden">💡 Tap send button</span>
+                  <span className="hidden sm:inline">💡 Nhấn Ctrl+Enter để gửi</span>
+                  <span className="sm:hidden">💡 Nhấn nút gửi</span>
                   {sessionStartTime && (
-                    <span>⏱️ Session: {Math.floor((currentTime.getTime() - sessionStartTime.getTime()) / 60000)}min</span>
+                    <span>⏱️ Phiên trò chuyện: {Math.floor((currentTime.getTime() - sessionStartTime.getTime()) / 60000)}phút</span>
                   )}
                 </div>
                 <div className="flex items-center space-x-2">
@@ -2362,14 +2342,14 @@ export function ChatbotPage() {
                   </div>
                   <div className={`w-2 h-2 rounded-full ${isOnline ? 'bg-green-400' : 'bg-red-400'}`}></div>
                   <span className="text-gray-500 font-medium">
-                    {isOnline ? 'Connected' : 'Disconnected'}
+                    {isOnline ? 'Đã kết nối' : 'Mất kết nối'}
                   </span>
                 </div>
               </div>
                 
                 {/* Professional Disclaimer */}
               <p className="text-xs text-gray-500 text-center mt-2 sm:mt-3 font-medium px-2">
-                ChatBot FIT may generate inaccurate information. Please verify important details.
+                Trợ lý ảo Khoa CNTT có thể tạo ra thông tin không chính xác. Vui lòng xác minh các chi tiết quan trọng.
                 </p>
               </div>
           </div>

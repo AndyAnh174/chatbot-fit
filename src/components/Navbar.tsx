@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link, NavLink, Outlet } from 'react-router-dom';
-import { FaBars, FaTimes, FaRobot, FaHome, FaInfoCircle } from 'react-icons/fa';
-import logoCNTT from '../assets/logo-cntt2021.png';
+import { FaBars, FaTimes, FaRobot, FaHome, FaInfoCircle } from 'react-icons/fa'; 
+
 
 export function AppNavbar({ children }: { children: React.ReactNode }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -39,7 +39,7 @@ export function AppNavbar({ children }: { children: React.ReactNode }) {
                     <img 
                       src="./LogoDoanHoi.png" 
                       alt="FIT HCMUTE Logo" 
-                      className="h-8 w-auto transform group-hover:scale-105 transition-all duration-300 drop-shadow-sm" 
+                      className="h-12 w-auto transform group-hover:scale-105 transition-all duration-300 drop-shadow-sm" 
                     />
                   </div>
                   
@@ -49,9 +49,9 @@ export function AppNavbar({ children }: { children: React.ReactNode }) {
                   {/* Logo PTIC */}
                   <div className="relative">
                     <img 
-                      src="/PTIC.jpg" 
+                      src="./PTIC.jpg" 
                       alt="PTIC Logo" 
-                      className="h-8 w-auto transform group-hover:scale-105 transition-all duration-300 drop-shadow-sm rounded-md" 
+                      className="h-12 w-auto transform group-hover:scale-105 transition-all duration-300 drop-shadow-sm rounded-md" 
                     />
                   </div>
                   
@@ -76,7 +76,7 @@ export function AppNavbar({ children }: { children: React.ReactNode }) {
                 {({ isActive }) => (
                   <>
                     <FaHome className="mr-1.5 text-sm" />
-                    <span>Home</span>
+                    <span>Trang Chủ</span>
                     {isActive && (
                       <span className="absolute -bottom-1 left-0 w-full h-0.5 bg-gray-900 rounded-full" />
                     )}
@@ -100,7 +100,7 @@ export function AppNavbar({ children }: { children: React.ReactNode }) {
                 {({ isActive }) => (
                   <>
                     <FaRobot className="mr-1.5 text-sm" />
-                    <span>Chatbot</span>
+                    <span>Hỏi đáp với AI</span>
                     {isActive && (
                       <span className="absolute -bottom-1 left-0 w-full h-0.5 bg-gray-900 rounded-full" />
                     )}
@@ -124,7 +124,7 @@ export function AppNavbar({ children }: { children: React.ReactNode }) {
                 {({ isActive }) => (
                   <>
                     <FaInfoCircle className="mr-1.5 text-sm" />
-                    <span>About</span>
+                    <span>Giới thiệu</span>
                     {isActive && (
                       <span className="absolute -bottom-1 left-0 w-full h-0.5 bg-gray-900 rounded-full" />
                     )}

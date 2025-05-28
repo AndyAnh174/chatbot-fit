@@ -101,7 +101,7 @@ const AboutPage = () => {
             {/* Main Title */}
             <motion.div variants={fadeInUp} className="mb-12">
               <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold text-white mb-8 leading-tight">
-                ChatBot FIT
+                Trợ lý ảo Khoa CNTT
                 <span className="block bg-gradient-to-r from-blue-400 via-purple-400 to-cyan-400 bg-clip-text text-transparent">
                   Trí tuệ nhân tạo
                 </span>
@@ -162,7 +162,7 @@ const AboutPage = () => {
                 <span className="text-gray-800 font-semibold">Về dự án</span>
               </div>
               <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-8">
-                ChatBot FIT
+                Trợ lý ảo Khoa CNTT
                
               </h2>
               <p className="text-xl md:text-2xl text-gray-600 max-w-4xl mx-auto leading-relaxed">
@@ -185,7 +185,7 @@ const AboutPage = () => {
                   
                   <div className="space-y-6 text-gray-600 text-lg leading-relaxed">
                     <p>
-                      Dự án ChatBot FIT ra đời với sứ mệnh cách mạng hóa cách thức tương tác 
+                      Dự án Trợ lý ảo Khoa CNTT ra đời với sứ mệnh cách mạng hóa cách thức tương tác 
                       và tra cứu thông tin trong môi trường giáo dục đại học.
                     </p>
                     <p>
@@ -357,7 +357,7 @@ const AboutPage = () => {
                             <>
                               <span className="px-3 py-1 bg-green-500/20 text-green-300 rounded-full text-sm font-medium">React</span>
                               <span className="px-3 py-1 bg-green-500/20 text-green-300 rounded-full text-sm font-medium">TypeScript</span>
-                              <span className="px-3 py-1 bg-green-500/20 text-green-300 rounded-full text-sm font-medium">Node.js</span>
+                              <span className="px-3 py-1 bg-green-500/20 text-green-300 rounded-full text-sm font-medium">FastAPI</span>
                             </>
                           )}
                           {index === 2 && (
@@ -636,7 +636,7 @@ const AboutPage = () => {
             <div className="mb-8">
               <h3 className="text-3xl font-bold mb-4">
                 <span className="bg-gradient-to-r from-blue-400 via-purple-400 to-cyan-400 bg-clip-text text-transparent">
-                  ChatBot FIT
+                  Trợ lý ảo Khoa Công nghệ Thông tin
                 </span>
               </h3>
               <p className="text-gray-400 max-w-2xl mx-auto">
@@ -675,11 +675,11 @@ const AboutPage = () => {
             {/* Copyright */}
             <div className="border-t border-gray-800 pt-8">
               <p className="text-lg text-gray-300 mb-2">
-                © {new Date().getFullYear()} <span className="font-semibold text-white">ChatBot FIT</span> - Khoa Công nghệ Thông tin
+                © {new Date().getFullYear()} <span className="font-semibold text-white">Trợ lý ảo Khoa CNTT</span> - Khoa Công nghệ Thông tin
               </p>
               <p className="text-gray-400">
                 Trường Đại học Sư phạm Kỹ thuật TP.HCM × 
-                <a href="http://cfacebook.com/hcmute.ptic" target="_blank" rel="noopener noreferrer">
+                <a href="http://facebook.com/hcmute.ptic" target="_blank" rel="noopener noreferrer">
   <span className="font-bold text-white">PTIC</span>
 </a>
 
