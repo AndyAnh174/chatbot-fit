@@ -3,7 +3,7 @@ import {
   FaComment, 
   FaLightbulb, 
   FaBrain, 
-  FaUserGraduate, 
+  
   FaUniversity, 
   FaUsers, 
   FaArrowRight, 
@@ -13,7 +13,7 @@ import {
   FaChartLine,
   FaClock,
   FaShieldAlt,
-  FaStar,
+ 
   FaCheckCircle,
   FaPlay
 } from 'react-icons/fa';
@@ -59,7 +59,7 @@ const HomePage = () => {
               variants={fadeInUp}
               className="inline-flex items-center px-4 py-2 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 text-white mb-8"
             >
-              <FaStar className="mr-2 text-yellow-400" />
+              
               <span className="text-sm font-medium">Trợ lý AI thế hệ mới</span>
             </motion.div>
 

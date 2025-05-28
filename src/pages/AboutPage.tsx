@@ -11,16 +11,14 @@ import {
   FaGraduationCap,
   FaEnvelope,
   FaGlobe,
-  FaStar,
+ 
   FaCheckCircle,
   FaQuoteLeft
 } from 'react-icons/fa';
 import { motion } from 'framer-motion';
 import logoCNTT from '../assets/logo-cntt2021.png';
-import VA from '../assets/logo-phattrien/VA.jpg';
-import QA from '../assets/logo-phattrien/QA.jpg';
-import Quan from '../assets/logo-phattrien/Quan.jpg';
-import hung from '../assets/logo-phattrien/hung.jpg';
+
+
 
 const AboutPage = () => {
   const fadeInUp = {
@@ -38,37 +36,7 @@ const AboutPage = () => {
     }
   };
 
-  // Đội ngũ phát triển
-  const teamMembers = [
-    {
-      name: 'Hồ Việt Anh',
-      role: 'Trưởng nhóm & Full-stack Developer',
-      image: VA,
-      github: 'https://github.com/AndyAnh174',
-      facebook: 'https://www.facebook.com/andy.anh17405'
-    },
-    {
-      name: 'Nguyễn Đăng Quốc Anh',
-      role: 'UI/UX Designer',
-      image: QA,
-      github: 'https://github.com/Quocanh1508',
-      facebook: 'https://www.facebook.com/quocanh.nguyendang.35'
-    },
-    {
-      name: 'Phạm Minh Quân',
-      role: 'Front-end Developer',
-      image: Quan,
-      github: 'https://github.com/Quan-min211',
-      facebook: 'https://www.facebook.com/profile.php?id=100037351623134'
-    },
-    {
-      name: 'Đỗ Kiến Hưng',
-      role: 'Data Engineer',
-      image: hung,
-      github: 'https://github.com/darktheDE',
-      facebook: 'https://www.facebook.com/dkh1105'
-    }
-  ];
+
 
   const developmentSteps = [
     {

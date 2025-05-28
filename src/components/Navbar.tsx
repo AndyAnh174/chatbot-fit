@@ -37,7 +37,7 @@ export function AppNavbar({ children }: { children: React.ReactNode }) {
                     {/* Logo FIT */}
                     <div className="relative">
                       <img 
-                        src={logoCNTT} 
+                        src="./LogoDoanHoi.png" 
                         alt="FIT HCMUTE Logo" 
                         className="h-12 w-auto transform group-hover:scale-105 transition-all duration-300 drop-shadow-sm" 
                       />

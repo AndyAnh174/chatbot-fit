@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { FaRobot, FaPaperPlane, FaHistory, FaTrash, FaPlus, FaTimes, FaSync, FaInfoCircle, FaLightbulb, FaGraduationCap, FaBook, FaUsers } from 'react-icons/fa';
+import { FaRobot, FaPaperPlane, FaHistory, FaTrash, FaPlus, FaTimes, FaInfoCircle, FaGraduationCap, FaBook, FaUsers } from 'react-icons/fa';
 import axios from 'axios';
 import { API_ENDPOINTS, DEFAULT_HEADERS } from '../config';
 import ReactMarkdown from 'react-markdown';
@@ -67,33 +67,41 @@ interface Session {
 // localStorage key cho lịch sử chat
 const CHAT_HISTORY_STORAGE_KEY = 'chatbot_history';
 
-// Chat suggestions
-const CHAT_SUGGESTIONS = [
-  {
-    icon: FaGraduationCap,
-    title: "Thông tin tuyển sinh",
-    description: "Tìm hiểu về điều kiện tuyển sinh, học phí và thời gian đăng ký",
-    prompt: "Cho tôi biết thông tin về tuyển sinh Khoa CNTT - HCMUTE, bao gồm điều kiện tuyển sinh và học phí năm 2024?"
-  },
-  {
-    icon: FaBook,
-    title: "Chương trình đào tạo",
-    description: "Khám phá các ngành học và chương trình đào tạo hiện đại",
-    prompt: "Khoa CNTT - HCMUTE có những ngành đào tạo nào? Chương trình học như thế nào?"
-  },
-  {
-    icon: FaUsers,
-    title: "Hoạt động sinh viên",
-    description: "Tìm hiểu về các câu lạc bộ, hoạt động ngoại khóa và cơ hội thực tập",
-    prompt: "Sinh viên Khoa CNTT có những hoạt động ngoại khóa và cơ hội thực tập nào?"
-  },
-  {
-    icon: FaLightbulb,
-    title: "Cơ sở vật chất",
-    description: "Thông tin về phòng lab, thư viện và các tiện ích khác",
-    prompt: "Cơ sở vật chất của Khoa CNTT - HCMUTE như thế nào? Có những phòng lab và thiết bị gì?"
+// Hàm post-process để tìm và sửa emails bị chia thành nhiều phần
+const postProcessEmails = (content: string): string => {
+  let processedContent = content;
+  
+  // Chỉ unescape markdown characters, không xử lý emails ở đây
+  processedContent = processedContent.replace(/\\_/g, '_');
+  
+  return processedContent;
+};
+
+// Hàm xử lý và làm sạch nội dung
+const cleanContent = (content: string): string => {
+  let processedContent = content;
+  
+  // Kiểm tra và trích xuất nội dung từ dạng JSON
+  const jsonRegex = /\{"content"\s*:\s*"([^"]*?)"\s*,\s*"format_type"\s*:\s*"([^"]*?)"\}/g;
+  const jsonMatch = jsonRegex.exec(processedContent);
+  if (jsonMatch) {
+    // Lấy chỉ phần nội dung từ JSON
+    processedContent = jsonMatch[1];
   }
-];
+  
+  // Thay thế ký tự xuống dòng
+  processedContent = processedContent.replace(/\\n/g, '\n');
+  
+  // Unescape các ký tự markdown TRƯỚC KHI xử lý links
+  processedContent = processedContent.replace(/\\_/g, '_');
+  processedContent = processedContent.replace(/\\\*/g, '*');
+  processedContent = processedContent.replace(/\\\[/g, '[');
+  processedContent = processedContent.replace(/\\\]/g, ']');
+  
+  // KHÔNG xử lý emails ở đây để tránh duplicate
+  
+  return processedContent;
+};
 
 export function ChatbotPage() {
   const [query, setQuery] = useState('');
@@ -110,56 +118,9 @@ export function ChatbotPage() {
   const inputRef = useRef<HTMLInputElement>(null);
   const [, setScrollPosition] = useState(0);
   const [shouldAutoScroll, setShouldAutoScroll] = useState(true);
-
-  // Hàm xử lý và làm sạch nội dung
-  const cleanContent = (content: string): string => {
-    let processedContent = content;
-    
-    // Xử lý các URL bị cắt ngang đặc biệt
-    processedContent = processedContent.replace(/\((https?:\/\/[^)]+)\)/g, '[**$1**]($1)'); 
-    processedContent = processedContent.replace(/^\s*s:\/\/([^\s]+)/gm, '[**https://$1**](https://$1)');
-    
-    // Kiểm tra và trích xuất nội dung từ dạng JSON
-    const jsonRegex = /\{"content"\s*:\s*"([^"]*?)"\s*,\s*"format_type"\s*:\s*"([^"]*?)"\}/g;
-    const jsonMatch = jsonRegex.exec(processedContent);
-    if (jsonMatch) {
-      // Lấy chỉ phần nội dung từ JSON
-      processedContent = jsonMatch[1];
-      // console.log("Đã tìm thấy và xử lý JSON:", processedContent);
-    }
-    
-    // Thay thế ký tự xuống dòng
-    processedContent = processedContent.replace(/\\n/g, '\n');
-    
-    // Xử lý URL bị lồng nhau
-    processedContent = processedContent.replace(/\[(https?:\/\/[^\]]+)\]\((https?:\/\/[^)]+)\)/g, '[**$1**]($1)');
-    
-    // Xử lý URL bị lặp lại
-    processedContent = processedContent.replace(/\(https?:\/\/\[https?:\/\/(.*?)\]\(https?:\/\/(.*?)\)\)/g, '(https://$2)');
-    
-    // Xử lý email
-    processedContent = processedContent.replace(/\[([^@\]]+@[^@\]]+)\]\(mailto:([^)]+)\)/g, '[**$1**](mailto:$1)');
-    
-    // Loại bỏ các chuỗi lặp lại trong URL
-    processedContent = processedContent.replace(/\(https?:\/\/https?:\/\//g, '(https://');
-    
-    // Sửa lỗi khi URL có nhiều [ hoặc ] lồng nhau
-    processedContent = processedContent.replace(/\[\[(.+?)\]\]/g, '[$1]');
-    
-    // Sửa lỗi URL với nhiều dấu ngoặc
-    processedContent = processedContent.replace(/\(https?:\/\/\((.+?)\)\)/g, '(https://$1)');
-    
-    // Xử lý nếu Facebook và Trung tâm tin học xuất hiện liền nhau
-    processedContent = processedContent.replace(
-      /(Facebook[^:]*):?\s*\*?(https?:\/\/[^\s*\n]+)\*?\s*\*\s+(Trung tâm tin học[^:]*)/gi,
-      '$1: [**$2**]($2)\n\n* $3'
-    );
-    
-    // Sửa các dạng markdown bị lỗi
-    processedContent = processedContent.replace(/\]\[/g, '] [');
-    
-    return processedContent;
-  };
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [deleteSessionId, setDeleteSessionId] = useState<string | null>(null);
+  const [showClearAllModal, setShowClearAllModal] = useState(false);
 
   // Lưu lịch sử chat vào localStorage
   const saveLocalChatHistory = (sessionId: string, messages: Message[]) => {
@@ -735,7 +696,7 @@ export function ChatbotPage() {
           idx === prev.length - 1 && msg.isStreaming 
             ? { 
                 role: 'ai' as const, 
-                content: cleanContent(botResponse), 
+                content: cleanContent(postProcessEmails(botResponse)), 
                 isStreaming: false, 
                 timestamp: msg.timestamp || new Date().toISOString() 
               } 
@@ -804,111 +765,13 @@ export function ChatbotPage() {
     const processLinks = (content: string): string => {
       let processedContent = content;
       
-      // Kiểm tra và xử lý trường hợp JSON từ server
-      const jsonPattern = /\{"content":\s*"(.+?)"\s*,\s*"format_type":\s*"(.+?)"\}/;
-      const jsonMatch = jsonPattern.exec(processedContent);
-      if (jsonMatch) {
-        processedContent = jsonMatch[1].replace(/\\n/g, '\n').replace(/\\"/g, '"');
-        return processedContent;
-      }
-
-      // Xử lý các trường hợp đặc biệt về xuống dòng
+      // Xử lý xuống dòng
       processedContent = processedContent.replace(/\\n/g, '\n');
       
-      // Xử lý mẫu đặc biệt "** ** Email:*" có trong ảnh
+      // CHỈ xử lý emails MỘT LẦN duy nhất ở đây
       processedContent = processedContent.replace(
-        /\*\*\s?\*\*\s?Email:\*\*/g,
-        '**Email:**'
-      );
-      
-      // Xử lý mẫu "** Tiêu đề:*" rất phổ biến như trong ảnh
-      processedContent = processedContent.replace(
-        /\*\*\s+([^*:]+):\*\*/g, 
-        '**$1:**'
-      );
-      
-      // Xử lý trường hợp "** Tiêu đề:**"
-      processedContent = processedContent.replace(
-        /\*\*\s([^*:]+):\*\*/g, 
-        '**$1:**'
-      );
-      
-      // Xử lý các dấu ** lặp lại ở đầu dòng
-      processedContent = processedContent.replace(
-        /^(\s*)\*\*\s([^*:]+):/gm, 
-        '$1**$2:'
-      );
-      
-      // Xử lý mẫu "** Tiêu đề:" thiếu dấu ** cuối
-      processedContent = processedContent.replace(
-        /\*\*\s([^*:]+):/g, 
-        '**$1:**'
-      );
-      
-      // Xử lý pattern "**** Email:**" đặc biệt 
-      processedContent = processedContent.replace(
-        /\*\*\*\*\s?([^*:]+):\*\*/g, 
-        '**$1:**'
-      );
-      
-      // Xử lý email được bọc trong **
-      processedContent = processedContent.replace(
-        /\*\*(([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5}))\*\*/g, 
+        /\b([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})\b/g, 
         '[$1](mailto:$1)'
-      );
-      
-      // Xử lý email trong text
-      processedContent = processedContent.replace(
-        /([^*[\]])(([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5}))([^*[\]])/g, 
-        '$1[$2](mailto:$2)$6'
-      );
-      
-      // Xử lý URLs với "https**://" lỗi
-      processedContent = processedContent.replace(
-        /https\*\*:\/\//g,
-        'https://'
-      );
-      
-      // Xử lý URLs đặc biệt trong văn bản
-      processedContent = processedContent.replace(
-        /\*\*(https?:\/\/[^*\s]+)\*\*/g,
-        '[$1]($1)'
-      );
-      
-      // Dọn dẹp URLs
-      processedContent = processedContent.replace(
-        /\[(https?:\/\/[^\]]+)\]\((https?:\/\/[^)]+)\)\((https?:\/\/[^)]+)\)/g,
-        '[$1]($1)'
-      );
-      
-      // Xử lý trường hợp ** Tiêu đề:** trong danh sách
-      processedContent = processedContent.replace(
-        /^\s*\*\s+\*\*\s+([^*:]+):\*\*/gm, 
-        '* **$1:**'
-      );
-      
-      // Xử lý URL bị dư ( ở cuối 
-      processedContent = processedContent.replace(
-        /\(https?:\/\/([^)]+)\)\(/g,
-        '(https://$1)('
-      );
-      
-      // Đảm bảo tiêu đề trong danh sách luôn được in đậm
-      processedContent = processedContent.replace(
-        /\*\s+([^*:]+):/g, 
-        '* **$1:**'
-      );
-      
-      // Đảm bảo URLs được xử lý đúng trong danh sách
-      processedContent = processedContent.replace(
-        /\*\s+\*\*([^:*]+):\*\*\s+https?:\/\/([^\s]+)/g,
-        '* **$1:** [https://$2](https://$2)'
-      );
-      
-      // Xử lý URLs đặc biệt cho ảnh
-      processedContent = processedContent.replace(
-        /^\s*\*\*([^*:]+):\*\*\s*\*\*(https?:\/\/[^\s*]+)\*\*$/gm,
-        '* **$1:** [$2]($2)'
       );
       
       return processedContent;
@@ -999,14 +862,40 @@ export function ChatbotPage() {
                           remarkPlugins={[remarkGfm]}
                           rehypePlugins={[rehypeRaw, rehypeSanitize]}
                           components={{
-                            a: ({node, ...props}) => (
-                              <a 
-                                target="_blank" 
-                                rel="noopener noreferrer" 
-                                className="text-blue-600 hover:text-blue-800 underline decoration-2 underline-offset-2 transition-colors duration-200 font-medium hover:bg-blue-50 px-1 py-0.5 rounded"
-                                {...props}
-                              />
-                            ),
+                            a: ({node, href, children, ...props}) => {
+                              // Xử lý href đơn giản
+                              const finalHref = href || '';
+                              const isEmail = finalHref.startsWith('mailto:');
+                              const isExternalLink = finalHref.startsWith('http');
+                              
+                              return (
+                                <a 
+                                  href={finalHref}
+                                  target={isExternalLink ? "_blank" : undefined}
+                                  rel={isExternalLink ? "noopener noreferrer" : undefined}
+                                  className={`inline-flex items-center gap-1 transition-all duration-200 font-medium px-2 py-1 rounded-md underline decoration-2 underline-offset-2 hover:no-underline ${
+                                    isEmail 
+                                      ? 'text-green-600 hover:text-green-800 hover:bg-green-50' 
+                                      : 'text-blue-600 hover:text-blue-800 hover:bg-blue-50'
+                                  }`}
+                                  {...props}
+                                >
+                                  {children}
+                                  {isEmail && (
+                                    <svg className="w-3 h-3 ml-1" fill="currentColor" viewBox="0 0 20 20">
+                                      <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z"/>
+                                      <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"/>
+                                    </svg>
+                                  )}
+                                  {isExternalLink && (
+                                    <svg className="w-3 h-3 ml-1" fill="currentColor" viewBox="0 0 20 20">
+                                      <path d="M11 3a1 1 0 100 2h2.586l-6.293 6.293a1 1 0 101.414 1.414L15 6.414V9a1 1 0 102 0V4a1 1 0 00-1-1h-5z"/>
+                                      <path d="M5 5a2 2 0 00-2 2v8a2 2 0 002 2h8a2 2 0 002-2v-3a1 1 0 10-2 0v3H5V7h3a1 1 0 000-2H5z"/>
+                                    </svg>
+                                  )}
+                                </a>
+                              );
+                            },
                             pre: ({node, ...props}) => (
                               <pre className="bg-gray-900 text-gray-100 p-4 rounded-xl my-4 overflow-auto text-sm font-mono border shadow-md" {...props} />
                             ),
@@ -1136,15 +1025,15 @@ export function ChatbotPage() {
 
   // Hàm xác nhận và xóa phiên chat
   const confirmAndDeleteSession = (sessionIdToDelete: string) => {
-    if (window.confirm('Bạn có chắc chắn muốn xóa cuộc trò chuyện này?')) {
-      deleteLocalChatSession(sessionIdToDelete);
-    }
+    setDeleteSessionId(sessionIdToDelete);
+    setShowDeleteModal(true);
   };
-  
-  // Hàm xác nhận và xóa tất cả lịch sử
-  const confirmAndClearAllHistory = () => {
-    if (window.confirm('Bạn có chắc chắn muốn xóa tất cả lịch sử trò chuyện? Hành động này không thể hoàn tác.')) {
-      clearAllLocalChatHistory();
+
+  // Hàm thực hiện xóa phiên chat
+  const handleDeleteSession = () => {
+    if (deleteSessionId) {
+      deleteLocalChatSession(deleteSessionId);
+      setDeleteSessionId(null);
     }
   };
 
@@ -1178,6 +1067,73 @@ export function ChatbotPage() {
         emoji: "🌙"
       };
     }
+  };
+
+  // Component Modal xác nhận đẹp
+  const ConfirmModal = ({ 
+    isOpen, 
+    onClose, 
+    onConfirm, 
+    title, 
+    message, 
+    confirmText = "Xác nhận", 
+    cancelText = "Hủy bỏ",
+    isDestructive = false 
+  }: {
+    isOpen: boolean;
+    onClose: () => void;
+    onConfirm: () => void;
+    title: string;
+    message: string;
+    confirmText?: string;
+    cancelText?: string;
+    isDestructive?: boolean;
+  }) => {
+    if (!isOpen) return null;
+
+    return (
+      <div className="fixed inset-0 bg-white bg-opacity-70 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+        <div className="bg-white rounded-3xl shadow-2xl max-w-sm w-full transform transition-all duration-300 scale-100 hover:scale-[1.02]">
+          {/* Header với icon */}
+          <div className="p-8 pb-4 text-center">
+            <div className={`w-16 h-16 mx-auto rounded-full flex items-center justify-center mb-4 ${
+              isDestructive ? 'bg-red-50 border-4 border-red-100' : 'bg-blue-50 border-4 border-blue-100'
+            }`}>
+              {isDestructive ? (
+                <FaTrash className="text-red-500 text-2xl" />
+              ) : (
+                <FaInfoCircle className="text-blue-500 text-2xl" />
+              )}
+            </div>
+            <h3 className="text-xl font-bold text-gray-900 mb-2">{title}</h3>
+            <p className="text-gray-600 leading-relaxed text-sm">{message}</p>
+          </div>
+
+          {/* Actions */}
+          <div className="p-6 pt-2 flex gap-3">
+            <button
+              onClick={onClose}
+              className="flex-1 py-4 px-6 bg-gray-100 hover:bg-gray-200 text-gray-800 rounded-2xl transition-all duration-200 font-semibold text-sm"
+            >
+              {cancelText}
+            </button>
+            <button
+              onClick={() => {
+                onConfirm();
+                onClose();
+              }}
+              className={`flex-1 py-4 px-6 rounded-2xl transition-all duration-200 font-semibold text-sm ${
+                isDestructive 
+                  ? 'bg-red-500 hover:bg-red-600 text-white shadow-lg hover:shadow-red-200' 
+                  : 'bg-blue-500 hover:bg-blue-600 text-white shadow-lg hover:shadow-blue-200'
+              }`}
+            >
+              {confirmText}
+            </button>
+          </div>
+        </div>
+      </div>
+    );
   };
 
   return (
@@ -1271,7 +1227,9 @@ export function ChatbotPage() {
               </div>
               {localChatSessions.length > 0 && (
                 <button
-                  onClick={confirmAndClearAllHistory}
+                  onClick={() => {
+                    setShowClearAllModal(true);
+                  }}
                   className="p-2 hover:bg-red-50 hover:text-red-600 rounded-lg transition-all duration-200"
                   title="Xóa tất cả cuộc trò chuyện"
                 >
@@ -1507,6 +1465,25 @@ export function ChatbotPage() {
           )}
         </div>
       </div>
+
+      {/* Confirm Delete Modal */}
+      <ConfirmModal
+        isOpen={showDeleteModal}
+        onClose={() => setShowDeleteModal(false)}
+        onConfirm={handleDeleteSession}
+        title="Xác nhận xóa cuộc trò chuyện"
+        message="Bạn có chắc chắn muốn xóa cuộc trò chuyện này?"
+      />
+
+      {/* Confirm Clear All Modal */}
+      <ConfirmModal
+        isOpen={showClearAllModal}
+        onClose={() => setShowClearAllModal(false)}
+        onConfirm={clearAllLocalChatHistory}
+        title="Xác nhận xóa tất cả lịch sử"
+        message="Bạn có chắc chắn muốn xóa tất cả lịch sử trò chuyện? Hành động này không thể hoàn tác."
+        isDestructive={true}
+      />
     </div>
   );
 } 
