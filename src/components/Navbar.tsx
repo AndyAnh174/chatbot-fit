@@ -7,6 +7,14 @@ export function AppNavbar({ children }: { children: React.ReactNode }) {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
+  // Thêm hàm xử lý scroll lên đầu trang
+  const handleScrollToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
+  };
+
   useEffect(() => {
     const handleScroll = () => {
       const isScrolled = window.scrollY > 10;
@@ -32,6 +40,7 @@ export function AppNavbar({ children }: { children: React.ReactNode }) {
           <div className="flex items-center justify-between h-14">
             {/* Left Side - Logos & Brand Text */}
             <div className="flex items-center">
+              <div className="flex-shrink-0">
               <Link to="/" className="flex items-center group">
                 <div className="flex items-center space-x-3">
                   {/* Logo FIT */}
@@ -41,6 +50,28 @@ export function AppNavbar({ children }: { children: React.ReactNode }) {
                       alt="FIT HCMUTE Logo" 
                       className="h-8 w-auto transform group-hover:scale-105 transition-all duration-300 drop-shadow-sm" 
                     />
+                    
+                    {/* Divider */}
+                    <div className="h-8 w-px bg-gray-300"></div>
+                    
+                    {/* Logo PTIC */}
+                    <div className="relative">
+                      <img 
+                        src="/PTIC.jpg" 
+                        alt="PTIC Logo" 
+                        className="h-12 w-auto transform group-hover:scale-105 transition-all duration-300 drop-shadow-sm rounded-lg" 
+                      />
+                    </div>
+                    
+                    {/* Brand Text */}
+                    <div className="hidden lg:flex flex-col">
+                      <span className="text-xl font-bold text-gray-900 group-hover:text-gray-700 transition-colors duration-300">
+                        ChatBot FIT
+                      </span>
+                      <span className="text-sm text-gray-600 font-medium">
+                        FIT HCMUTE × PTIC
+                      </span>
+                    </div>
                   </div>
                   
                   {/* Divider */}
@@ -86,47 +117,81 @@ export function AppNavbar({ children }: { children: React.ReactNode }) {
                   </>
                 )}
               </NavLink>
-              
-              <NavLink
-                to="/chatbot"
-                className={({ isActive }) => 
-                  `relative px-3 py-1.5 rounded-lg text-sm font-semibold flex items-center transition-all duration-300 group ${
-                    isActive 
-                      ? "text-gray-900" 
-                      : "text-gray-600 hover:text-gray-900"
-                  }`
-                }
-              >
-                {({ isActive }) => (
-                  <>
-                    <FaRobot className="mr-1.5 text-sm" />
-                    <span>Chatbot</span>
-                    {isActive && (
-                      <span className="absolute -bottom-1 left-0 w-full h-0.5 bg-gray-900 rounded-full" />
+              <div className="hidden md:block">
+                <div className="ml-12 flex items-center space-x-8">
+                  <NavLink
+                    to="/"
+                    className={({ isActive }) => 
+                      `relative px-4 py-2 rounded-lg text-base font-semibold flex items-center transition-all duration-300 group ${
+                        isActive 
+                          ? "text-gray-900" 
+                          : "text-gray-600 hover:text-gray-900"
+                      }`
+                    }
+                    onClick={handleScrollToTop}
+                  >
+                    {({ isActive }) => (
+                      <>
+                        <FaHome className="mr-2 text-lg" />
+                        <span>Home</span>
+                        {isActive && (
+                          <span className="absolute -bottom-1 left-0 w-full h-0.5 bg-gray-900 rounded-full" />
+                        )}
+                        {!isActive && (
+                          <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gray-900 rounded-full group-hover:w-full transition-all duration-300" />
+                        )}
+                      </>
                     )}
-                    {!isActive && (
-                      <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gray-900 rounded-full group-hover:w-full transition-all duration-300" />
+                  </NavLink>
+                  
+                  <NavLink
+                    to="/chatbot"
+                    className={({ isActive }) => 
+                      `relative px-4 py-2 rounded-lg text-base font-semibold flex items-center transition-all duration-300 group ${
+                        isActive 
+                          ? "text-gray-900" 
+                          : "text-gray-600 hover:text-gray-900"
+                      }`
+                    }
+                    onClick={handleScrollToTop}
+                  >
+                    {({ isActive }) => (
+                      <>
+                        <FaRobot className="mr-2 text-lg" />
+                        <span>FIT Chatbot</span>
+                        {isActive && (
+                          <span className="absolute -bottom-1 left-0 w-full h-0.5 bg-gray-900 rounded-full" />
+                        )}
+                        {!isActive && (
+                          <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gray-900 rounded-full group-hover:w-full transition-all duration-300" />
+                        )}
+                      </>
                     )}
-                  </>
-                )}
-              </NavLink>
-              
-              <NavLink
-                to="/about"
-                className={({ isActive }) => 
-                  `relative px-3 py-1.5 rounded-lg text-sm font-semibold flex items-center transition-all duration-300 group ${
-                    isActive 
-                      ? "text-gray-900" 
-                      : "text-gray-600 hover:text-gray-900"
-                  }`
-                }
-              >
-                {({ isActive }) => (
-                  <>
-                    <FaInfoCircle className="mr-1.5 text-sm" />
-                    <span>About</span>
-                    {isActive && (
-                      <span className="absolute -bottom-1 left-0 w-full h-0.5 bg-gray-900 rounded-full" />
+                  </NavLink>
+                  
+                  <NavLink
+                    to="/about"
+                    className={({ isActive }) => 
+                      `relative px-4 py-2 rounded-lg text-base font-semibold flex items-center transition-all duration-300 group ${
+                        isActive 
+                          ? "text-gray-900" 
+                          : "text-gray-600 hover:text-gray-900"
+                      }`
+                    }
+                    onClick={handleScrollToTop}
+                  >
+                    {({ isActive }) => (
+                      <>
+                        <FaInfoCircle className="mr-2 text-lg" />
+                        <span>About</span>
+                        {isActive && (
+                          <span className="absolute -bottom-1 left-0 w-full h-0.5 bg-gray-900 rounded-full" />
+                        )}
+                        {!isActive && (
+                          <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gray-900 rounded-full group-hover:w-full transition-all duration-300" />
+                        )}
+                      </>
+
                     )}
                     {!isActive && (
                       <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gray-900 rounded-full group-hover:w-full transition-all duration-300" />
@@ -166,7 +231,10 @@ export function AppNavbar({ children }: { children: React.ReactNode }) {
                     : "text-gray-600 hover:text-gray-900 hover:bg-gray-50"
                 }`
               }
-              onClick={() => setIsOpen(false)}
+              onClick={() => {
+                setIsOpen(false);
+                handleScrollToTop();
+              }}
             >
               <FaHome className="mr-3 text-lg" />
               <span>Trang chủ</span>
@@ -181,7 +249,10 @@ export function AppNavbar({ children }: { children: React.ReactNode }) {
                     : "text-gray-600 hover:text-gray-900 hover:bg-gray-50"
                 }`
               }
-              onClick={() => setIsOpen(false)}
+              onClick={() => {
+                setIsOpen(false);
+                handleScrollToTop();
+              }}
             >
               <FaRobot className="mr-3 text-lg" />
               <span>Hỏi đáp với AI</span>
@@ -196,7 +267,10 @@ export function AppNavbar({ children }: { children: React.ReactNode }) {
                     : "text-gray-600 hover:text-gray-900 hover:bg-gray-50"
                 }`
               }
-              onClick={() => setIsOpen(false)}
+              onClick={() => {
+                setIsOpen(false);
+                handleScrollToTop();
+              }}
             >
               <FaInfoCircle className="mr-3 text-lg" />
               <span>Giới thiệu</span>

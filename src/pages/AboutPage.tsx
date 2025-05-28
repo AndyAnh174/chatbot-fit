@@ -11,14 +11,11 @@ import {
   FaGraduationCap,
   FaEnvelope,
   FaGlobe,
- 
   FaCheckCircle,
   FaQuoteLeft
 } from 'react-icons/fa';
 import { motion } from 'framer-motion';
 import logoCNTT from '../assets/logo-cntt2021.png';
-
-
 
 const AboutPage = () => {
   const fadeInUp = {
@@ -35,8 +32,6 @@ const AboutPage = () => {
       }
     }
   };
-
-
 
   const developmentSteps = [
     {
@@ -571,7 +566,7 @@ const AboutPage = () => {
                     href="mailto:fitadm@hcmute.edu.vn" 
                     className="text-gray-300 hover:text-white font-medium text-lg transition-colors duration-300 hover:underline"
                   >
-                    fitadm@hcmute.edu.vn
+                    ptic@hcmute.fit
                   </a>
                 </motion.div>
               </motion.div>
@@ -586,7 +581,7 @@ const AboutPage = () => {
                   </div>
                   <h3 className="text-2xl font-bold text-white mb-6 group-hover:text-blue-300 transition-colors duration-300">Facebook</h3>
                   <a 
-                    href="https://www.facebook.com/fithcmute" 
+                    href="https://www.facebook.com/hcmute.ptic" 
                     target="_blank" 
                     rel="noopener noreferrer"
                     className="text-gray-300 hover:text-white font-medium text-lg transition-colors duration-300 hover:underline"
@@ -680,7 +675,7 @@ const AboutPage = () => {
               <p className="text-gray-400">
                 Trường Đại học Sư phạm Kỹ thuật TP.HCM × 
                 <a href="http://cfacebook.com/hcmute.ptic" target="_blank" rel="noopener noreferrer">
-  <span className="font-bold text-white">PTIC</span>
+  <span className="font-bold text-white"> PTIC</span>
 </a>
 
               </p>

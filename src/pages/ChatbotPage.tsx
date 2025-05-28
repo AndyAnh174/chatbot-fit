@@ -6,6 +6,7 @@ import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import rehypeRaw from 'rehype-raw';
 import rehypeSanitize from 'rehype-sanitize';
+import logoFIT from '../assets/logo-cntt2021.png';
 
 // CSS cho typing animation và thinking progress + scrollbar styling
 const typingCSS = `
@@ -361,7 +362,6 @@ const cleanContent = (content: string): string => {
   
   return processedContent;
 };
-
 export function ChatbotPage() {
   const [query, setQuery] = useState('');
   const [messages, setMessages] = useState<Message[]>([]);
@@ -377,6 +377,7 @@ export function ChatbotPage() {
   const inputRef = useRef<HTMLInputElement>(null);
   const [, setScrollPosition] = useState(0);
   const [shouldAutoScroll, setShouldAutoScroll] = useState(true);
+    
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [deleteSessionId, setDeleteSessionId] = useState<string | null>(null);
   const [showClearAllModal, setShowClearAllModal] = useState(false);
@@ -399,6 +400,7 @@ export function ChatbotPage() {
     const timer = setInterval(() => {
       setCurrentTime(new Date());
     }, 1000);
+
 
     return () => clearInterval(timer);
   }, []);
@@ -727,11 +729,16 @@ export function ChatbotPage() {
         // Đặt messages sau đó mới tắt loading
         setMessages(localMessages);
         
-        // Đợi ngắn để DOM cập nhật trước khi cuộn xuống và tắt loading
+        // Scroll lên đầu tin nhắn
         setTimeout(() => {
-          smoothScrollToBottom();
+          if (messagesContainerRef.current) {
+            messagesContainerRef.current.scrollTo({
+              top: 0,
+              behavior: 'smooth'
+            });
+          }
           setIsLoadingHistory(false);
-        }, 50);
+        }, 100);
         
         return;
       }
@@ -805,10 +812,34 @@ export function ChatbotPage() {
         
         // Lưu vào localStorage cho lần sau
         saveLocalChatHistory(sessionId, loadedMessages);
+
+        // Scroll lên đầu tin nhắn
+        setTimeout(() => {
+          if (messagesContainerRef.current) {
+            messagesContainerRef.current.scrollTo({
+              top: 0,
+              behavior: 'smooth'
+            });
+          }
+          setIsLoadingHistory(false);
+        }, 100);
       }
     } catch (error) {
       console.error('Error loading chat session:', error);
       setIsLoadingHistory(false);
+    }
+  };
+
+  // Thêm hàm xử lý scroll cho lịch sử chat
+  const handleHistoryScroll = (e: React.UIEvent<HTMLDivElement>) => {
+    const target = e.target as HTMLDivElement;
+    const { scrollTop, scrollHeight, clientHeight } = target;
+    
+    // Nếu đã scroll đến cuối, tự động cuộn xuống tin nhắn mới nhất
+    if (scrollHeight - scrollTop - clientHeight < 50) {
+      setShouldAutoScroll(true);
+    } else {
+      setShouldAutoScroll(false);
     }
   };
 
@@ -1917,6 +1948,19 @@ export function ChatbotPage() {
                 <div className="flex items-center text-red-600 text-xs">
                   <div className="w-2 h-2 bg-red-500 rounded-full mr-2"></div>
                   Không có kết nối mạng
+          <div className="p-4 sm:p-6 border-t border-gray-100">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-3">
+                <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-r rounded-full flex items-center justify-center shadow-sm">
+                  <img 
+                    src={logoFIT} 
+                    alt="FIT Logo" 
+                    className="w-5 h-5 sm:w-6 sm:h-6 object-contain"
+                  />
+                </div>
+                <div className="hidden sm:block">
+                  <p className="text-sm font-medium text-gray-800">HCMUTE</p>
+                  <p className="text-xs text-gray-500">Khoa CNTT</p>
                 </div>
               </div>
             )}
@@ -2129,6 +2173,30 @@ export function ChatbotPage() {
                           <span className="text-orange-500 text-xs">✨</span>
                         </div>
                         <h3 className="text-gray-600 font-medium text-sm">Các câu hỏi phổ biến</h3>
+                  {/* Input Box - Centered */}
+                  <div className="w-full max-w-4xl mb-12">
+                    <div className="relative flex items-center bg-white border-2 border-blue-300 rounded-2xl shadow-md hover:shadow-lg hover:border-blue-400 transition-all duration-200">
+                      <input
+                        ref={inputRef}
+                        type="text"
+                        value={query}
+                        onChange={handleInputChange}
+                        onKeyPress={handleKeyPress}
+                        placeholder="Nhập câu hỏi của bạn cho ChatBot FIT..."
+                        className="flex-1 px-6 py-4 bg-transparent border-0 focus:outline-none text-gray-800 placeholder-gray-500 text-lg"
+                        disabled={isLoading}
+                        maxLength={MAX_INPUT_LENGTH}
+                      />
+                      <div className="flex items-center mr-4 text-gray-400 text-sm">
+                        <span className={`${query.length >= MAX_INPUT_LENGTH ? 'text-red-500' : ''}`}>
+                          {query.length}/{MAX_INPUT_LENGTH}
+                        </span>
+                        <div className="mx-3 w-px h-6 bg-gray-300"></div>
+                        <button className="p-1 hover:bg-gray-100 rounded transition-colors">
+                          <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.379-8.379-2.828-2.828z" />
+                          </svg>
+                        </button>
                       </div>
                       
                       <div className="grid grid-cols-1 gap-3">
@@ -2321,7 +2389,7 @@ export function ChatbotPage() {
                     </span>
                   </div>
                 </div>
-                
+            
                   <button
                   className={`m-2 sm:m-3 p-3 sm:p-4 rounded-xl transition-all duration-300 min-h-11 min-w-11 flex items-center justify-center ${
                     isLoading || !query.trim() || !isOnline
