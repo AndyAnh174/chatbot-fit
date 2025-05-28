@@ -1,11 +1,53 @@
 import { useState, useEffect, useRef } from 'react';
-import { FaRobot, FaPaperPlane, FaHistory, FaTrash } from 'react-icons/fa';
+import { FaRobot, FaPaperPlane, FaHistory, FaTrash, FaPlus, FaTimes, FaSync, FaInfoCircle, FaLightbulb, FaGraduationCap, FaBook, FaUsers } from 'react-icons/fa';
 import axios from 'axios';
 import { API_ENDPOINTS, DEFAULT_HEADERS } from '../config';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import rehypeRaw from 'rehype-raw';
 import rehypeSanitize from 'rehype-sanitize';
+
+// CSS cho typing animation
+const typingCSS = `
+  .typing-indicator {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+  
+  .typing-indicator .dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    animation: typing 1.4s infinite ease-in-out;
+  }
+  
+  .typing-indicator .dot:nth-child(1) {
+    animation-delay: -0.32s;
+  }
+  
+  .typing-indicator .dot:nth-child(2) {
+    animation-delay: -0.16s;
+  }
+  
+  @keyframes typing {
+    0%, 80%, 100% {
+      opacity: 0.3;
+      transform: scale(0.8);
+    }
+    40% {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+`;
+
+// Inject CSS
+if (typeof document !== 'undefined') {
+  const style = document.createElement('style');
+  style.textContent = typingCSS;
+  document.head.appendChild(style);
+}
 
 interface Message {
   role: 'human' | 'ai';
@@ -24,6 +66,34 @@ interface Session {
 
 // localStorage key cho lịch sử chat
 const CHAT_HISTORY_STORAGE_KEY = 'chatbot_history';
+
+// Chat suggestions
+const CHAT_SUGGESTIONS = [
+  {
+    icon: FaGraduationCap,
+    title: "Thông tin tuyển sinh",
+    description: "Tìm hiểu về điều kiện tuyển sinh, học phí và thời gian đăng ký",
+    prompt: "Cho tôi biết thông tin về tuyển sinh Khoa CNTT - HCMUTE, bao gồm điều kiện tuyển sinh và học phí năm 2024?"
+  },
+  {
+    icon: FaBook,
+    title: "Chương trình đào tạo",
+    description: "Khám phá các ngành học và chương trình đào tạo hiện đại",
+    prompt: "Khoa CNTT - HCMUTE có những ngành đào tạo nào? Chương trình học như thế nào?"
+  },
+  {
+    icon: FaUsers,
+    title: "Hoạt động sinh viên",
+    description: "Tìm hiểu về các câu lạc bộ, hoạt động ngoại khóa và cơ hội thực tập",
+    prompt: "Sinh viên Khoa CNTT có những hoạt động ngoại khóa và cơ hội thực tập nào?"
+  },
+  {
+    icon: FaLightbulb,
+    title: "Cơ sở vật chất",
+    description: "Thông tin về phòng lab, thư viện và các tiện ích khác",
+    prompt: "Cơ sở vật chất của Khoa CNTT - HCMUTE như thế nào? Có những phòng lab và thiết bị gì?"
+  }
+];
 
 export function ChatbotPage() {
   const [query, setQuery] = useState('');
@@ -461,25 +531,36 @@ export function ChatbotPage() {
   // Component hiển thị 3 chấm đang suy nghĩ
   const TypingIndicator = () => {
     return (
-      <div className="flex mb-4 w-full">
-        <div className="relative max-w-[80%] p-3 rounded-lg bg-gray-100 border-2 border-gray-200">
-          <div className="absolute -top-2 -left-2 w-6 h-6 bg-white rounded-full flex items-center justify-center shadow-sm">
-            <FaRobot className="text-orange-600" size={14} />
+      <div className="group mb-8">
+        {/* Message Header */}
+        <div className="flex items-center mb-4">
+          <div className="w-10 h-10 bg-white border-2 border-gray-200 text-gray-600 rounded-xl flex items-center justify-center mr-4 shadow-sm">
+            <FaRobot size={16} />
           </div>
-          
-          <div className="text-xs font-semibold mb-1">
-            Chat Bot
-            <span className="text-xs font-normal text-gray-500 ml-2">
-              {new Date().toLocaleTimeString()}
+          <div className="flex items-center space-x-3">
+            <span className="font-semibold text-gray-800 text-base">ChatBot FIT</span>
+            <span className="text-xs bg-gray-50 text-gray-600 px-3 py-1.5 rounded-full border border-gray-200 font-medium">
+              Đang phản hồi
+            </span>
+            <span className="text-xs text-gray-400 font-medium">
+              {new Date().toLocaleTimeString('vi-VN', {
+                hour: '2-digit',
+                minute: '2-digit'
+              })}
             </span>
           </div>
-          
-          <div className="text-gray-800 flex items-center">
-            <span className="mr-2">Đang suy nghĩ</span>
-            <div className="typing-indicator">
-              <div className="dot"></div>
-              <div className="dot"></div>
-              <div className="dot"></div>
+        </div>
+
+        {/* Typing Animation */}
+        <div className="ml-14">
+          <div className="bg-white border border-gray-200 rounded-xl p-4 shadow-sm hover:shadow-md transition-shadow duration-200">
+            <div className="flex items-center text-gray-500">
+              <span className="mr-3 text-sm font-medium">Đang soạn phản hồi</span>
+              <div className="typing-indicator">
+                <div className="dot bg-gray-400"></div>
+                <div className="dot bg-gray-400"></div>
+                <div className="dot bg-gray-400"></div>
+              </div>
             </div>
           </div>
         </div>
@@ -834,99 +915,180 @@ export function ChatbotPage() {
     };
 
     return (
-      <div
-        className={`flex ${message.role === 'human' ? 'justify-end' : 'justify-start'} mb-4 w-full`}
-      >
-        <div
-          className={`relative ${
-            message.role === 'human'
-              ? 'bg-orange-500 text-white rounded-tl-xl rounded-tr-xl rounded-bl-xl'
-              : 'bg-gray-100 border-2 border-gray-200 rounded-tl-xl rounded-tr-xl rounded-br-xl'
-          } p-3 max-w-[80%] whitespace-pre-wrap break-words`}
-        >
-          {/* Avatar và tên người dùng/bot */}
-          <div className={`absolute ${message.role === 'human' ? '-top-2 -right-2' : '-top-2 -left-2'} w-6 h-6 ${
-            message.role === 'human' ? 'bg-orange-600' : 'bg-white'
-          } rounded-full flex items-center justify-center shadow-sm`}>
-            {message.role === 'human' ? (
-              <span className="text-white text-xs font-bold">U</span>
-            ) : (
-              <FaRobot className="text-orange-600" size={14} />
-            )}
+      <div className="group mb-8">
+        {/* Human Message */}
+        {message.role === 'human' ? (
+          <div className="flex justify-end">
+            <div className="max-w-3xl w-full">
+              {/* User Header */}
+              <div className="flex items-center justify-end mb-4">
+                <div className="flex items-center space-x-3 mr-4">
+                  <span className="text-xs text-gray-500 font-medium">
+                    {message.timestamp
+                      ? new Date(message.timestamp).toLocaleTimeString('vi-VN', {
+                          hour: '2-digit',
+                          minute: '2-digit'
+                        })
+                      : new Date().toLocaleTimeString('vi-VN', {
+                          hour: '2-digit',
+                          minute: '2-digit'
+                        })
+                    }
+                  </span>
+                  <div className="w-10 h-10 bg-gray-900 text-white rounded-xl flex items-center justify-center shadow-md">
+                  <span className="text-sm font-bold">B</span>
+                </div>
+                  <span className="font-bold text-gray-900 text-base">FITer</span>
+                </div>
+              
+              </div>
+
+              {/* User Message Content - Asymmetric layout */}
+              <div className="mr-14">
+                <div className="bg-white border border-gray-300 text-gray-900 rounded-2xl p-5 shadow-md transform hover:scale-[1.01] hover:border-gray-400 transition-all duration-300">
+                  <p className="leading-relaxed text-base font-medium">{message.content}</p>
+                </div>
+              </div>
+            </div>
           </div>
-          
-          {/* Tên người dùng/bot và thời gian */}
-          <div className="text-xs font-semibold mb-1">
-            {message.role === 'human' ? 'Bạn' : 'Chat Bot'}
-            <span className={`text-xs font-normal ${message.role === 'human' ? 'text-orange-100' : 'text-gray-500'} ml-2`}>
-              {message.timestamp
-                ? new Date(message.timestamp).toLocaleTimeString()
-                : new Date().toLocaleTimeString()
-              }
-            </span>
-          </div>
-          
-          {/* Nội dung tin nhắn */}
-          <div className={message.role === 'human' ? 'text-white' : 'text-gray-800'}>
-            {message.content ? (
-              <ReactMarkdown
-                remarkPlugins={[remarkGfm]}
-                rehypePlugins={[rehypeRaw, rehypeSanitize]}
-                components={{
-                  a: ({node, ...props}) => (
-                    <a 
-                      target="_blank" 
-                      rel="noopener noreferrer" 
-                      className={`${message.role === 'human' ? 'text-orange-200 hover:text-orange-100' : 'text-orange-600 hover:text-orange-700'} underline`}
-                      style={message.role === 'human' ? {} : {color: '#F47B4F'}}
-                      {...props}
-                    />
-                  ),
-                  pre: ({node, ...props}) => (
-                    <pre className="bg-gray-800 text-white p-2 rounded my-2 overflow-auto" {...props} />
-                  ),
-                  code: ({node, ...props}) => (
-                    <code className="bg-gray-800 text-white px-1 py-0.5 rounded" {...props} />
-                  ),
-                  strong: ({node, ...props}) => (
-                    <strong 
-                      className={message.role === 'human' ? 'text-white font-bold' : 'font-bold'} 
-                      style={message.role === 'human' ? {} : {color: '#F47B4F'}}
-                      {...props} 
-                    />
-                  ),
-                  ul: ({node, ...props}) => (
-                    <ul className="list-disc pl-5 my-2 space-y-1" {...props} />
-                  ),
-                  ol: ({node, ...props}) => (
-                    <ol className="list-decimal pl-5 my-2 space-y-1" {...props} />
-                  ),
-                  li: ({node, ...props}) => (
-                    <li className="mb-1" {...props} />
-                  ),
-                  p: ({node, ...props}) => (
-                    <p className="mb-2 leading-relaxed" {...props} />
-                  ),
-                  table: ({node, ...props}) => (
-                    <div className="overflow-x-auto my-2">
-                      <table className="border-collapse border border-gray-300 w-full" {...props} />
+        ) : (
+          /* AI Message - Staggered Layout */
+          <div className="w-full">
+            <div className="max-w-5xl mx-auto">
+              {/* AI Header */}
+              <div className="flex items-center mb-4 ml-3">
+                <div className="w-10 h-10 bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-600 text-white rounded-xl flex items-center justify-center mr-4 shadow-md">
+                  <FaRobot size={18} />
+                </div>
+                <div className="flex items-center space-x-3">
+                  <span className="font-bold text-gray-900 text-base">ChatBot FIT</span>
+                  <span className="text-xs bg-gradient-to-r from-blue-50 to-indigo-50 text-blue-700 px-3 py-1.5 rounded-full border border-blue-200 font-medium shadow-sm">
+                    Trợ lý AI thông minh
+                  </span>
+                  <span className="text-xs text-gray-500 font-medium">
+                    {message.timestamp
+                      ? new Date(message.timestamp).toLocaleTimeString('vi-VN', {
+                          hour: '2-digit',
+                          minute: '2-digit'
+                        })
+                      : new Date().toLocaleTimeString('vi-VN', {
+                          hour: '2-digit',
+                          minute: '2-digit'
+                        })
+                    }
+                  </span>
+                </div>
+              </div>
+
+              {/* AI Message Content - Staggered Card Layout */}
+              <div className="ml-14">
+                <div className="bg-white border border-gray-200 rounded-2xl shadow-md hover:shadow-lg transition-all duration-300 overflow-hidden">
+                  {/* Content Header with subtle gradient */}
+                  <div className="bg-gradient-to-r from-gray-50 to-blue-50 px-5 py-3 border-b border-gray-100">
+                    <div className="flex items-center space-x-2">
+                      <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+                      <span className="text-xs font-medium text-gray-700">Phản hồi từ AI</span>
                     </div>
-                  ),
-                  th: ({node, ...props}) => (
-                    <th className="border border-gray-300 p-2 bg-gray-100" {...props} />
-                  ),
-                  td: ({node, ...props}) => (
-                    <td className="border border-gray-300 p-2" {...props} />
-                  ),
-                }}
-              >
-                {processLinks(message.content)}
-              </ReactMarkdown>
-            ) : (
-              <p>Không có nội dung</p>
-            )}
+                  </div>
+
+                  {/* Main Content Area */}
+                  <div className="p-5">
+                    {message.content ? (
+                      <div className="prose prose-gray max-w-none">
+                        <ReactMarkdown
+                          remarkPlugins={[remarkGfm]}
+                          rehypePlugins={[rehypeRaw, rehypeSanitize]}
+                          components={{
+                            a: ({node, ...props}) => (
+                              <a 
+                                target="_blank" 
+                                rel="noopener noreferrer" 
+                                className="text-blue-600 hover:text-blue-800 underline decoration-2 underline-offset-2 transition-colors duration-200 font-medium hover:bg-blue-50 px-1 py-0.5 rounded"
+                                {...props}
+                              />
+                            ),
+                            pre: ({node, ...props}) => (
+                              <pre className="bg-gray-900 text-gray-100 p-4 rounded-xl my-4 overflow-auto text-sm font-mono border shadow-md" {...props} />
+                            ),
+                            code: ({node, ...props}) => (
+                              <code className="bg-gray-100 text-gray-800 px-2 py-1 rounded text-sm font-mono border shadow-sm" {...props} />
+                            ),
+                            strong: ({node, ...props}) => (
+                              <strong className="font-bold text-gray-900 bg-yellow-50 px-1 py-0.5 rounded" {...props} />
+                            ),
+                            ul: ({node, ...props}) => (
+                              <div className="my-4">
+                                <ul className="space-y-2" {...props} />
+                              </div>
+                            ),
+                            ol: ({node, ...props}) => (
+                              <div className="my-4">
+                                <ol className="space-y-2" {...props} />
+                              </div>
+                            ),
+                            li: ({node, ...props}) => (
+                              <li className="flex items-start space-x-3 p-2.5 bg-gray-50 rounded-lg border border-gray-100 hover:bg-gray-100 transition-colors duration-200" {...props}>
+                                <div className="w-1.5 h-1.5 bg-blue-500 rounded-full mt-2 flex-shrink-0"></div>
+                                <div className="leading-relaxed text-gray-800 flex-1 text-sm">
+                                  {props.children}
+                                </div>
+                              </li>
+                            ),
+                            p: ({node, ...props}) => (
+                              <p className="mb-4 leading-relaxed text-gray-800 text-base" {...props} />
+                            ),
+                            table: ({node, ...props}) => (
+                              <div className="overflow-x-auto my-5 rounded-xl border border-gray-200 shadow-sm">
+                                <table className="border-collapse w-full bg-white" {...props} />
+                              </div>
+                            ),
+                            th: ({node, ...props}) => (
+                              <th className="border border-gray-200 p-3 bg-gradient-to-r from-gray-50 to-blue-50 font-bold text-left text-gray-900 text-sm" {...props} />
+                            ),
+                            td: ({node, ...props}) => (
+                              <td className="border border-gray-200 p-3 text-gray-800 hover:bg-gray-50 transition-colors duration-200 text-sm" {...props} />
+                            ),
+                            blockquote: ({node, ...props}) => (
+                              <blockquote className="border-l-4 border-blue-500 pl-5 py-4 my-5 italic bg-gradient-to-r from-blue-50 to-indigo-50 text-gray-800 rounded-r-xl shadow-sm" {...props} />
+                            ),
+                            h1: ({node, ...props}) => (
+                              <h1 className="text-2xl font-bold mb-5 text-gray-900 border-b-2 border-blue-200 pb-3" {...props} />
+                            ),
+                            h2: ({node, ...props}) => (
+                              <h2 className="text-xl font-bold mb-4 text-gray-900 border-l-4 border-blue-500 pl-3" {...props} />
+                            ),
+                            h3: ({node, ...props}) => (
+                              <h3 className="text-lg font-bold mb-3 text-gray-900 bg-gray-50 px-3 py-2 rounded-lg" {...props} />
+                            ),
+                          }}
+                        >
+                          {processLinks(message.content)}
+                        </ReactMarkdown>
+                      </div>
+                    ) : (
+                      <div className="text-center py-8">
+                        <div className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                          <FaRobot className="text-gray-400 text-lg" />
+                        </div>
+                        <p className="text-gray-500 italic text-base">Không có nội dung</p>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Content Footer with actions */}
+                  <div className="bg-gray-50 px-5 py-3 border-t border-gray-100">
+                    <div className="flex items-center justify-between text-xs text-gray-500">
+                      <span>Được tạo bởi ChatBot FIT</span>
+                      <div className="flex items-center space-x-3">
+                       
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
-        </div>
+        )}
       </div>
     );
   };
@@ -986,307 +1148,363 @@ export function ChatbotPage() {
     }
   };
 
+  // Handle suggestion click
+  const handleSuggestionClick = (prompt: string) => {
+    setQuery(prompt);
+    setTimeout(() => {
+      if (inputRef.current) {
+        inputRef.current.focus();
+      }
+    }, 100);
+  };
+
+  // Get dynamic greeting based on current time
+  const getDynamicGreeting = () => {
+    const currentHour = new Date().getHours();
+    
+    if (currentHour >= 5 && currentHour < 12) {
+      return {
+        text: "Chào buổi sáng",
+        emoji: "🌅"
+      };
+    } else if (currentHour >= 12 && currentHour < 18) {
+      return {
+        text: "Chào buổi chiều", 
+        emoji: "☀️"
+      };
+    } else {
+      return {
+        text: "Chào buổi tối",
+        emoji: "🌙"
+      };
+    }
+  };
+
   return (
-    <div className="container mx-auto px-2 md:px-4 pt-4">
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        {/* Thông báo sản phẩm đang thử nghiệm */}
-        <div className="md:col-span-3 mb-4">
-          <div className="border-l-4 p-4 bg-yellow-50 rounded-r" style={{ borderColor: 'var(--orange-primary)' }}>
-            <div className="flex">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 mr-2" style={{ color: 'var(--orange-primary)' }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-100">
+      {/* Subtle Background Pattern */}
+      <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmNWY1ZjUiIGZpbGwtb3BhY2l0eT0iMC4zIj48Y2lyY2xlIGN4PSIzMCIgY3k9IjMwIiByPSIxIi8+PC9nPjwvZz48L3N2Zz4=')] opacity-40"></div>
+      
+      {/* Professional White Layout */}
+      <div className="flex h-screen relative z-10">
+        
+        {/* Sidebar - Clean White Theme */}
+        <div className={`${isMobileSidebarOpen ? 'block' : 'hidden'} lg:block w-80 bg-white border-r border-gray-200 shadow-sm flex flex-col`}>
+          {/* Sidebar Header */}
+          <div className="p-6 border-b border-gray-100">
+            <div className="flex items-center mb-6">
+              <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center mr-3 shadow-md">
+                <FaRobot className="text-white text-xl" />
+              </div>
               <div>
-                <p className="font-medium mb-1" style={{ color: 'var(--navy-blue)' }}>Sản phẩm đang trong giai đoạn thử nghiệm</p>
-                <p className="text-sm text-gray-600">
-                  Đây là phiên bản beta của Chatbot AI FIT - HCMUTE. Sản phẩm vẫn đang trong quá trình phát triển, 
-                  nên có thể còn một số sai sót. Chúng tôi rất mong nhận được góp ý của bạn thông qua{' '}
-                  <a 
-                    href="https://forms.gle/Kz7WFbVmEhMjkMB3A" 
-                    target="_blank" 
-                    rel="noopener noreferrer" 
-                    className="underline font-medium"
-                    style={{ color: 'var(--orange-primary)' }}
-                  >
-                    biểu mẫu này
-                  </a>.
-                </p>
+                <h2 className="font-bold text-lg text-gray-800">ChatBot FIT</h2>
+                <p className="text-xs text-gray-500">Trợ lý AI thông minh</p>
               </div>
             </div>
+            <button
+              onClick={createNewSession}
+              className="w-full bg-gray-50 hover:bg-gray-100 border border-gray-200 hover:border-gray-300 text-gray-700 py-3 px-4 rounded-xl transition-all duration-200 flex items-center justify-center font-medium hover:shadow-sm"
+            >
+              <FaPlus className="mr-2" size={14} />
+              Cuộc trò chuyện mới
+            </button>
           </div>
-        </div>
 
-        {/* Nút hiển thị sidebar trên mobile */}
-        <div className="md:hidden mb-2 px-2">
-          <button 
-            onClick={() => setIsMobileSidebarOpen(!isMobileSidebarOpen)}
-            className="w-full py-2 px-4 bg-white border border-gray-300 rounded-lg shadow-sm flex items-center justify-center"
-            style={{ borderColor: 'var(--orange-primary)' }}
+          {/* Chat History */}
+          <div className="flex-1 overflow-y-auto p-4">
+            <div className="text-xs text-gray-400 uppercase tracking-wider mb-4 px-2 font-medium">Lịch sử trò chuyện</div>
+            {localChatSessions.length === 0 ? (
+              <div className="text-center py-12">
+                <div className="w-16 h-16 bg-gray-100 rounded-xl flex items-center justify-center mx-auto mb-4">
+                  <FaHistory className="text-gray-400 text-2xl" />
+                </div>
+                <p className="text-gray-500 text-sm">Chưa có cuộc trò chuyện nào</p>
+                <p className="text-gray-400 text-xs mt-1">Bắt đầu chat để lưu lịch sử</p>
+              </div>
+            ) : (
+              <div className="space-y-2">
+                {localChatSessions.map((session) => (
+                  <div
+                    key={session.session_id}
+                    className={`group relative flex items-center p-4 rounded-xl cursor-pointer transition-all duration-200 ${
+                      sessionId === session.session_id 
+                        ? 'bg-blue-50 border border-blue-200 shadow-sm' 
+                        : 'hover:bg-gray-50 border border-transparent hover:border-gray-200'
+                    }`}
+                    onClick={() => loadChatSession(session.session_id)}
+                  >
+                    <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-lg flex items-center justify-center mr-3 flex-shrink-0 shadow-sm">
+                      <FaRobot className="text-white text-sm" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm truncate font-medium text-gray-800">{session.preview || 'Cuộc trò chuyện mới'}</p>
+                      <p className="text-xs text-gray-500 mt-1">
+                        {new Date(session.timestamp).toLocaleDateString('vi-VN')}
+                      </p>
+                    </div>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        confirmAndDeleteSession(session.session_id);
+                      }}
+                      className="opacity-0 group-hover:opacity-100 ml-2 p-2 hover:bg-red-50 hover:text-red-600 rounded-lg transition-all duration-200"
+                    >
+                      <FaTrash size={12} />
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* Sidebar Footer */}
+          <div className="p-6 border-t border-gray-100">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center">
+                <div className="w-8 h-8 bg-gradient-to-r from-green-500 to-blue-500 rounded-full flex items-center justify-center mr-3 shadow-sm">
+                  <span className="text-white text-xs font-bold">FIT</span>
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-gray-800">HCMUTE</p>
+                  <p className="text-xs text-gray-500">Khoa CNTT</p>
+                </div>
+              </div>
+              {localChatSessions.length > 0 && (
+                <button
+                  onClick={confirmAndClearAllHistory}
+                  className="p-2 hover:bg-red-50 hover:text-red-600 rounded-lg transition-all duration-200"
+                  title="Xóa tất cả cuộc trò chuyện"
+                >
+                  <FaTrash size={14} />
+                </button>
+              )}
+            </div>
+          </div>
+
+          {/* Mobile Close Button */}
+          <button
+            className="lg:hidden absolute top-6 right-6 w-10 h-10 bg-white border border-gray-200 rounded-xl flex items-center justify-center text-gray-500 hover:text-gray-700 hover:bg-gray-50 transition-all duration-200 shadow-sm"
+            onClick={() => setIsMobileSidebarOpen(false)}
           >
-            <FaHistory className="mr-2" style={{ color: 'var(--orange-primary)' }} />
-            <span className="text-sm font-medium" style={{ color: 'var(--navy-blue)' }}>
-              {isMobileSidebarOpen ? 'Đóng lịch sử' : 'Xem lịch sử trò chuyện'}
-            </span>
+            <FaTimes size={16} />
           </button>
         </div>
 
-        {/* Sidebar mobile - hiển thị khi bấm nút */}
-        {isMobileSidebarOpen && (
-          <div className="md:hidden w-full overflow-auto max-h-[60vh] border border-gray-200 rounded-lg shadow-sm mb-4">
-            <div className="chat-header p-3 rounded-t-lg flex justify-between items-center">
-              <h3 className="text-base font-medium text-white">Lịch sử trò chuyện</h3>
-              <div className="flex items-center">
-                {localChatSessions.length > 0 && (
-                  <button 
-                    onClick={confirmAndClearAllHistory}
-                    className="text-white text-xs mr-3 bg-red-600 hover:bg-red-700 px-2 py-1 rounded"
-                  >
-                    Xóa tất cả
-                  </button>
-                )}
-                <button 
-                  onClick={() => setIsMobileSidebarOpen(false)}
-                  className="text-white text-sm"
-                >
-                  Đóng
-                </button>
-              </div>
+        {/* Main Chat Area */}
+        <div className="flex-1 flex flex-col bg-white">
+          {/* Mobile Header */}
+          <div className="lg:hidden bg-white border-b border-gray-200 p-4 flex items-center justify-between shadow-sm">
+            <button
+              onClick={() => setIsMobileSidebarOpen(true)}
+              className="p-3 rounded-xl bg-gray-50 hover:bg-gray-100 transition-colors border border-gray-200"
+            >
+              <FaHistory size={18} className="text-gray-600" />
+            </button>
+            <div className="text-center">
+              <h1 className="font-bold text-lg text-gray-800">ChatBot FIT</h1>
+              <p className="text-xs text-gray-500">Trợ lý AI thông minh</p>
             </div>
-            <div className="p-3 bg-white">
-              {isLoadingHistory && localChatSessions.length === 0 ? (
-                <div className="flex items-center justify-center py-6">
-                  <div className="animate-spin rounded-full h-6 w-6 border-t-2 border-b-2" style={{ borderColor: 'var(--orange-primary)' }}></div>
-                </div>
-              ) : localChatSessions.length === 0 ? (
-                <p className="text-gray-500 text-center py-4 text-sm">
-                  Chưa có cuộc trò chuyện nào
-                </p>
-              ) : (
-                <div className="space-y-2">
-                  <h4 className="font-medium text-sm mb-2" style={{ color: 'var(--navy-blue)' }}>Lịch sử trò chuyện của bạn</h4>
-                  {localChatSessions.map((session) => (
-                    <div 
-                      key={session.session_id} 
-                      className={`border rounded-md p-2 cursor-pointer hover:shadow-sm transition-shadow text-sm ${
-                        sessionId === session.session_id ? 'active' : ''
-                      }`}
-                    >
-                      <div className="flex justify-between items-start">
-                        <h4 
-                          className="font-medium text-xs truncate flex-grow"
-                          onClick={() => {
-                            loadChatSession(session.session_id);
-                            setIsMobileSidebarOpen(false);
-                          }}
-                        >{session.title}</h4>
-                        <div className="flex items-center">
-                          <span className="text-xs text-gray-500 mr-2">
-                            {new Date(session.timestamp).toLocaleDateString()}
-                          </span>
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              confirmAndDeleteSession(session.session_id);
-                            }}
-                            className="text-red-500 hover:text-red-700 text-xs"
-                          >
-                            <FaTrash size={12} />
-                          </button>
-                        </div>
-                      </div>
-                      <p 
-                        className="text-xs text-gray-500 truncate"
-                        onClick={() => {
-                          loadChatSession(session.session_id);
-                          setIsMobileSidebarOpen(false);
-                        }}
-                      >
-                        {session.preview}
+            <button
+              onClick={createNewSession}
+              className="p-3 rounded-xl bg-gray-50 hover:bg-gray-100 transition-colors border border-gray-200"
+            >
+              <FaPlus size={18} className="text-gray-600" />
+            </button>
+          </div>
+
+          {/* Messages Area */}
+          <div className="flex-1 overflow-y-auto bg-gray-50">
+            {messages.length === 0 ? (
+              /* Welcome Screen - Simple Centered Design */
+              <div className="flex flex-col items-center justify-center min-h-full px-4 py-12">
+                {/* Beta Notification - Move to top */}
+                <div className="w-full max-w-4xl mb-8 bg-amber-50 border border-amber-200 rounded-xl p-4 shadow-sm">
+                  <div className="flex items-start">
+                    <div className="w-10 h-10 bg-amber-100 rounded-lg flex items-center justify-center mr-3 flex-shrink-0">
+                      <FaInfoCircle className="text-amber-600 text-lg" />
+                    </div>
+                    <div>
+                      <h3 className="font-bold text-amber-800 mb-2 text-base">Phiên bản Beta</h3>
+                      <p className="text-amber-700 leading-relaxed text-sm">
+                        Chào mừng bạn đến với ChatBot FIT - Trợ lý AI tiên tiến của Khoa CNTT - HCMUTE. 
+                        Đây là phiên bản thử nghiệm, vui lòng góp ý qua{' '}
+                        <a 
+                          href="https://forms.gle/Kz7WFbVmEhMjkMB3A" 
+                          target="_blank" 
+                          rel="noopener noreferrer" 
+                          className="underline hover:text-amber-800 font-medium transition-colors"
+                        >
+                          biểu mẫu phản hồi
+                        </a>.
                       </p>
                     </div>
-                  ))}
-                </div>
-              )}
-            </div>
-          </div>
-        )}
-
-        {/* Phần chat chính */}
-        <div className="md:col-span-3">
-          <div className="border border-gray-200 rounded-lg shadow-sm flex flex-col h-[calc(100vh-200px)] md:h-[calc(100vh-150px)]">
-            <div className="flex justify-between items-center p-3 md:p-4 chat-header rounded-t-lg">
-              <h3 className="text-base md:text-lg font-medium">
-                {sessionId ? `Phiên chat: ${sessionId.substring(0, 8)}...` : 'Bắt đầu cuộc trò chuyện'}
-              </h3>
-              <button 
-                className="flex items-center text-xs md:text-sm px-2 py-1 md:px-3 md:py-1.5 bg-white text-gray-700 rounded hover:bg-gray-100"
-                onClick={createNewSession}
-              >
-                <FaTrash className="mr-1" size={12} />
-                <span className="hidden md:inline">Tạo cuộc trò chuyện mới</span>
-                <span className="inline md:hidden">Mới</span>
-              </button>
-            </div>
-
-            {/* Khu vực hiển thị tin nhắn */}
-            <div className="flex-1 overflow-auto p-3 md:p-4" ref={messagesContainerRef}>
-              {isLoadingHistory && messages.length === 0 ? (
-                <div className="flex flex-col items-center justify-center h-full">
-                  <div className="animate-spin rounded-full h-8 w-8 md:h-10 md:w-10 border-t-2 border-b-2 border-orange-500 mb-4" style={{ borderColor: 'var(--orange-primary)' }}></div>
-                  <p className="text-gray-500 text-sm md:text-base">Đang tải lịch sử trò chuyện...</p>
-                </div>
-              ) : messages.length === 0 ? (
-                <div className="flex flex-col items-center justify-center h-full opacity-70">
-                  <div className="bg-navy-blue p-3 rounded-full mb-4 flex items-center justify-center" style={{ backgroundColor: 'var(--navy-blue)' }}>
-                    <FaRobot className="text-white" size={24} />
                   </div>
-                  <h2 className="text-center text-lg md:text-xl font-semibold mb-2" style={{ color: 'var(--navy-blue)' }}>Chatbot FIT-HCMUTE</h2>
-                  <p className="text-center text-gray-600 max-w-md text-sm md:text-base">
-                    Chào mừng đến với trợ lý AI của Khoa CNTT - HCMUTE!<br />
-                    Hãy đặt câu hỏi để bắt đầu cuộc trò chuyện.
-                  </p>
                 </div>
-              ) : (
-                <>
-                  {messages.map((msg, index) => (
-                    <MessageBubble key={index} message={msg} />
-                  ))}
-                  {isTyping && <TypingIndicator />}
-                </>
-              )}
-              <div ref={messagesEndRef} />
-            </div>
 
-            {/* Khung nhập tin nhắn */}
-            <div className="border-t p-3 md:p-4">
-              <div className="flex">
-                <input
-                  type="text"
-                  className="flex-1 border border-gray-300 rounded-l-lg px-3 md:px-4 py-2 text-sm md:text-base focus:outline-none focus:ring-2 focus:ring-opacity-50 focus:border-transparent"
-                  style={{ '--tw-ring-color': 'var(--orange-primary)' } as React.CSSProperties}
-                  placeholder="Nhập câu hỏi của bạn..."
-                  value={query}
-                  onChange={(e) => setQuery(e.target.value)}
-                  onKeyPress={handleKeyPress}
-                  disabled={isLoading}
-                  ref={inputRef}
-                />
-                <button
-                  className={`flex items-center justify-center px-3 md:px-4 py-2 rounded-r-lg send-button ${
-                    isLoading || !query.trim()
-                      ? 'bg-gray-300 cursor-not-allowed'
-                      : ''
-                  }`}
-                  onClick={sendMessage}
-                  disabled={isLoading || !query.trim()}
-                >
-                  {isLoading ? (
-                    <svg className="animate-spin h-4 w-4 md:h-5 md:w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                    </svg>
-                  ) : (
-                    <FaPaperPlane size={14} />
-                  )}
-                  <span className="ml-2 text-sm md:text-base">Gửi</span>
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Danh sách phiên chat - desktop */}
-        <div className="hidden md:block md:col-span-1">
-          <div className="border border-gray-200 rounded-lg shadow-sm h-[calc(100vh-150px)]">
-            <div className="flex items-center justify-between p-4 chat-header rounded-t-lg">
-              <div className="flex items-center">
-                <FaHistory className="text-white mr-2" size={16} />
-                <h3 className="text-lg font-medium">Lịch sử trò chuyện</h3>
-              </div>
-              <div className="flex items-center">
-                {localChatSessions.length > 0 && (
-                  <button 
-                    className="text-white hover:text-red-200 flex items-center mr-3"
-                    onClick={confirmAndClearAllHistory}
-                    title="Xóa tất cả lịch sử"
-                  >
-                    <FaTrash size={12} />
-                  </button>
-                )}
-                <button 
-                  className="text-xs text-white hover:text-gray-200 flex items-center"
-                  onClick={updateLocalChatSessions}
-                  disabled={isLoadingHistory}
-                >
-                  {isLoadingHistory ? (
-                    <div className="animate-spin rounded-full h-3 w-3 border-t-2 border-b-2 border-white mr-1"></div>
-                  ) : null}
-                  <span>Làm mới</span>
-                </button>
-              </div>
-            </div>
-            
-            <div className="overflow-auto h-[calc(100%-60px)] p-4">
-              <div className="space-y-3">
-                {isLoadingHistory && localChatSessions.length === 0 ? (
-                  <div className="flex flex-col items-center justify-center py-10">
-                    <div className="animate-spin rounded-full h-6 w-6 border-t-2 border-b-2 mb-2" style={{ borderColor: 'var(--orange-primary)' }}></div>
-                    <p className="text-gray-500 text-sm">Đang tải...</p>
+                {/* Main Welcome Content */}
+                <div className="flex-1 flex flex-col items-center justify-center max-w-4xl w-full">
+                  {/* Greeting */}
+                  <div className="text-center mb-12">
+                    <h1 className="text-4xl md:text-5xl font-bold text-blue-500 mb-4">
+                      {getDynamicGreeting().text} {getDynamicGreeting().emoji}
+                    </h1>
+                    <p className="text-xl md:text-2xl text-gray-700 font-medium">
+                      Mình có thể giúp gì cho bạn?
+                    </p>
                   </div>
-                ) : localChatSessions.length === 0 ? (
-                  <p className="text-gray-500 text-center py-4">
-                    Chưa có cuộc trò chuyện nào
-                  </p>
-                ) : (
-                  <>
-                    <h4 className="font-medium text-sm" style={{ color: 'var(--navy-blue)' }}>Lịch sử trò chuyện của bạn</h4>
-                    {localChatSessions.map((session) => (
-                      <div 
-                        key={session.session_id} 
-                        className={`border rounded-md p-3 cursor-pointer hover:shadow-sm transition-shadow session-item relative ${
-                          sessionId === session.session_id ? 'active' : ''
-                        }`}
-                      >
-                        <div className="absolute top-2 right-2">
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              confirmAndDeleteSession(session.session_id);
-                            }}
-                            className="text-gray-400 hover:text-red-600 transition-colors"
-                            title="Xóa cuộc trò chuyện này"
-                          >
-                            <FaTrash size={12} />
-                          </button>
-                        </div>
-                        <div 
-                          className="pr-6"
-                          onClick={() => loadChatSession(session.session_id)}
-                        >
-                          <div className="flex justify-between items-start mb-1">
-                            <h4 className="font-medium text-sm truncate">{session.title}</h4>
-                            <span className="text-xs text-gray-500">
-                              {new Date(session.timestamp).toLocaleDateString()}
-                            </span>
-                          </div>
-                          <div className="flex flex-col space-y-1">
-                            <div className="flex items-start">
-                              <span className="text-xs session-badge rounded-full px-2 py-0.5 mr-2">
-                                Cuộc hội thoại
-                              </span>
-                              <p className="text-xs text-gray-500 truncate flex-1">
-                                {session.preview}
-                              </p>
-                            </div>
-                          </div>
-                        </div>
+
+                  {/* Input Box - Centered */}
+                  <div className="w-full max-w-4xl mb-12">
+                    <div className="relative flex items-center bg-white border-2 border-blue-300 rounded-2xl shadow-md hover:shadow-lg hover:border-blue-400 transition-all duration-200">
+                      <input
+                        ref={inputRef}
+                        type="text"
+                        value={query}
+                        onChange={(e) => setQuery(e.target.value)}
+                        onKeyPress={handleKeyPress}
+                        placeholder="Nhập câu hỏi của bạn cho ChatBot FIT..."
+                        className="flex-1 px-6 py-4 bg-transparent border-0 focus:outline-none text-gray-800 placeholder-gray-500 text-lg"
+                        disabled={isLoading}
+                      />
+                      <div className="flex items-center mr-4 text-gray-400 text-sm">
+                        <span>0/1000</span>
+                        <div className="mx-3 w-px h-6 bg-gray-300"></div>
+                        <button className="p-1 hover:bg-gray-100 rounded transition-colors">
+                          <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.379-8.379-2.828-2.828z" />
+                          </svg>
+                        </button>
                       </div>
-                    ))}
-                  </>
-                )}
+                      <button
+                        className={`mr-3 p-3 rounded-xl transition-all duration-200 ${
+                          isLoading || !query.trim()
+                            ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                            : 'bg-blue-500 hover:bg-blue-600 text-white shadow-md hover:shadow-lg transform hover:scale-105'
+                        }`}
+                        onClick={sendMessage}
+                        disabled={isLoading || !query.trim()}
+                      >
+                        {isLoading ? (
+                          <div className="w-5 h-5 border-2 border-gray-400 border-t-transparent rounded-full animate-spin" />
+                        ) : (
+                          <FaPaperPlane size={16} />
+                        )}
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Suggested Questions */}
+                  <div className="w-full max-w-4xl">
+                    <div className="flex items-center mb-6">
+                      <div className="w-6 h-6 bg-orange-100 rounded-full flex items-center justify-center mr-3">
+                        <span className="text-orange-500 text-sm">✨</span>
+                      </div>
+                      <h3 className="text-gray-600 font-medium">Các câu hỏi phổ biến</h3>
+                    </div>
+                    
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <button
+                        onClick={() => handleSuggestionClick("Tôi muốn biết về học bổng của trường")}
+                        className="flex items-center p-4 bg-white border border-gray-200 rounded-xl hover:border-blue-300 hover:shadow-md transition-all duration-200 text-left group"
+                      >
+                        <div className="w-8 h-8 bg-yellow-100 rounded-full flex items-center justify-center mr-4 flex-shrink-0">
+                          <span className="text-yellow-600 text-lg">💡</span>
+                        </div>
+                        <span className="text-gray-700 group-hover:text-blue-600 transition-colors">
+                          Tôi muốn biết về học bổng của trường
+                        </span>
+                      </button>
+
+                      <button
+                        onClick={() => handleSuggestionClick("Có nên học ở HCMUTE không?")}
+                        className="flex items-center p-4 bg-white border border-gray-200 rounded-xl hover:border-blue-300 hover:shadow-md transition-all duration-200 text-left group"
+                      >
+                        <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center mr-4 flex-shrink-0">
+                          <span className="text-blue-600 text-lg">🎓</span>
+                        </div>
+                        <span className="text-gray-700 group-hover:text-blue-600 transition-colors">
+                          Có nên học ở HCMUTE không?
+                        </span>
+                      </button>
+
+                      <button
+                        onClick={() => handleSuggestionClick("Điểm chuẩn các ngành năm trước là bao nhiêu?")}
+                        className="flex items-center p-4 bg-white border border-gray-200 rounded-xl hover:border-blue-300 hover:shadow-md transition-all duration-200 text-left group"
+                      >
+                        <div className="w-8 h-8 bg-red-100 rounded-full flex items-center justify-center mr-4 flex-shrink-0">
+                          <span className="text-red-600 text-lg">⚠️</span>
+                        </div>
+                        <span className="text-gray-700 group-hover:text-blue-600 transition-colors">
+                          Điểm chuẩn các ngành năm trước là bao nhiêu?
+                        </span>
+                      </button>
+
+                      <button
+                        onClick={() => handleSuggestionClick("Ngành Công nghệ thông tin học những gì?")}
+                        className="flex items-center p-4 bg-white border border-gray-200 rounded-xl hover:border-blue-300 hover:shadow-md transition-all duration-200 text-left group"
+                      >
+                        <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center mr-4 flex-shrink-0">
+                          <span className="text-green-600 text-lg">💻</span>
+                        </div>
+                        <span className="text-gray-700 group-hover:text-blue-600 transition-colors">
+                          Ngành Công nghệ thông tin học những gì?
+                        </span>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ) : (
+              /* Chat Messages */
+              <div ref={messagesContainerRef} className="max-w-4xl mx-auto px-6 py-8">
+                {messages.map((msg, index) => (
+                  <MessageBubble key={index} message={msg} />
+                ))}
+                {(isTyping || isLoading) && <TypingIndicator />}
+                <div ref={messagesEndRef} />
+              </div>
+            )}
+          </div>
+
+          {/* Clean Input Area - Only show when there are messages */}
+          {messages.length > 0 && (
+            <div className="border-t border-gray-200 bg-white p-6 shadow-sm">
+              <div className="max-w-4xl mx-auto">
+                <div className="relative flex items-center bg-white border border-gray-300 rounded-2xl shadow-sm hover:shadow-md hover:border-gray-400 transition-all duration-200">
+                  <input
+                    ref={inputRef}
+                    type="text"
+                    value={query}
+                    onChange={(e) => setQuery(e.target.value)}
+                    onKeyPress={handleKeyPress}
+                    placeholder="Nhập câu hỏi của bạn cho ChatBot FIT..."
+                    className="flex-1 px-6 py-4 bg-transparent border-0 focus:outline-none text-gray-800 placeholder-gray-500 text-lg"
+                    disabled={isLoading}
+                  />
+                  <button
+                    className={`m-2 p-4 rounded-xl transition-all duration-200 ${
+                      isLoading || !query.trim()
+                        ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                        : 'bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white shadow-md hover:shadow-lg transform hover:scale-105'
+                    }`}
+                    onClick={sendMessage}
+                    disabled={isLoading || !query.trim()}
+                  >
+                    {isLoading ? (
+                      <div className="w-5 h-5 border-2 border-gray-400 border-t-transparent rounded-full animate-spin" />
+                    ) : (
+                      <FaPaperPlane size={18} />
+                    )}
+                  </button>
+                </div>
+                
+                {/* Professional Disclaimer */}
+                <p className="text-sm text-gray-500 text-center mt-4">
+                  ChatBot FIT có thể tạo ra thông tin không chính xác. Vui lòng kiểm tra thông tin quan trọng.
+                </p>
               </div>
             </div>
-          </div>
+          )}
         </div>
       </div>
     </div>
