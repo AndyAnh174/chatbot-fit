@@ -918,11 +918,15 @@ export function ChatbotPage() {
       <div className="group mb-8">
         {/* Human Message */}
         {message.role === 'human' ? (
-          <div className="flex justify-end">
+          <div className="flex justify-start">
             <div className="max-w-3xl w-full">
               {/* User Header */}
-              <div className="flex items-center justify-end mb-4">
-                <div className="flex items-center space-x-3 mr-4">
+              <div className="flex items-center justify-start mb-4">
+                <div className="flex items-center space-x-3 ml-4">
+                  <div className="w-10 h-10 bg-gray-900 text-white rounded-xl flex items-center justify-center shadow-md">
+                  <span className="text-sm font-bold">B</span>
+                </div>
+                  <span className="font-bold text-gray-900 text-base">FITer</span>
                   <span className="text-xs text-gray-500 font-medium">
                     {message.timestamp
                       ? new Date(message.timestamp).toLocaleTimeString('vi-VN', {
@@ -935,16 +939,12 @@ export function ChatbotPage() {
                         })
                     }
                   </span>
-                  <div className="w-10 h-10 bg-gray-900 text-white rounded-xl flex items-center justify-center shadow-md">
-                  <span className="text-sm font-bold">B</span>
-                </div>
-                  <span className="font-bold text-gray-900 text-base">FITer</span>
                 </div>
               
               </div>
 
               {/* User Message Content - Asymmetric layout */}
-              <div className="mr-14">
+              <div className="ml-14">
                 <div className="bg-white border border-gray-300 text-gray-900 rounded-2xl p-5 shadow-md transform hover:scale-[1.01] hover:border-gray-400 transition-all duration-300">
                   <p className="leading-relaxed text-base font-medium">{message.content}</p>
                 </div>
