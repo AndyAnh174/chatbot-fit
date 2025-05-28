@@ -29,129 +29,120 @@ export function AppNavbar({ children }: { children: React.ReactNode }) {
         }`}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-20">
+          <div className="flex items-center justify-between h-14">
+            {/* Left Side - Logos & Brand Text */}
             <div className="flex items-center">
-              <div className="flex-shrink-0">
-                <Link to="/" className="flex items-center group">
-                  <div className="flex items-center space-x-4">
-                    {/* Logo FIT */}
-                    <div className="relative">
-                      <img 
-                        src="./LogoDoanHoi.png" 
-                        alt="FIT HCMUTE Logo" 
-                        className="h-12 w-auto transform group-hover:scale-105 transition-all duration-300 drop-shadow-sm" 
-                      />
-                    </div>
-                    
-                    {/* Divider */}
-                    <div className="h-8 w-px bg-gray-300"></div>
-                    
-                    {/* Logo PTIC */}
-                    <div className="relative">
-                      <img 
-                        src="/PTIC.jpg" 
-                        alt="PTIC Logo" 
-                        className="h-12 w-auto transform group-hover:scale-105 transition-all duration-300 drop-shadow-sm rounded-lg" 
-                      />
-                    </div>
-                    
-                    {/* Brand Text */}
-                    <div className="hidden lg:flex flex-col">
-                      <span className="text-xl font-bold text-gray-900 group-hover:text-gray-700 transition-colors duration-300">
-                        ChatBot FIT
-                      </span>
-                      <span className="text-sm text-gray-600 font-medium">
-                        FIT HCMUTE × PTIC
-                      </span>
-                    </div>
+              <Link to="/" className="flex items-center group">
+                <div className="flex items-center space-x-3">
+                  {/* Logo FIT */}
+                  <div className="relative">
+                    <img 
+                      src="./LogoDoanHoi.png" 
+                      alt="FIT HCMUTE Logo" 
+                      className="h-8 w-auto transform group-hover:scale-105 transition-all duration-300 drop-shadow-sm" 
+                    />
                   </div>
-                </Link>
-              </div>
-              
-              <div className="hidden md:block">
-                <div className="ml-12 flex items-center space-x-8">
-                  <NavLink
-                    to="/"
-                    className={({ isActive }) => 
-                      `relative px-4 py-2 rounded-lg text-base font-semibold flex items-center transition-all duration-300 group ${
-                        isActive 
-                          ? "text-gray-900" 
-                          : "text-gray-600 hover:text-gray-900"
-                      }`
-                    }
-                  >
-                    {({ isActive }) => (
-                      <>
-                        <FaHome className="mr-2 text-lg" />
-                        <span>Home</span>
-                        {isActive && (
-                          <span className="absolute -bottom-1 left-0 w-full h-0.5 bg-gray-900 rounded-full" />
-                        )}
-                        {!isActive && (
-                          <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gray-900 rounded-full group-hover:w-full transition-all duration-300" />
-                        )}
-                      </>
-                    )}
-                  </NavLink>
                   
-                  <NavLink
-                    to="/chatbot"
-                    className={({ isActive }) => 
-                      `relative px-4 py-2 rounded-lg text-base font-semibold flex items-center transition-all duration-300 group ${
-                        isActive 
-                          ? "text-gray-900" 
-                          : "text-gray-600 hover:text-gray-900"
-                      }`
-                    }
-                  >
-                    {({ isActive }) => (
-                      <>
-                        <FaRobot className="mr-2 text-lg" />
-                        <span>FIT Chatbot</span>
-                        {isActive && (
-                          <span className="absolute -bottom-1 left-0 w-full h-0.5 bg-gray-900 rounded-full" />
-                        )}
-                        {!isActive && (
-                          <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gray-900 rounded-full group-hover:w-full transition-all duration-300" />
-                        )}
-                      </>
-                    )}
-                  </NavLink>
+                  {/* Divider */}
+                  <div className="h-5 w-px bg-gray-300"></div>
                   
-                  <NavLink
-                    to="/about"
-                    className={({ isActive }) => 
-                      `relative px-4 py-2 rounded-lg text-base font-semibold flex items-center transition-all duration-300 group ${
-                        isActive 
-                          ? "text-gray-900" 
-                          : "text-gray-600 hover:text-gray-900"
-                      }`
-                    }
-                  >
-                    {({ isActive }) => (
-                      <>
-                        <FaInfoCircle className="mr-2 text-lg" />
-                        <span>About</span>
-                        {isActive && (
-                          <span className="absolute -bottom-1 left-0 w-full h-0.5 bg-gray-900 rounded-full" />
-                        )}
-                        {!isActive && (
-                          <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gray-900 rounded-full group-hover:w-full transition-all duration-300" />
-                        )}
-                      </>
-                    )}
-                  </NavLink>
+                  {/* Logo PTIC */}
+                  <div className="relative">
+                    <img 
+                      src="/PTIC.jpg" 
+                      alt="PTIC Logo" 
+                      className="h-8 w-auto transform group-hover:scale-105 transition-all duration-300 drop-shadow-sm rounded-md" 
+                    />
+                  </div>
+                  
+                  {/* Brand Text */}
+                 
                 </div>
-              </div>
+              </Link>
+            </div>
+            
+            {/* Right Side - Navigation Links */}
+            <div className="hidden md:flex items-center space-x-4">
+              <NavLink
+                to="/"
+                className={({ isActive }) => 
+                  `relative px-3 py-1.5 rounded-lg text-sm font-semibold flex items-center transition-all duration-300 group ${
+                    isActive 
+                      ? "text-gray-900" 
+                      : "text-gray-600 hover:text-gray-900"
+                  }`
+                }
+              >
+                {({ isActive }) => (
+                  <>
+                    <FaHome className="mr-1.5 text-sm" />
+                    <span>Home</span>
+                    {isActive && (
+                      <span className="absolute -bottom-1 left-0 w-full h-0.5 bg-gray-900 rounded-full" />
+                    )}
+                    {!isActive && (
+                      <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gray-900 rounded-full group-hover:w-full transition-all duration-300" />
+                    )}
+                  </>
+                )}
+              </NavLink>
+              
+              <NavLink
+                to="/chatbot"
+                className={({ isActive }) => 
+                  `relative px-3 py-1.5 rounded-lg text-sm font-semibold flex items-center transition-all duration-300 group ${
+                    isActive 
+                      ? "text-gray-900" 
+                      : "text-gray-600 hover:text-gray-900"
+                  }`
+                }
+              >
+                {({ isActive }) => (
+                  <>
+                    <FaRobot className="mr-1.5 text-sm" />
+                    <span>Chatbot</span>
+                    {isActive && (
+                      <span className="absolute -bottom-1 left-0 w-full h-0.5 bg-gray-900 rounded-full" />
+                    )}
+                    {!isActive && (
+                      <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gray-900 rounded-full group-hover:w-full transition-all duration-300" />
+                    )}
+                  </>
+                )}
+              </NavLink>
+              
+              <NavLink
+                to="/about"
+                className={({ isActive }) => 
+                  `relative px-3 py-1.5 rounded-lg text-sm font-semibold flex items-center transition-all duration-300 group ${
+                    isActive 
+                      ? "text-gray-900" 
+                      : "text-gray-600 hover:text-gray-900"
+                  }`
+                }
+              >
+                {({ isActive }) => (
+                  <>
+                    <FaInfoCircle className="mr-1.5 text-sm" />
+                    <span>About</span>
+                    {isActive && (
+                      <span className="absolute -bottom-1 left-0 w-full h-0.5 bg-gray-900 rounded-full" />
+                    )}
+                    {!isActive && (
+                      <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gray-900 rounded-full group-hover:w-full transition-all duration-300" />
+                    )}
+                  </>
+                )}
+              </NavLink>
             </div>
             
             {/* Mobile menu button */}
             <div className="md:hidden">
               <button
                 onClick={() => setIsOpen(!isOpen)}
-                className="inline-flex items-center justify-center p-2 rounded-lg text-gray-700 hover:text-gray-900 hover:bg-gray-100 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-gray-300"
+                className="inline-flex items-center justify-center p-1.5 rounded-lg text-gray-700 hover:text-gray-900 hover:bg-gray-100 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-gray-300"
               >
-                {isOpen ? <FaTimes size={24} /> : <FaBars size={24} />}
+                {isOpen ? <FaTimes size={18} /> : <FaBars size={18} />}
               </button>
             </div>
           </div>
@@ -215,7 +206,7 @@ export function AppNavbar({ children }: { children: React.ReactNode }) {
       </nav>
 
       {/* Add padding to account for fixed navbar */}
-      <div className="h-20"></div>
+      <div className="h-14"></div>
 
       <main className="flex-1 bg-gray-50">
         {children || <Outlet />}
