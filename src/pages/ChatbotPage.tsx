@@ -391,6 +391,7 @@ export function ChatbotPage() {
   const [currentTime, setCurrentTime] = useState(new Date());
   const [wordCount, setWordCount] = useState(0);
   const [sessionStartTime, setSessionStartTime] = useState<Date | null>(null);
+  const [showQuickActionsDropdown, setShowQuickActionsDropdown] = useState(false);
 
 
   // Real-time clock update
@@ -2205,44 +2206,17 @@ export function ChatbotPage() {
             {/* Quick Actions Bar */}
             {messages.length > 0 && (
               <div className="max-w-4xl mx-auto px-4 pt-3">
-                <div className="flex items-center space-x-2 overflow-x-auto scrollbar-hide">
+                {/* Desktop: Hiển thị các nút như cũ */}
+                <div className="hidden md:flex items-center space-x-2 overflow-x-auto scrollbar-hide">
                   <span className="text-xs text-gray-500 font-medium whitespace-nowrap mr-2">Hành động nhanh:</span>
-                  
-                  <button
-                    onClick={() => setQuery("Giải thích điều này một cách đơn giản")}
-                    className="px-3 py-1.5 bg-blue-50 hover:bg-blue-100 text-blue-700 text-xs rounded-full border border-blue-200/60 transition-all duration-200 whitespace-nowrap min-h-8"
-                  >
-                    🔍 Giải thích đơn giản
-                  </button>
-                  
-                  <button
-                    onClick={() => setQuery("Cung cấp thêm chi tiết về điều này")}
-                    className="px-3 py-1.5 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 text-xs rounded-full border border-indigo-200/60 transition-all duration-200 whitespace-nowrap min-h-8"
-                  >
-                    📚 Thêm chi tiết
-                  </button>
-                  
-                  <button
-                    onClick={() => setQuery("Đâu là ưu và nhược điểm?")}
-                    className="px-3 py-1.5 bg-purple-50 hover:bg-purple-100 text-purple-700 text-xs rounded-full border border-purple-200/60 transition-all duration-200 whitespace-nowrap min-h-8"
-                  >
-                    ⚖️ Ưu & Nhược điểm
-                  </button>
-                  
-                  <button
-                    onClick={() => setQuery("Bạn có thể tóm tắt điều này không?")}
-                    className="px-3 py-1.5 bg-green-50 hover:bg-green-100 text-green-700 text-xs rounded-full border border-green-200/60 transition-all duration-200 whitespace-nowrap min-h-8"
-                  >
-                    📝 Tóm tắt
-                  </button>
-                  
-                  <button
-                    onClick={createNewSession}
-                    className="px-3 py-1.5 bg-gray-50 hover:bg-gray-100 text-gray-700 text-xs rounded-full border border-gray-200/60 transition-all duration-200 whitespace-nowrap min-h-8"
-                  >
-                    🔄 Cuộc trò chuyện mới
-                  </button>
+                  <button onClick={() => setQuery("Giải thích điều này một cách đơn giản")} className="px-3 py-1.5 bg-blue-50 hover:bg-blue-100 text-blue-700 text-xs rounded-full border border-blue-200/60 transition-all duration-200 whitespace-nowrap min-h-8">🔍 Giải thích đơn giản</button>
+                  <button onClick={() => setQuery("Cung cấp thêm chi tiết về điều này")} className="px-3 py-1.5 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 text-xs rounded-full border border-indigo-200/60 transition-all duration-200 whitespace-nowrap min-h-8">📚 Thêm chi tiết</button>
+                  <button onClick={() => setQuery("Đâu là ưu và nhược điểm?")} className="px-3 py-1.5 bg-purple-50 hover:bg-purple-100 text-purple-700 text-xs rounded-full border border-purple-200/60 transition-all duration-200 whitespace-nowrap min-h-8">⚖️ Ưu & Nhược điểm</button>
+                  <button onClick={() => setQuery("Bạn có thể tóm tắt điều này không?")} className="px-3 py-1.5 bg-green-50 hover:bg-green-100 text-green-700 text-xs rounded-full border border-green-200/60 transition-all duration-200 whitespace-nowrap min-h-8">📝 Tóm tắt</button>
+                  <button onClick={createNewSession} className="px-3 py-1.5 bg-gray-50 hover:bg-gray-100 text-gray-700 text-xs rounded-full border border-gray-200/60 transition-all duration-200 whitespace-nowrap min-h-8">🔄 Cuộc trò chuyện mới</button>
                 </div>
+                {/* Mobile: Dropdown */}
+               
               </div>
             )}
             
