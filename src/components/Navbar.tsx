@@ -44,7 +44,7 @@ export function AppNavbar({ children }: { children: React.ReactNode }) {
                   </div>
                   
                   {/* Divider */}
-                  <div className="h-5 w-px bg-gray-300"></div>
+               
                   
                   {/* Logo PTIC */}
                
