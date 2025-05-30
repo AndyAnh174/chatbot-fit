@@ -391,7 +391,7 @@ export function ChatbotPage() {
   const [currentTime, setCurrentTime] = useState(new Date());
   const [wordCount, setWordCount] = useState(0);
   const [sessionStartTime, setSessionStartTime] = useState<Date | null>(null);
-  const [showQuickActionsDropdown, setShowQuickActionsDropdown] = useState(false);
+  const [] = useState(false);
   const [showAllHistory, setShowAllHistory] = useState(false);
   const [showHistoryModal, setShowHistoryModal] = useState(false);
 

@@ -1,11 +1,6 @@
 import { Link } from 'react-router-dom';
 import { 
-  FaComment, 
-  FaLightbulb, 
   FaBrain, 
-  
-  FaUniversity, 
-  FaUsers, 
   FaArrowRight, 
   FaRobot,
   FaGraduationCap,
