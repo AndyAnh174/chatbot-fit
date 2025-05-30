@@ -2351,7 +2351,7 @@ export function ChatbotPage() {
             </button>
             <h3 className="text-lg font-bold mb-4 text-blue-700">Tất cả lịch sử trò chuyện</h3>
             <div className="max-h-[60vh] overflow-y-auto space-y-2">
-              {localChatSessions.map((session, sessionIndex) => {
+              {localChatSessions.map((session) => {
                 const isActive = sessionId === session.session_id;
                 const sessionDate = new Date(session.timestamp);
                 const now = new Date();
