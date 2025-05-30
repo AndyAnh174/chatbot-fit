@@ -47,13 +47,7 @@ export function AppNavbar({ children }: { children: React.ReactNode }) {
                   <div className="h-5 w-px bg-gray-300"></div>
                   
                   {/* Logo PTIC */}
-                  <div className="relative">
-                    <img 
-                      src="./PTIC.jpg" 
-                      alt="PTIC Logo" 
-                      className="h-12 w-auto transform group-hover:scale-105 transition-all duration-300 drop-shadow-sm rounded-md" 
-                    />
-                  </div>
+               
                   
                   {/* Brand Text */}
                  

@@ -112,7 +112,7 @@ const AboutPage = () => {
                   <span className="font-bold text-white">Khoa Công nghệ Thông tin - HCMUTE</span>{' '}
                   và{' '}
                   <a href="http://facebook.com/hcmute.ptic" target="_blank" rel="noopener noreferrer">
-    <span className="font-bold text-white">PTIC</span>
+    
   </a>
   {' '}
                   - Nơi công nghệ gặp gỡ sự đổi mới
@@ -679,9 +679,9 @@ const AboutPage = () => {
                   © {new Date().getFullYear()} <span className="font-semibold text-white">Trợ lý ảo Khoa CNTT</span> - Khoa Công nghệ Thông tin
                 </p>
                 <p className="text-gray-400">
-                  Trường Đại học Sư phạm Kỹ thuật TP.HCM × 
+                  Trường Đại học Sư phạm Kỹ thuật TP.HCM 
                   <a href="http://facebook.com/hcmute.ptic" target="_blank" rel="noopener noreferrer">
-    <span className="font-bold text-white">PTIC</span>
+    
   </a>
 
                 </p>

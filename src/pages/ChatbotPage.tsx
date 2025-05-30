@@ -392,6 +392,8 @@ export function ChatbotPage() {
   const [wordCount, setWordCount] = useState(0);
   const [sessionStartTime, setSessionStartTime] = useState<Date | null>(null);
   const [showQuickActionsDropdown, setShowQuickActionsDropdown] = useState(false);
+  const [showAllHistory, setShowAllHistory] = useState(false);
+  const [showHistoryModal, setShowHistoryModal] = useState(false);
 
 
   // Real-time clock update
@@ -1778,13 +1780,12 @@ export function ChatbotPage() {
               )
             ) : (
               <div className="space-y-1.5 md:space-y-2">
-                {localChatSessions.map((session, sessionIndex) => {
+                {(showAllHistory ? localChatSessions : localChatSessions.slice(0, 2)).map((session, sessionIndex) => {
                   const isActive = sessionId === session.session_id;
                   const sessionDate = new Date(session.timestamp);
                   const now = new Date();
                   const isToday = sessionDate.toDateString() === now.toDateString();
                   const isYesterday = new Date(now.getTime() - 24 * 60 * 60 * 1000).toDateString() === sessionDate.toDateString();
-                  
                   let timeLabel = '';
                   if (isToday) {
                     timeLabel = sessionDate.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' });
@@ -1793,7 +1794,7 @@ export function ChatbotPage() {
                   } else {
                     timeLabel = sessionDate.toLocaleDateString('vi-VN', { month: 'short', day: 'numeric' });
                   }
-
+                  // Đã xóa hoàn toàn badge huy chương
                   return (
                     <div
                       key={session.session_id}
@@ -1805,52 +1806,25 @@ export function ChatbotPage() {
                       onClick={() => loadChatSession(session.session_id)}
                       title={sidebarCollapsed ? session.preview || 'New conversation' : undefined}
                     >
-                      {/* Session Number Badge - Hidden on very small screens */}
-                      {!sidebarCollapsed && sessionIndex < 3 && (
-                        <div className={`absolute -top-1 -right-1 md:-top-2 md:-right-2 w-5 h-5 md:w-6 md:h-6 rounded-full flex items-center justify-center text-xs font-bold shadow-lg ${
-                          sessionIndex === 0 ? 'bg-gradient-to-r from-yellow-400 to-orange-400 text-white' :
-                          sessionIndex === 1 ? 'bg-gradient-to-r from-gray-300 to-gray-400 text-gray-700' :
-                          'bg-gradient-to-r from-amber-300 to-orange-300 text-amber-800'
-                        }`}>
-                          <span className="text-xs md:text-sm">
-                            {sessionIndex === 0 ? '🥇' : sessionIndex === 1 ? '🥈' : '🥉'}
-                          </span>
-                        </div>
-                      )}
-
+                      {/* Đã xóa hoàn toàn phần badge huy chương */}
                       <div className={`flex items-center ${sidebarCollapsed ? 'justify-center' : ''}`}>
                         {/* Enhanced Session Icon */}
                         <div className={`${sidebarCollapsed ? 'w-8 h-8 md:w-10 md:h-10' : 'w-9 h-9 md:w-11 md:h-11'} bg-gradient-to-br from-blue-500 via-indigo-500 to-purple-600 rounded-xl md:rounded-2xl flex items-center justify-center ${sidebarCollapsed ? '' : 'mr-3 md:mr-4'} flex-shrink-0 shadow-lg group-hover:shadow-xl transition-all duration-300 ${isActive ? 'ring-1 md:ring-2 ring-blue-300/60' : ''}`}>
                           <FaRobot className="text-white text-sm md:text-base" />
                         </div>
-
                         {!sidebarCollapsed && (
                           <div className="flex-1 min-w-0">
                             {/* Session Title */}
                             <div className="flex items-center justify-between mb-1">
-                              <h4 className={`text-sm font-bold truncate pr-2 ${isActive ? 'text-blue-700' : 'text-gray-800'}`}>
-                                {session.preview || 'New conversation'}
-                              </h4>
-                              <span className={`text-xs font-medium px-2 py-1 rounded-full ${
-                                isActive ? 'bg-blue-100 text-blue-600' : 'bg-gray-100 text-gray-600'
-                              }`}>
-                                {timeLabel}
-                              </span>
+                              <h4 className={`text-sm font-bold truncate pr-2 ${isActive ? 'text-blue-700' : 'text-gray-800'}`}>{session.preview || 'New conversation'}</h4>
+                              <span className={`text-xs font-medium px-2 py-1 rounded-full ${isActive ? 'bg-blue-100 text-blue-600' : 'bg-gray-100 text-gray-600'}`}>{timeLabel}</span>
                             </div>
-
                             {/* Session Metadata */}
                             <div className="flex items-center justify-between">
                               <div className="flex items-center space-x-2">
                                 <div className={`w-2 h-2 rounded-full ${isActive ? 'bg-green-400 animate-pulse' : 'bg-gray-300'}`}></div>
-                                <span className="text-xs text-gray-500 font-medium">
-                                  {sessionDate.toLocaleDateString('vi-VN', { 
-                                    month: 'short', 
-                                    day: 'numeric',
-                                    year: sessionDate.getFullYear() !== now.getFullYear() ? 'numeric' : undefined
-                                  })}
-                                </span>
+                                <span className="text-xs text-gray-500 font-medium">{sessionDate.toLocaleDateString('vi-VN', { month: 'short', day: 'numeric', year: sessionDate.getFullYear() !== now.getFullYear() ? 'numeric' : undefined })}</span>
                               </div>
-                              
                               {/* Action Buttons */}
                               <div className="flex items-center space-x-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
                                 {isActive && (
@@ -1870,22 +1844,35 @@ export function ChatbotPage() {
                                 </button>
                               </div>
                             </div>
-
                             {/* Preview Text */}
                             <div className="mt-2 px-3 py-2 bg-white/60 rounded-lg border border-gray-100">
-                              <p className="text-xs text-gray-600 leading-relaxed line-clamp-2">
-                                {session.preview || 'No preview available'}
-                              </p>
+                              <p className="text-xs text-gray-600 leading-relaxed line-clamp-2">{session.preview || 'No preview available'}</p>
                             </div>
                           </div>
                         )}
                       </div>
-
                       {/* Hover Effect Overlay */}
                       <div className={`absolute inset-0 rounded-2xl bg-gradient-to-r from-blue-500/5 to-indigo-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none ${isActive ? 'opacity-20' : ''}`}></div>
                     </div>
                   );
                 })}
+                {/* Nút Xem thêm/Ẩn bớt */}
+                {localChatSessions.length > 2 && (
+                  <div className="flex justify-center mt-2">
+                    <button
+                      className="px-3 py-1 bg-gray-100 hover:bg-blue-100 text-blue-700 rounded-full text-xs font-medium border border-blue-100 transition-all duration-200"
+                      onClick={() => {
+                        if (window.innerWidth >= 1024) {
+                          setShowHistoryModal(true);
+                        } else {
+                          setShowAllHistory(v => !v);
+                        }
+                      }}
+                    >
+                      {showAllHistory || showHistoryModal ? 'Ẩn bớt' : `Xem thêm (${localChatSessions.length - 2} cuộc trò chuyện...)`}
+                    </button>
+                  </div>
+                )}
               </div>
             )}
           </div>
@@ -2351,6 +2338,67 @@ export function ChatbotPage() {
 
       {/* Keyboard Shortcuts Modal */}
       <KeyboardShortcutsModal />
+
+      {/* Modal hiển thị toàn bộ lịch sử chat trên PC */}
+      {showHistoryModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
+          <div className="bg-white rounded-2xl shadow-2xl max-w-lg w-full p-6 relative">
+            <button
+              className="absolute top-3 right-3 p-2 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-600"
+              onClick={() => setShowHistoryModal(false)}
+            >
+              <FaTimes size={16} />
+            </button>
+            <h3 className="text-lg font-bold mb-4 text-blue-700">Tất cả lịch sử trò chuyện</h3>
+            <div className="max-h-[60vh] overflow-y-auto space-y-2">
+              {localChatSessions.map((session, sessionIndex) => {
+                const isActive = sessionId === session.session_id;
+                const sessionDate = new Date(session.timestamp);
+                const now = new Date();
+                const isToday = sessionDate.toDateString() === now.toDateString();
+                const isYesterday = new Date(now.getTime() - 24 * 60 * 60 * 1000).toDateString() === sessionDate.toDateString();
+                let timeLabel = '';
+                if (isToday) {
+                  timeLabel = sessionDate.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' });
+                } else if (isYesterday) {
+                  timeLabel = 'Yesterday';
+                } else {
+                  timeLabel = sessionDate.toLocaleDateString('vi-VN', { month: 'short', day: 'numeric' });
+                }
+                return (
+                  <div
+                    key={session.session_id}
+                    className={`group relative p-3 rounded-xl cursor-pointer transition-all duration-300 ${isActive ? 'bg-blue-50 border-2 border-blue-200/60' : 'hover:bg-gray-50 border border-transparent'}`}
+                    onClick={() => {
+                      loadChatSession(session.session_id);
+                      setShowHistoryModal(false);
+                    }}
+                  >
+                    <div className="flex items-center">
+                      <div className="w-8 h-8 bg-gradient-to-br from-blue-500 via-indigo-500 to-purple-600 rounded-xl flex items-center justify-center mr-3 shadow-lg">
+                        <FaRobot className="text-white text-base" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center justify-between mb-1">
+                          <h4 className={`text-sm font-bold truncate pr-2 ${isActive ? 'text-blue-700' : 'text-gray-800'}`}>{session.preview || 'New conversation'}</h4>
+                          <span className={`text-xs font-medium px-2 py-1 rounded-full ${isActive ? 'bg-blue-100 text-blue-600' : 'bg-gray-100 text-gray-600'}`}>{timeLabel}</span>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <div className={`w-2 h-2 rounded-full ${isActive ? 'bg-green-400 animate-pulse' : 'bg-gray-300'}`}></div>
+                          <span className="text-xs text-gray-500 font-medium">{sessionDate.toLocaleDateString('vi-VN', { month: 'short', day: 'numeric', year: sessionDate.getFullYear() !== now.getFullYear() ? 'numeric' : undefined })}</span>
+                        </div>
+                        <div className="mt-2 px-3 py-2 bg-white/60 rounded-lg border border-gray-100">
+                          <p className="text-xs text-gray-600 leading-relaxed line-clamp-2">{session.preview || 'No preview available'}</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 } 

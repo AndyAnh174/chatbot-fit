@@ -316,121 +316,10 @@ const HomePage = () => {
         </div>
 
         {/* CTA Section */}
-        <div className="py-24 bg-gradient-to-br from-gray-900 to-black">
-          <div className="container mx-auto px-6 text-center">
-            <motion.div
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true }}
-              variants={staggerContainer}
-              className="max-w-4xl mx-auto"
-            >
-              <motion.h2 variants={fadeInUp} className="text-4xl md:text-5xl font-bold text-white mb-8">
-                Sẵn sàng khám phá?
-              </motion.h2>
-              <motion.p variants={fadeInUp} className="text-xl text-gray-300 mb-12 max-w-3xl mx-auto">
-                Hãy bắt đầu trò chuyện với Trợ lý ảo Khoa CNTT ngay hôm nay và trải nghiệm sự tiện lợi của trợ lý AI thông minh
-              </motion.p>
-              <motion.div variants={fadeInUp}>
-                <Link 
-                  to="/chatbot" 
-                  className="inline-flex items-center px-10 py-4 bg-white text-gray-900 rounded-full font-semibold text-xl hover:bg-gray-100 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105"
-                >
-                  <FaComment className="mr-3 text-2xl text-blue-500" />
-                  Trò chuyện ngay
-                  <FaArrowRight className="ml-3" />
-                </Link>
-              </motion.div>
-            </motion.div>
-          </div>
-        </div>
+       
 
         {/* About Section */}
-        <div className="py-24 bg-gray-50">
-          <div className="container mx-auto px-6">
-            <div className="max-w-6xl mx-auto">
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-                {/* Left Content */}
-                <motion.div
-                  initial={{ opacity: 0, x: -30 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.8 }}
-                >
-                  <div className="flex items-center mb-6">
-                    <FaUniversity className="text-3xl text-blue-500 mr-4" />
-                    <h2 className="text-3xl md:text-4xl font-bold text-gray-900">
-                      Về chúng tôi
-                    </h2>
-                  </div>
-                  <h3 className="text-xl font-semibold text-gray-700 mb-6">
-                    Khoa Công nghệ Thông tin × PTIC
-                  </h3>
-                  <p className="text-lg text-gray-600 mb-6 leading-relaxed">
-                    Trợ lý ảo Khoa CNTT là sản phẩm được phát triển bởi sự hợp tác giữa{' '}
-                    <span className="font-semibold text-gray-900">Khoa Công nghệ Thông tin - HCMUTE</span>{' '}
-                    và{' '}
-                    <span className="font-semibold text-gray-900">PTIC (Pioneers of Technology and Innovation Club)</span>.
-                  </p>
-                  <p className="text-lg text-gray-600 mb-8 leading-relaxed">
-                    Chúng tôi cam kết mang đến trải nghiệm tốt nhất cho sinh viên, giảng viên và những ai quan tâm đến Khoa CNTT.
-                  </p>
-                  <div className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
-                    <a 
-                      href="https://fit.hcmute.edu.vn" 
-                      target="_blank" 
-                      rel="noopener noreferrer" 
-                      className="inline-flex items-center px-6 py-3 bg-blue-500 text-white rounded-lg font-semibold hover:bg-blue-600 transition-colors"
-                    >
-                      Website Khoa CNTT
-                      <FaArrowRight className="ml-2" />
-                    </a>
-                    <Link 
-                      to="/about" 
-                      className="inline-flex items-center px-6 py-3 border-2 border-gray-300 text-gray-700 rounded-lg font-semibold hover:border-gray-400 hover:text-gray-900 transition-colors"
-                    >
-                      Tìm hiểu thêm
-                    </Link>
-                  </div>
-                </motion.div>
-
-                {/* Right Content */}
-                <motion.div
-                  initial={{ opacity: 0, x: 30 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.8 }}
-                  className="relative"
-                >
-                  <div className="bg-white p-8 rounded-2xl shadow-xl border border-gray-100">
-                    <div className="grid grid-cols-2 gap-6">
-                      <div className="text-center p-4 bg-blue-50 rounded-xl">
-                        <FaUsers className="text-3xl text-blue-500 mx-auto mb-3" />
-                        <div className="text-2xl font-bold text-gray-900">1000+</div>
-                        <div className="text-sm text-gray-600">Sinh viên</div>
-                      </div>
-                      <div className="text-center p-4 bg-green-50 rounded-xl">
-                        <FaGraduationCap className="text-3xl text-green-500 mx-auto mb-3" />
-                        <div className="text-2xl font-bold text-gray-900">50+</div>
-                        <div className="text-sm text-gray-600">Giảng viên</div>
-                      </div>
-                      <div className="text-center p-4 bg-purple-50 rounded-xl">
-                        <FaBookOpen className="text-3xl text-purple-500 mx-auto mb-3" />
-                        <div className="text-2xl font-bold text-gray-900">20+</div>
-                        <div className="text-sm text-gray-600">Chuyên ngành</div>
-                      </div>
-                      <div className="text-center p-4 bg-red-50 rounded-xl">
-                        <FaLightbulb className="text-3xl text-red-500 mx-auto mb-3" />
-                        <div className="text-2xl font-bold text-gray-900">100+</div>
-                        <div className="text-sm text-gray-600">Dự án</div>
-                      </div>
-                    </div>
-                  </div>
-                </motion.div>
-              </div>
-            </div>
-          </div>
-        </div>
+ 
 
         {/* Footer */}
         <footer className="bg-gray-900 text-white py-12">
@@ -443,9 +332,7 @@ const HomePage = () => {
               <p className="text-lg text-gray-300 mb-4">
                 © {new Date().getFullYear()} Khoa Công nghệ Thông tin - Trường Đại học Sư phạm Kỹ thuật TP.HCM
               </p>
-              <p className="text-gray-400">
-              Developed by HCM UTE Pioneers of Technology and Innovation Club
-              </p>
+              
             </div>
           </div>
         </footer>
