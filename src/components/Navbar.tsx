@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link, NavLink, Outlet } from 'react-router-dom';
-import { FaBars, FaTimes, FaRobot, FaHome, FaInfoCircle } from 'react-icons/fa';
+import { FaBars, FaTimes, FaRobot, FaHome, FaInfoCircle, FaUserShield } from 'react-icons/fa';
 import logoCNTT from '../assets/logo-cntt2021.png';
 
 export function AppNavbar({ children }: { children: React.ReactNode }) {
@@ -152,6 +152,31 @@ export function AppNavbar({ children }: { children: React.ReactNode }) {
                       </>
                     )}
                   </NavLink>
+                  
+                  <NavLink
+                    to="/admin/login"
+                    className={({ isActive }) => 
+                      `relative px-4 py-2 rounded-lg text-base font-semibold flex items-center transition-all duration-300 group ${
+                        isActive 
+                          ? "text-gray-900" 
+                          : "text-gray-600 hover:text-gray-900"
+                      }`
+                    }
+                    onClick={handleScrollToTop}
+                  >
+                    {({ isActive }) => (
+                      <>
+                        <FaUserShield className="mr-2 text-lg" />
+                        <span>Admin</span>
+                        {isActive && (
+                          <span className="absolute -bottom-1 left-0 w-full h-0.5 bg-gray-900 rounded-full" />
+                        )}
+                        {!isActive && (
+                          <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gray-900 rounded-full group-hover:w-full transition-all duration-300" />
+                        )}
+                      </>
+                    )}
+                  </NavLink>
                 </div>
               </div>
             </div>
@@ -229,6 +254,24 @@ export function AppNavbar({ children }: { children: React.ReactNode }) {
             >
               <FaInfoCircle className="mr-3 text-lg" />
               <span>Giới thiệu</span>
+            </NavLink>
+            
+            <NavLink
+              to="/admin/login"
+              className={({ isActive }) => 
+                `block px-4 py-3 rounded-lg text-base font-medium flex items-center transition-all duration-300 ${
+                  isActive 
+                    ? "text-gray-900 bg-gray-100" 
+                    : "text-gray-600 hover:text-gray-900 hover:bg-gray-50"
+                }`
+              }
+              onClick={() => {
+                setIsOpen(false);
+                handleScrollToTop();
+              }}
+            >
+              <FaUserShield className="mr-3 text-lg" />
+              <span>Admin</span>
             </NavLink>
           </div>
         </div>
