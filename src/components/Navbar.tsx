@@ -66,11 +66,11 @@ export function AppNavbar({ children }: { children: React.ReactNode }) {
                     {/* Brand Text */}
                     <div className="hidden lg:flex flex-col">
                       <span className="text-xl font-bold text-gray-900 group-hover:text-gray-700 transition-colors duration-300">
-                        ChatBot FIT
+                        ChatBot HCM UTE RTIC
                       </span>
-                      <span className="text-sm text-gray-600 font-medium">
-                        FIT HCMUTE × PTIC
-                      </span>
+                                              <span className="text-sm text-gray-600 font-medium">
+                          FIT HCMUTE × HCM UTE RTIC
+                        </span>
                     </div>
                   </div>
                 </Link>

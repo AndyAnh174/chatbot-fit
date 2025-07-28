@@ -3,15 +3,15 @@
 :root {
   --navy-blue: #1A2A48;
   --navy-lighter: #122640;
-  --orange-primary: #EA5B21;
-  --orange-lighter: #F47B4F;
-  --orange-dark: #C74A1A;
+  --blue-primary: #2563EB;
+  --blue-lighter: #3B82F6;
+  --blue-dark: #1D4ED8;
   --gray-light: #F6F8FA;
   --text-light: #FFFFFF;
   --border-light: #2D3F55;
   --red-primary: #DB4437;
-  --blue-primary: #4285F4;
   --green-primary: #0F9D58;
+  --purple-primary: #7C3AED;
 }
 
 /* Hiệu ứng đang nhập (3 chấm) */
@@ -26,7 +26,7 @@
   width: 6px;
   height: 6px;
   margin-right: 3px;
-  background-color: var(--orange-primary);
+  background-color: var(--blue-primary);
   border-radius: 50%;
   animation: bounce 1.4s infinite ease-in-out;
 }
@@ -60,14 +60,14 @@
     border-right-color: transparent;
   }
   50% {
-    border-right-color: var(--orange-primary);
+    border-right-color: var(--blue-primary);
   }
 }
 
 .streaming-content p:last-child::after {
   content: "|";
   display: inline-block;
-  color: var(--orange-primary);
+  color: var(--blue-primary);
   animation: cursor-blink 0.8s infinite;
   margin-left: 1px;
   font-weight: normal;
@@ -115,8 +115,8 @@
 
 .markdown-content blockquote {
   @apply border-l-4 pl-4 italic my-3;
-  border-color: var(--orange-primary);
-  background-color: #FFF8F4;
+  border-color: var(--blue-primary);
+  background-color: #EFF6FF;
 }
 
 .markdown-content table {
@@ -138,13 +138,13 @@
 }
 
 .markdown-content a {
-  color: var(--orange-primary);
+  color: var(--blue-primary);
   @apply underline hover:opacity-80;
 }
 
 /* Các style cho giao diện chatbot */
 .chat-header {
-  background-color: var(--orange-primary);
+  background-color: var(--blue-primary);
   color: white;
 }
 
@@ -159,12 +159,12 @@
 }
 
 .send-button {
-  background-color: var(--orange-primary);
+  background-color: var(--blue-primary);
   color: white;
 }
 
 .send-button:hover {
-  background-color: #e09e00;
+  background-color: var(--blue-dark);
 }
 
 .send-button:disabled {
@@ -172,25 +172,25 @@
 }
 
 .new-chat-button {
-  color: var(--orange-primary);
-  border-color: var(--orange-primary);
+  color: var(--blue-primary);
+  border-color: var(--blue-primary);
 }
 
 .new-chat-button:hover {
-  background-color: #FFF1EB;
+  background-color: #EFF6FF;
 }
 
 .session-item:hover {
-  border-color: var(--orange-primary);
+  border-color: var(--blue-primary);
 }
 
 .session-item.active {
-  background-color: #FFF1EB;
-  border-color: var(--orange-primary);
+  background-color: #EFF6FF;
+  border-color: var(--blue-primary);
 }
 
 .session-badge {
-  background-color: var(--orange-primary);
+  background-color: var(--blue-primary);
   color: white;
   font-size: 0.65rem;
 }

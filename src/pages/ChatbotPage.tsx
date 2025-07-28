@@ -543,7 +543,7 @@ export function ChatbotPage() {
             <FaRobot size={16} />
           </div>
           <div className="flex items-center space-x-3">
-            <span className="font-semibold text-gray-800 text-base">ChatBot FIT</span>
+                            <span className="font-semibold text-gray-800 text-base">ChatBot HCM UTE RTIC</span>
             <span className="text-xs bg-gray-50 text-gray-600 px-3 py-1.5 rounded-full border border-gray-200 font-medium">
               Đang phản hồi
             </span>
@@ -966,7 +966,7 @@ export function ChatbotPage() {
                   <FaRobot size={18} />
                 </div>
                 <div className="flex items-center space-x-3">
-                  <span className="font-bold text-gray-900 text-base">ChatBot FIT</span>
+                  <span className="font-bold text-gray-900 text-base">ChatBot HCM UTE RTIC</span>
                   <span className="text-xs bg-gradient-to-r from-blue-50 to-indigo-50 text-blue-700 px-3 py-1.5 rounded-full border border-blue-200 font-medium shadow-sm">
                     Trợ lý AI thông minh
                   </span>
@@ -1083,7 +1083,7 @@ export function ChatbotPage() {
                   {/* Content Footer with actions */}
                   <div className="bg-gray-50 px-5 py-3 border-t border-gray-100">
                     <div className="flex items-center justify-between text-xs text-gray-500">
-                      <span>Được tạo bởi ChatBot FIT</span>
+                      <span>Được tạo bởi ChatBot HCM UTE RTIC</span>
                       <div className="flex items-center space-x-3">
                        
                       </div>
@@ -1210,7 +1210,7 @@ export function ChatbotPage() {
                 <FaRobot className="text-white text-xl" />
               </div>
               <div>
-                <h2 className="font-bold text-lg text-gray-800">ChatBot FIT</h2>
+                <h2 className="font-bold text-lg text-gray-800">ChatBot HCM UTE RTIC</h2>
                 <p className="text-xs text-gray-500">Trợ lý AI thông minh</p>
               </div>
             </div>
@@ -1318,7 +1318,7 @@ export function ChatbotPage() {
               <FaHistory size={18} className="text-gray-600" />
             </button>
             <div className="text-center">
-              <h1 className="font-bold text-lg text-gray-800">ChatBot FIT</h1>
+                              <h1 className="font-bold text-lg text-gray-800">ChatBot HCM UTE RTIC</h1>
               <p className="text-xs text-gray-500">Trợ lý AI thông minh</p>
             </div>
             <button
@@ -1343,7 +1343,7 @@ export function ChatbotPage() {
                     <div>
                       <h3 className="font-bold text-amber-800 mb-2 text-base">Phiên bản Beta</h3>
                       <p className="text-amber-700 leading-relaxed text-sm">
-                        Chào mừng bạn đến với ChatBot FIT - Trợ lý AI tiên tiến của Khoa CNTT - HCMUTE. 
+                        Chào mừng bạn đến với ChatBot HCM UTE RTIC - Trợ lý AI tiên tiến của Khoa CNTT - HCMUTE. 
                         Đây là phiên bản thử nghiệm, vui lòng góp ý qua{' '}
                         <a 
                           href="https://forms.gle/Kz7WFbVmEhMjkMB3A" 
@@ -1379,7 +1379,7 @@ export function ChatbotPage() {
                         value={query}
                         onChange={handleInputChange}
                         onKeyPress={handleKeyPress}
-                        placeholder="Nhập câu hỏi của bạn cho ChatBot FIT..."
+                        placeholder="Nhập câu hỏi của bạn cho ChatBot HCM UTE RTIC..."
                         className="flex-1 px-6 py-4 bg-transparent border-0 focus:outline-none text-gray-800 placeholder-gray-500 text-lg"
                         disabled={isLoading}
                         maxLength={MAX_INPUT_LENGTH}
@@ -1497,7 +1497,7 @@ export function ChatbotPage() {
                     value={query}
                     onChange={handleInputChange}
                     onKeyPress={handleKeyPress}
-                    placeholder="Nhập câu hỏi của bạn cho ChatBot FIT..."
+                    placeholder="Nhập câu hỏi của bạn cho ChatBot HCM UTE RTIC..."
                     className="flex-1 px-6 py-4 bg-transparent border-0 focus:outline-none text-gray-800 placeholder-gray-500 text-lg"
                     disabled={isLoading}
                     maxLength={MAX_INPUT_LENGTH}
@@ -1521,7 +1521,7 @@ export function ChatbotPage() {
                 
                 {/* Professional Disclaimer */}
                 <p className="text-sm text-gray-500 text-center mt-4">
-                  ChatBot FIT có thể tạo ra thông tin không chính xác. Vui lòng kiểm tra thông tin quan trọng.
+                  ChatBot HCM UTE RTIC có thể tạo ra thông tin không chính xác. Vui lòng kiểm tra thông tin quan trọng.
                 </p>
               </div>
             </div>

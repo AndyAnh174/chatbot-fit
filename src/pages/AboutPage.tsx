@@ -1,3 +1,4 @@
+import React from 'react';
 import { 
   FaCog, 
   FaLightbulb, 
@@ -12,13 +13,13 @@ import {
   FaEnvelope,
   FaGlobe,
   FaCheckCircle,
-  FaQuoteLeft
+  FaQuoteLeft,
+  FaShieldAlt
 } from 'react-icons/fa';
 import { motion } from 'framer-motion';
-import logoCNTT from '../assets/logo-cntt2021.png';
 
 
-const AboutPage = () => {
+const AboutPage: React.FC = () => {
   const fadeInUp = {
     hidden: { opacity: 0, y: 30 },
     visible: { opacity: 1, y: 0 }
@@ -99,19 +100,17 @@ const AboutPage = () => {
             {/* Main Title */}
             <motion.div variants={fadeInUp} className="mb-12">
               <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold text-white mb-8 leading-tight">
-                ChatBot FIT
+                ChatBot HCM UTE RTIC
                 <span className="block bg-gradient-to-r from-blue-400 via-purple-400 to-cyan-400 bg-clip-text text-transparent">
                   Trí tuệ nhân tạo
                 </span>
               </h1>
               <p className="text-xl md:text-2xl text-gray-300 leading-relaxed max-w-4xl mx-auto">
                 Được phát triển bởi{' '}
-                <span className="font-bold text-white">Khoa Công nghệ Thông tin - HCMUTE</span>{' '}
-                và{' '}
-                <a href="http://facebook.com/hcmute.ptic" target="_blank" rel="noopener noreferrer">
-  <span className="font-bold text-white">PTIC</span>
-</a>
-{' '}
+                <span className="font-bold text-white">HCM UTE Research on Technology and Innovation Club</span>{' '}
+                với sự hỗ trợ của{' '}
+                <span className="font-bold text-white">CLB An toàn Thông tin (ATTT)</span>
+                {' '}
                 - Nơi công nghệ gặp gỡ sự đổi mới
               </p>
             </motion.div>
@@ -160,7 +159,7 @@ const AboutPage = () => {
                 <span className="text-gray-800 font-semibold">Về dự án</span>
               </div>
               <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-8">
-                ChatBot FIT
+                ChatBot HCM UTE RTIC
                
               </h2>
               <p className="text-xl md:text-2xl text-gray-600 max-w-4xl mx-auto leading-relaxed">
@@ -183,7 +182,7 @@ const AboutPage = () => {
                   
                   <div className="space-y-6 text-gray-600 text-lg leading-relaxed">
                     <p>
-                      Dự án ChatBot FIT ra đời với sứ mệnh cách mạng hóa cách thức tương tác 
+                      Dự án ChatBot HCM UTE RTIC ra đời với sứ mệnh cách mạng hóa cách thức tương tác 
                       và tra cứu thông tin trong môi trường giáo dục đại học.
                     </p>
                     <p>
@@ -437,7 +436,7 @@ const AboutPage = () => {
       </div>
 
       {/* Team Section */}
-   
+     
 
       {/* Partner Section */}
       <div className="py-32 bg-white relative overflow-hidden">
@@ -474,41 +473,39 @@ const AboutPage = () => {
               <div className="bg-white/80 backdrop-blur-xl rounded-3xl p-12 border border-gray-200/50 shadow-2xl hover:shadow-3xl transition-all duration-500 group">
                 {/* Logo Section */}
                 <div className="text-center mb-10">
-                  <div className="inline-block p-8 bg-gradient-to-br from-blue-50 to-purple-50 rounded-3xl group-hover:scale-105 transition-transform duration-500">
-                    <img 
-                      src={logoCNTT} 
-                      alt="Khoa CNTT - HCMUTE" 
-                      className="max-h-32 mx-auto drop-shadow-lg"
-                    />
+                  <div className="inline-block p-8 bg-gradient-to-br from-red-50 to-orange-50 rounded-3xl group-hover:scale-105 transition-transform duration-500">
+                    <div className="w-32 h-32 bg-gradient-to-br from-red-500 to-orange-500 rounded-full flex items-center justify-center mx-auto">
+                      <FaShieldAlt className="text-white text-4xl" />
+                    </div>
                   </div>
                 </div>
                 
                 {/* Content */}
                 <div className="text-center">
-                  <h3 className="text-3xl md:text-4xl font-bold text-gray-900 mb-6 group-hover:text-blue-600 transition-colors duration-300">
-                    Khoa Công nghệ Thông tin - HCMUTE
+                  <h3 className="text-3xl md:text-4xl font-bold text-gray-900 mb-6 group-hover:text-red-600 transition-colors duration-300">
+                    CLB An toàn Thông tin (ATTT)
                   </h3>
                   <p className="text-lg text-gray-600 max-w-3xl mx-auto leading-relaxed mb-8">
-                    Đối tác chính cung cấp dữ liệu, tài nguyên, kiến thức chuyên môn và định hướng phát triển dự án 
-                    phù hợp với nhu cầu thực tế của sinh viên và giảng viên.
+                    Đối tác hỗ trợ chuyên về bảo mật và an toàn thông tin, cung cấp tư vấn bảo mật, 
+                    hỗ trợ pentest web và chia sẻ kinh nghiệm trong lĩnh vực cybersecurity.
                   </p>
                   
                   {/* Partnership Benefits */}
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-10">
-                    <div className="p-6 bg-blue-50 rounded-2xl">
-                      <FaBookOpen className="text-3xl text-blue-500 mx-auto mb-4" />
-                      <h4 className="font-bold text-gray-900 mb-2">Cung cấp dữ liệu</h4>
-                      <p className="text-gray-600 text-sm">Thông tin chính thức và cập nhật</p>
+                    <div className="p-6 bg-red-50 rounded-2xl">
+                      <FaShieldAlt className="text-3xl text-red-500 mx-auto mb-4" />
+                      <h4 className="font-bold text-gray-900 mb-2">Bảo mật & Pentest</h4>
+                      <p className="text-gray-600 text-sm">Tư vấn và thực hiện kiểm thử bảo mật web</p>
                     </div>
-                    <div className="p-6 bg-green-50 rounded-2xl">
-                      <FaUsers className="text-3xl text-green-500 mx-auto mb-4" />
-                      <h4 className="font-bold text-gray-900 mb-2">Hỗ trợ kỹ thuật</h4>
-                      <p className="text-gray-600 text-sm">Tư vấn chuyên môn và định hướng</p>
+                    <div className="p-6 bg-orange-50 rounded-2xl">
+                      <FaUsers className="text-3xl text-orange-500 mx-auto mb-4" />
+                      <h4 className="font-bold text-gray-900 mb-2">Hỗ trợ phát triển</h4>
+                      <p className="text-gray-600 text-sm">Chia sẻ kinh nghiệm và kiến thức chuyên môn</p>
                     </div>
-                    <div className="p-6 bg-purple-50 rounded-2xl">
-                      <FaRocket className="text-3xl text-purple-500 mx-auto mb-4" />
-                      <h4 className="font-bold text-gray-900 mb-2">Triển khai</h4>
-                      <p className="text-gray-600 text-sm">Hỗ trợ đưa sản phẩm vào sử dụng</p>
+                    <div className="p-6 bg-yellow-50 rounded-2xl">
+                      <FaRocket className="text-3xl text-yellow-600 mx-auto mb-4" />
+                      <h4 className="font-bold text-gray-900 mb-2">Triển khai an toàn</h4>
+                      <p className="text-gray-600 text-sm">Đảm bảo hệ thống được triển khai bảo mật</p>
                     </div>
                   </div>
                 </div>
@@ -634,7 +631,7 @@ const AboutPage = () => {
             <div className="mb-8">
               <h3 className="text-3xl font-bold mb-4">
                 <span className="bg-gradient-to-r from-blue-400 via-purple-400 to-cyan-400 bg-clip-text text-transparent">
-                  ChatBot FIT
+                  ChatBot HCM UTE RTIC
                 </span>
               </h3>
               <p className="text-gray-400 max-w-2xl mx-auto">
@@ -673,17 +670,14 @@ const AboutPage = () => {
             {/* Copyright */}
             <div className="border-t border-gray-800 pt-8">
               <p className="text-lg text-gray-300 mb-2">
-                © {new Date().getFullYear()} <span className="font-semibold text-white">ChatBot FIT</span> - Khoa Công nghệ Thông tin
+                © {new Date().getFullYear()} <span className="font-semibold text-white">ChatBot HCM UTE RTIC</span> - Khoa Công nghệ Thông tin
               </p>
               <p className="text-gray-400">
                 Trường Đại học Sư phạm Kỹ thuật TP.HCM × 
-                <a href="http://cfacebook.com/hcmute.ptic" target="_blank" rel="noopener noreferrer">
-  <span className="font-bold text-white"> PTIC</span>
-</a>
-
+                <span className="font-bold text-white"> HCM UTE Research on Technology and Innovation Club</span>
               </p>
               <div className="mt-4 text-sm text-gray-500">
-               Developed by the talented student team at PTIC
+               Developed by the talented student team at HCM UTE RTIC
               </div>
             </div>
           </div>

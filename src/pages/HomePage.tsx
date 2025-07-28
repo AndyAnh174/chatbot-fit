@@ -76,8 +76,8 @@ const HomePage = () => {
               className="text-5xl md:text-6xl lg:text-7xl font-bold text-white leading-tight mb-8"
             >
               <span className="block mb-2">ChatBot</span>
-              <span className="block bg-gradient-to-r from-blue-400 via-purple-400 to-green-400 bg-clip-text text-transparent">
-                FIT HCMUTE
+              <span className="block bg-gradient-to-r from-blue-400 via-purple-400 to-cyan-400 bg-clip-text text-transparent">
+                HCM UTE RTIC
               </span>
             </motion.h1>
 
@@ -87,10 +87,10 @@ const HomePage = () => {
               className="text-xl md:text-2xl text-gray-300 mb-12 max-w-4xl mx-auto leading-relaxed"
             >
               Trợ lý AI thông minh được phát triển bởi{' '}
-              <span className="font-semibold text-white">Khoa Công nghệ Thông tin</span>{' '}
-              và{' '}
-              <span className="font-semibold text-white">PTIC</span>, 
-              hỗ trợ sinh viên tìm kiếm thông tin nhanh chóng và chính xác.
+              <span className="font-semibold text-white">HCM UTE Research on Technology and Innovation Club</span>{' '}
+              với sự hỗ trợ của{' '}
+              <span className="font-semibold text-white">CLB An toàn Thông tin (ATTT)</span>, 
+              hỗ trợ sinh viên tìm kiếm thông tin về câu lạc bộ và khoa CNTT nhanh chóng và chính xác.
             </motion.p>
 
             {/* CTA Buttons */}
@@ -156,7 +156,7 @@ const HomePage = () => {
                 Tính năng vượt trội
               </h2>
               <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-                Khám phá những tính năng tiên tiến giúp ChatBot FIT trở thành trợ lý hoàn hảo cho sinh viên
+                Khám phá những tính năng tiên tiến giúp ChatBot HCM UTE RTIC trở thành trợ lý hoàn hảo cho sinh viên
               </p>
             </motion.div>
 
@@ -265,7 +265,7 @@ const HomePage = () => {
                 Cách thức hoạt động
               </h2>
               <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-                Chỉ với 3 bước đơn giản, bạn có thể bắt đầu trò chuyện với ChatBot FIT
+                Chỉ với 3 bước đơn giản, bạn có thể bắt đầu trò chuyện với ChatBot HCM UTE RTIC
               </p>
             </motion.div>
 
@@ -336,7 +336,7 @@ const HomePage = () => {
               Sẵn sàng khám phá?
             </motion.h2>
             <motion.p variants={fadeInUp} className="text-xl text-gray-300 mb-12 max-w-3xl mx-auto">
-              Hãy bắt đầu trò chuyện với ChatBot FIT ngay hôm nay và trải nghiệm sự tiện lợi của trợ lý AI thông minh
+              Hãy bắt đầu trò chuyện với ChatBot HCM UTE RTIC ngay hôm nay và trải nghiệm sự tiện lợi của trợ lý AI thông minh
             </motion.p>
             <motion.div variants={fadeInUp} className="mt-20 text-center">
               <Link 
@@ -372,13 +372,13 @@ const HomePage = () => {
                   </h2>
                 </div>
                 <h3 className="text-xl font-semibold text-gray-700 mb-6">
-                  Khoa Công nghệ Thông tin × PTIC
+                  HCM UTE Research on Technology and Innovation Club
                 </h3>
                 <p className="text-lg text-gray-600 mb-6 leading-relaxed">
-                  ChatBot FIT là sản phẩm được phát triển bởi sự hợp tác giữa{' '}
-                  <span className="font-semibold text-gray-900">Khoa Công nghệ Thông tin - HCMUTE</span>{' '}
-                  và{' '}
-                  <span className="font-semibold text-gray-900">PTIC (Pioneers of Technology and Innovation Club)</span>.
+                  ChatBot HCM UTE RTIC là sản phẩm được phát triển bởi{' '}
+                  <span className="font-semibold text-gray-900">HCM UTE Research on Technology and Innovation Club</span>{' '}
+                  với sự hỗ trợ của{' '}
+                  <span className="font-semibold text-gray-900">CLB An toàn Thông tin (ATTT)</span>.
                 </p>
                 <p className="text-lg text-gray-600 mb-8 leading-relaxed">
                   Chúng tôi cam kết mang đến trải nghiệm tốt nhất cho sinh viên, giảng viên và những ai quan tâm đến Khoa CNTT.
@@ -446,13 +446,13 @@ const HomePage = () => {
           <div className="text-center">
             <div className="flex justify-center items-center mb-6">
               <FaRobot className="text-3xl text-blue-400 mr-3" />
-              <h3 className="text-2xl font-bold">ChatBot FIT</h3>
+              <h3 className="text-2xl font-bold">ChatBot HCM UTE RTIC</h3>
             </div>
             <p className="text-lg text-gray-300 mb-4">
               © {new Date().getFullYear()} Khoa Công nghệ Thông tin - Trường Đại học Sư phạm Kỹ thuật TP.HCM
             </p>
             <p className="text-gray-400">
-            Developed by HCM UTE Pioneers of Technology and Innovation Club
+            Developed by HCM UTE Research on Technology and Innovation Club
             </p>
           </div>
         </div>
