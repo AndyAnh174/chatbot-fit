@@ -1,11 +1,12 @@
 import { useState, useEffect } from 'react';
 import { Link, NavLink, Outlet } from 'react-router-dom';
-import { FaBars, FaTimes, FaRobot, FaHome, FaInfoCircle } from 'react-icons/fa'; 
-
+import { FaBars, FaTimes, FaRobot, FaHome, FaInfoCircle, FaUserCog } from 'react-icons/fa'; 
+import { useAuth } from '../contexts/AuthContext';
 
 export function AppNavbar({ children }: { children: React.ReactNode }) {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const { isAuthenticated, user } = useAuth();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -50,7 +51,10 @@ export function AppNavbar({ children }: { children: React.ReactNode }) {
                
                   
                   {/* Brand Text */}
-                 
+                  <div className="hidden sm:block">
+                    <h1 className="text-lg font-bold text-gray-900">RTIC Chatbot</h1>
+                    <p className="text-xs text-gray-600">Research on Technology & Innovation Club</p>
+                  </div>
                 </div>
               </Link>
             </div>
@@ -128,6 +132,33 @@ export function AppNavbar({ children }: { children: React.ReactNode }) {
                   </>
                 )}
               </NavLink>
+
+              {/* Admin Dashboard Link - Only show if authenticated */}
+              {isAuthenticated && (
+                <NavLink
+                  to="/admin/dashboard"
+                  className={({ isActive }) => 
+                    `relative px-3 py-1.5 rounded-lg text-sm font-semibold flex items-center transition-all duration-300 group ${
+                      isActive 
+                        ? "text-blue-600" 
+                        : "text-blue-600 hover:text-blue-700"
+                    }`
+                  }
+                >
+                  {({ isActive }) => (
+                    <>
+                      <FaUserCog className="mr-1.5 text-sm" />
+                      <span>Admin</span>
+                      {isActive && (
+                        <span className="absolute -bottom-1 left-0 w-full h-0.5 bg-blue-600 rounded-full" />
+                      )}
+                      {!isActive && (
+                        <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-blue-600 rounded-full group-hover:w-full transition-all duration-300" />
+                      )}
+                    </>
+                  )}
+                </NavLink>
+              )}
             </div>
             
             {/* Mobile menu button */}
@@ -195,6 +226,24 @@ export function AppNavbar({ children }: { children: React.ReactNode }) {
               <FaInfoCircle className="mr-3 text-lg" />
               <span>Giới thiệu</span>
             </NavLink>
+
+            {/* Admin Dashboard Link - Mobile */}
+            {isAuthenticated && (
+              <NavLink
+                to="/admin/dashboard"
+                className={({ isActive }) => 
+                  `block px-4 py-3 rounded-lg text-base font-medium flex items-center transition-all duration-300 ${
+                    isActive 
+                      ? "text-blue-600 bg-blue-50" 
+                      : "text-blue-600 hover:text-blue-700 hover:bg-blue-50"
+                  }`
+                }
+                onClick={() => setIsOpen(false)}
+              >
+                <FaUserCog className="mr-3 text-lg" />
+                <span>Admin Dashboard</span>
+              </NavLink>
+            )}
           </div>
         </div>
       </nav>

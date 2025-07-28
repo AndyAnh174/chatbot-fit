@@ -10,12 +10,12 @@ export default defineConfig({
     port: 5176,
     strictPort: true,
     cors: true,
-    allowedHosts: ['chatbot.andyanh.id.vn'],
+    allowedHosts: ['chatbotapi.hcmutertic.com', 'localhost'],
     proxy: {
       '/api': {
-        target: 'https://apichatbotfit.andyanh.id.vn',
+        target: 'https://chatbotapi.hcmutertic.com',
         changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/api/, '')
+        rewrite: (path) => path.replace(/^\/api/, ''),
       }
     }
   },
@@ -24,7 +24,7 @@ export default defineConfig({
     port: 5176,
     strictPort: true,
     cors: true,
-    allowedHosts: ['chatbot.andyanh.id.vn']
+    allowedHosts: ['chatbotapi.hcmutertic.com', 'localhost']
   },
   build: {
     outDir: 'dist',

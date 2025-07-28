@@ -11,7 +11,7 @@ import {
   FaGraduationCap,
   FaEnvelope,
   FaGlobe,
- 
+  FaShieldAlt,
   FaCheckCircle,
   FaQuoteLeft
 } from 'react-icons/fa';
@@ -102,19 +102,16 @@ const AboutPage = () => {
               {/* Main Title */}
               <motion.div variants={fadeInUp} className="mb-12">
                 <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold text-white mb-8 leading-tight">
-                  Trợ lý ảo Khoa CNTT
+                  RTIC Chatbot
                   <span className="block bg-gradient-to-r from-blue-400 via-purple-400 to-cyan-400 bg-clip-text text-transparent">
                     Trí tuệ nhân tạo
                   </span>
                 </h1>
                 <p className="text-xl md:text-2xl text-gray-300 leading-relaxed max-w-4xl mx-auto">
                   Được phát triển bởi{' '}
-                  <span className="font-bold text-white">Khoa Công nghệ Thông tin - HCMUTE</span>{' '}
-                  và{' '}
-                  <a href="http://facebook.com/hcmute.ptic" target="_blank" rel="noopener noreferrer">
-    
-  </a>
-  {' '}
+                  <span className="font-bold text-white">HCM UTE Research on Technology and Innovation Club</span>{' '}
+                  với sự hỗ trợ của{' '}
+                  <span className="font-bold text-white">CLB An toàn thông tin</span>{' '}
                   - Nơi công nghệ gặp gỡ sự đổi mới
                 </p>
               </motion.div>
@@ -163,11 +160,11 @@ const AboutPage = () => {
                   <span className="text-gray-800 font-semibold">Về dự án</span>
                 </div>
                 <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-8">
-                  Trợ lý ảo Khoa CNTT
+                  RTIC Chatbot
                  
                 </h2>
                 <p className="text-xl md:text-2xl text-gray-600 max-w-4xl mx-auto leading-relaxed">
-                  Ứng dụng công nghệ AI tiên tiến để tạo ra trải nghiệm tương tác thông minh
+                  Ứng dụng công nghệ AI tiên tiến để hỗ trợ tân sinh viên tìm hiểu về RTIC và khoa CNTT
                 </p>
               </motion.div>
 
@@ -186,12 +183,12 @@ const AboutPage = () => {
                     
                     <div className="space-y-6 text-gray-600 text-lg leading-relaxed">
                       <p>
-                        Dự án Trợ lý ảo Khoa CNTT ra đời với sứ mệnh cách mạng hóa cách thức tương tác 
-                        và tra cứu thông tin trong môi trường giáo dục đại học.
+                        Dự án RTIC Chatbot ra đời với sứ mệnh hỗ trợ tân sinh viên tìm hiểu về RTIC 
+                        và khoa Công nghệ Thông tin một cách dễ dàng và hiệu quả.
                       </p>
                       <p>
                         Chúng tôi tin rằng công nghệ AI không chỉ là công cụ, mà là cầu nối 
-                        giúp sinh viên tiếp cận kiến thức một cách dễ dàng và hiệu quả nhất.
+                        giúp tân sinh viên tiếp cận thông tin về CLB và định hướng học tập một cách nhanh chóng.
                       </p>
                       <div className="flex items-center pt-4">
                         <FaCheckCircle className="text-green-500 mr-3 text-xl" />
@@ -235,7 +232,7 @@ const AboutPage = () => {
                     <div className="grid grid-cols-3 gap-4 text-center">
                       <div>
                         <div className="text-2xl font-bold text-blue-600">Top 1</div>
-                        <div className="text-sm text-gray-600">Dự án chatbot AI của khoa CNTT</div>
+                        <div className="text-sm text-gray-600">Dự án chatbot AI của RTIC</div>
                       </div>
                       <div>
                         <div className="text-2xl font-bold text-green-600">A+</div>
@@ -442,8 +439,107 @@ const AboutPage = () => {
         {/* Team Section */}
        
 
-        {/* Partner Section */}
+        {/* Security Partner Section */}
         <div className="py-32 bg-white relative overflow-hidden">
+          {/* Background Elements */}
+          <div className="absolute inset-0">
+            <div className="absolute top-20 right-20 w-64 h-64 bg-gradient-to-r from-green-100 to-blue-100 rounded-full blur-3xl opacity-40"></div>
+            <div className="absolute bottom-20 left-20 w-80 h-80 bg-gradient-to-r from-purple-100 to-red-100 rounded-full blur-3xl opacity-40"></div>
+          </div>
+
+          <div className="container mx-auto px-6 relative z-10">
+            <motion.div
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true }}
+              variants={staggerContainer}
+              className="max-w-6xl mx-auto"
+            >
+              {/* Header */}
+              <motion.div variants={fadeInUp} className="text-center mb-20">
+                <div className="inline-flex items-center px-6 py-3 bg-green-50 rounded-full border border-green-200 mb-8">
+                  <FaShieldAlt className="text-green-500 mr-3 text-xl" />
+                  <span className="text-gray-800 font-semibold">Bảo mật & An toàn thông tin</span>
+                </div>
+                <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-8">
+                  <span className="block">CLB An toàn thông tin</span> 
+                  <span className="block text-green-600">Pentest & Bảo vệ</span>
+                </h2>
+                <p className="text-xl md:text-2xl text-gray-600 max-w-4xl mx-auto leading-relaxed">
+                  Đối tác chiến lược đảm bảo an toàn và bảo mật cho RTIC Chatbot với công nghệ pentest tiên tiến
+                </p>
+              </motion.div>
+
+              <motion.div variants={fadeInUp}>
+                <div className="bg-white/80 backdrop-blur-xl rounded-3xl p-12 border border-gray-200/50 shadow-2xl hover:shadow-3xl transition-all duration-500 group">
+                  {/* Security Features */}
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                    <div>
+                      <h3 className="text-3xl md:text-4xl font-bold text-gray-900 mb-6 group-hover:text-green-600 transition-colors duration-300">
+                        Bảo vệ toàn diện
+                      </h3>
+                      <p className="text-lg text-gray-600 leading-relaxed mb-8">
+                        CLB An toàn thông tin đã thực hiện các biện pháp bảo mật nghiêm ngặt để đảm bảo 
+                        RTIC Chatbot hoạt động an toàn và bảo vệ thông tin người dùng.
+                      </p>
+                      
+                      {/* Security Features List */}
+                      <div className="space-y-4">
+                        <div className="flex items-center p-4 bg-green-50 rounded-xl">
+                          <FaShieldAlt className="text-green-500 mr-4 text-xl" />
+                          <div>
+                            <h4 className="font-bold text-gray-900">Penetration Testing</h4>
+                            <p className="text-gray-600 text-sm">Kiểm tra lỗ hổng bảo mật định kỳ</p>
+                          </div>
+                        </div>
+                        
+                        <div className="flex items-center p-4 bg-blue-50 rounded-xl">
+                          <FaShieldAlt className="text-blue-500 mr-4 text-xl" />
+                          <div>
+                            <h4 className="font-bold text-gray-900">Mã hóa dữ liệu</h4>
+                            <p className="text-gray-600 text-sm">Bảo vệ thông tin người dùng</p>
+                          </div>
+                        </div>
+                        
+                        <div className="flex items-center p-4 bg-purple-50 rounded-xl">
+                          <FaShieldAlt className="text-purple-500 mr-4 text-xl" />
+                          <div>
+                            <h4 className="font-bold text-gray-900">Giám sát 24/7</h4>
+                            <p className="text-gray-600 text-sm">Theo dõi hoạt động liên tục</p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="text-center">
+                      <div className="bg-gradient-to-br from-green-500 to-blue-600 p-8 rounded-3xl text-white shadow-2xl">
+                        <FaShieldAlt className="text-6xl mx-auto mb-6" />
+                        <h4 className="text-2xl font-bold mb-4">Bảo mật cấp độ doanh nghiệp</h4>
+                        <p className="text-green-100 mb-6">
+                          RTIC Chatbot được bảo vệ bởi các chuyên gia an toàn thông tin 
+                          với kinh nghiệm pentest và bảo mật ứng dụng web.
+                        </p>
+                        <div className="grid grid-cols-2 gap-4 text-center">
+                          <div>
+                            <div className="text-2xl font-bold">100%</div>
+                            <div className="text-sm text-green-100">An toàn</div>
+                          </div>
+                          <div>
+                            <div className="text-2xl font-bold">24/7</div>
+                            <div className="text-sm text-green-100">Giám sát</div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
+            </motion.div>
+          </div>
+        </div>
+
+        {/* Partner Section */}
+        <div className="py-32 bg-gray-50 relative overflow-hidden">
           {/* Background Elements */}
           <div className="absolute inset-0">
             <div className="absolute top-20 right-20 w-64 h-64 bg-gradient-to-r from-blue-100 to-purple-100 rounded-full blur-3xl opacity-40"></div>
@@ -637,11 +733,11 @@ const AboutPage = () => {
               <div className="mb-8">
                 <h3 className="text-3xl font-bold mb-4">
                   <span className="bg-gradient-to-r from-blue-400 via-purple-400 to-cyan-400 bg-clip-text text-transparent">
-                    Trợ lý ảo Khoa Công nghệ Thông tin
+                    RTIC Chatbot
                   </span>
                 </h3>
                 <p className="text-gray-400 max-w-2xl mx-auto">
-                  Trí tuệ nhân tạo cho thế hệ sinh viên tương lai
+                  Trí tuệ nhân tạo hỗ trợ tân sinh viên khám phá RTIC
                 </p>
               </div>
 
@@ -676,17 +772,13 @@ const AboutPage = () => {
               {/* Copyright */}
               <div className="border-t border-gray-800 pt-8">
                 <p className="text-lg text-gray-300 mb-2">
-                  © {new Date().getFullYear()} <span className="font-semibold text-white">Trợ lý ảo Khoa CNTT</span> - Khoa Công nghệ Thông tin
+                  © {new Date().getFullYear()} <span className="font-semibold text-white">RTIC Chatbot</span> - HCM UTE Research on Technology and Innovation Club
                 </p>
                 <p className="text-gray-400">
                   Trường Đại học Sư phạm Kỹ thuật TP.HCM 
-                  <a href="http://facebook.com/hcmute.ptic" target="_blank" rel="noopener noreferrer">
-    
-  </a>
-
                 </p>
                 <div className="mt-4 text-sm text-gray-500">
-                 Developed by the talented student team at PTIC
+                 Developed by RTIC Team với sự hỗ trợ của CLB An toàn thông tin
                 </div>
               </div>
             </div>
