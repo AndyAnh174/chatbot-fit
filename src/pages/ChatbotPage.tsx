@@ -885,7 +885,7 @@ export function ChatbotPage() {
           <div className="flex items-center space-x-2">
            
             <span className="text-xs bg-gradient-to-r from-blue-50 to-indigo-50 text-blue-700 px-2 py-1 rounded-full border border-blue-200 font-medium animate-pulse">
-              Trợ lý ảo Khoa CNTT đang suy nghĩ
+              Trợ lý ảo RTIC đang suy nghĩ
             </span>
             <span className="text-xs text-gray-400 font-medium">
               {new Date().toLocaleTimeString('vi-VN', {
@@ -1404,7 +1404,7 @@ export function ChatbotPage() {
                         </ReactMarkdown>
                       </div>
                     ) : (
-                      <div className="text-center py-8">
+                  <div className="text-center py-8">
                         <div className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-3">
                           <FaRobot className="text-gray-400 text-lg" />
                         </div>
@@ -1416,7 +1416,7 @@ export function ChatbotPage() {
                   {/* Content Footer with actions */}
                   <div className="bg-gray-50 px-3 sm:px-4 py-2 border-t border-gray-100">
                     <div className="flex items-center justify-between text-xs text-gray-500">
-                      <span>Được tạo bởi Trợ lý ảo Khoa CNTT</span>
+                      <span>Được tạo bởi Trợ lý ảo RTIC</span>
                       <div className="flex items-center space-x-2">
                         <button
                           onClick={() => copyMessage(message.content, `message-${index}`)}
@@ -1712,7 +1712,7 @@ export function ChatbotPage() {
                     <FaRobot className="text-white text-sm md:text-base" />
                   </div>
                   <div>
-                    <h2 className="font-bold text-sm md:text-base text-gray-800">Trợ lý ảo Khoa CNTT</h2>
+                    <h2 className="font-bold text-sm md:text-base text-gray-800">Trợ lý ảo RTIC</h2>
                     <p className="text-xs text-gray-500">Trợ lý ảo thông minh</p>
                   </div>
                 </div>
@@ -1938,11 +1938,11 @@ export function ChatbotPage() {
               <div className="flex items-center justify-between">
                 <div className="flex items-center">
                   <div className="w-6 h-6 rounded-full mr-2 shadow-sm overflow-hidden">
-                    <img src="/FIT.jpg" alt="FIT Logo" className="w-full h-full object-cover" />
+                    <img src="/only-logo@4x.png" alt="RTIC Logo" className="w-full h-full object-cover" />
                   </div>
                   <div>
-                    <p className="text-xs font-medium text-gray-800">HCMUTE</p>
-                    <p className="text-xs text-gray-500">Khoa Công nghệ Thông tin</p>
+                    <p className="text-xs font-medium text-gray-800">HCM UTE</p>
+                    <p className="text-xs text-gray-500">Research on Technology and Innovation Club (RTIC)</p>
                   </div>
                 </div>
               </div>
@@ -2033,7 +2033,7 @@ export function ChatbotPage() {
               <FaHistory size={14} className="text-gray-600" />
             </button>
             <div className="text-center flex-1 mx-4">
-              <h1 className="font-bold text-base sm:text-lg text-gray-800">Trợ lý ảo Khoa CNTT</h1>
+              <h1 className="font-bold text-base sm:text-lg text-gray-800">Trợ lý ảo RTIC</h1>
               <div className="flex items-center justify-center space-x-2 mt-1">
                 <div className={`w-1.5 h-1.5 rounded-full ${
                   isLoading || isTyping ? 'bg-amber-400 animate-pulse' : 
@@ -2078,7 +2078,7 @@ export function ChatbotPage() {
                       <div>
                         <h3 className="font-bold text-amber-800 mb-1 text-sm">Phiên bản Beta</h3>
                         <p className="text-amber-700 leading-relaxed text-xs">
-                          Chào mừng bạn đến với Trợ lý ảo Khoa Công nghệ Thông tin - Trợ lý AI tiên tiến của Khoa Công nghệ Thông tin - HCMUTE. 
+                          Chào mừng bạn đến với Trợ lý ảo RTIC - Trợ lý AI chính thức của HCM UTE Research on Technology and Innovation Club. 
                           Đây là phiên bản thử nghiệm, vui lòng góp ý qua{' '}
                           <a 
                             href="https://forms.gle/Kz7WFbVmEhMjkMB3A" 
@@ -2103,7 +2103,7 @@ export function ChatbotPage() {
                     </div>
 
                     {/* Suggested Questions */}
-                    <div className="w-full max-w-3xl">
+                  <div className="w-full max-w-3xl">
                       <div className="flex items-center mb-4">
                         <div className="w-5 h-5 bg-orange-100 rounded-full flex items-center justify-center mr-2">
                           <span className="text-orange-500 text-xs">✨</span>
@@ -2113,50 +2113,50 @@ export function ChatbotPage() {
                       
                       <div className="grid grid-cols-1 gap-3">
                         <button
-                          onClick={() => handleSuggestionClick("Tôi muốn biết về học bổng của trường")}
+                          onClick={() => handleSuggestionClick("Giới thiệu về Khoa CNTT (FIT) và các CLB thuộc khoa")}
                           className="flex items-center p-3 bg-white border border-gray-200 rounded-lg hover:border-blue-300 hover:shadow-md transition-all duration-200 text-left group"
                         >
                           <div className="w-6 h-6 bg-yellow-100 rounded-full flex items-center justify-center mr-3 flex-shrink-0">
                             <span className="text-yellow-600 text-base">💡</span>
                           </div>
                           <span className="text-gray-700 group-hover:text-blue-600 transition-colors text-sm">
-                            Tôi muốn biết về học bổng của trường
+                            Giới thiệu FIT và các CLB
                           </span>
                         </button>
 
                         <button
-                          onClick={() => handleSuggestionClick("Có nên học ở HCMUTE không?")}
+                          onClick={() => handleSuggestionClick("Các hoạt động – sự kiện nổi bật của RTIC là gì?")}
                           className="flex items-center p-3 bg-white border border-gray-200 rounded-lg hover:border-blue-300 hover:shadow-md transition-all duration-200 text-left group"
                         >
                           <div className="w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center mr-3 flex-shrink-0">
                             <span className="text-blue-600 text-base">🎓</span>
                           </div>
                           <span className="text-gray-700 group-hover:text-blue-600 transition-colors text-sm">
-                            Có nên học ở HCMUTE không?
+                            Hoạt động – sự kiện của RTIC
                           </span>
                         </button>
 
                         <button
-                          onClick={() => handleSuggestionClick("Điểm chuẩn các ngành năm trước là bao nhiêu?")}
+                          onClick={() => handleSuggestionClick("Học bổng và hỗ trợ học tập của FIT")}
                           className="flex items-center p-3 bg-white border border-gray-200 rounded-lg hover:border-blue-300 hover:shadow-md transition-all duration-200 text-left group"
                         >
                           <div className="w-6 h-6 bg-red-100 rounded-full flex items-center justify-center mr-3 flex-shrink-0">
                             <span className="text-red-600 text-base">⚠️</span>
                           </div>
                           <span className="text-gray-700 group-hover:text-blue-600 transition-colors text-sm">
-                            Điểm chuẩn các ngành năm trước là bao nhiêu?
+                            Học bổng FIT
                           </span>
                         </button>
 
                         <button
-                          onClick={() => handleSuggestionClick("Ngành Công nghệ thông tin học những gì?")}
+                          onClick={() => handleSuggestionClick("Cách tham gia RTIC và các CLB trong khoa")}
                           className="flex items-center p-3 bg-white border border-gray-200 rounded-lg hover:border-blue-300 hover:shadow-md transition-all duration-200 text-left group"
                         >
                           <div className="w-6 h-6 bg-green-100 rounded-full flex items-center justify-center mr-3 flex-shrink-0">
                             <span className="text-green-600 text-base">💻</span>
                           </div>
                           <span className="text-gray-700 group-hover:text-blue-600 transition-colors text-sm">
-                            Ngành Công nghệ thông tin học những gì?
+                            Tham gia RTIC/CLB trong khoa
                           </span>
                         </button>
                       </div>
@@ -2272,7 +2272,7 @@ export function ChatbotPage() {
                     }
                   }}
                     onKeyPress={handleKeyPress}
-                  placeholder={!isOnline ? "Không có kết nối internet..." : "Hỏi Trợ lý ảo Khoa Công nghệ Thông tin bất cứ điều gì..."}
+                  placeholder={!isOnline ? "Không có kết nối internet..." : "Hỏi Trợ lý ảo RTIC bất cứ điều gì..."}
                   className="flex-1 px-4 sm:px-6 py-3 sm:py-4 bg-transparent border-0 focus:outline-none text-gray-800 placeholder-gray-500 text-sm sm:text-base min-h-12"
                   disabled={isLoading || !isOnline}
                 />
@@ -2349,7 +2349,7 @@ export function ChatbotPage() {
                 
                 {/* Professional Disclaimer */}
               <p className="text-xs text-gray-500 text-center mt-2 sm:mt-3 font-medium px-2">
-                Trợ lý ảo Khoa CNTT có thể tạo ra thông tin không chính xác. Vui lòng xác minh các chi tiết quan trọng.
+                Trợ lý ảo RTIC có thể tạo ra thông tin không chính xác. Vui lòng xác minh các chi tiết quan trọng.
                 </p>
               </div>
           </div>

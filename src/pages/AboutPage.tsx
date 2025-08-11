@@ -16,6 +16,7 @@ import {
   FaQuoteLeft
 } from 'react-icons/fa';
 import { motion } from 'framer-motion';
+// keeping import for potential future use of official logo if needed
 import logoCNTT from '../assets/logo-cntt2021.png';
 
 
@@ -54,7 +55,7 @@ const AboutPage = () => {
     {
       icon: FaCog,
       title: 'Huấn luyện AI',
-      description: 'Huấn luyện mô hình AI với dữ liệu chuyên biệt của Khoa CNTT',
+      description: 'Huấn luyện mô hình AI với dữ liệu chuyên biệt của RTIC',
       color: 'bg-purple-500'
     },
     {
@@ -98,23 +99,17 @@ const AboutPage = () => {
               </div>
             </motion.div>
 
-            {/* Main Title */}
+             {/* Main Title */}
             <motion.div variants={fadeInUp} className="mb-12">
               <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold text-white mb-8 leading-tight">
-                Trợ lý ảo Khoa CNTT
+                 Trợ lý ảo RTIC
                 <span className="block bg-gradient-to-r from-blue-400 via-purple-400 to-cyan-400 bg-clip-text text-transparent">
-                  Trí tuệ nhân tạo
+                  HCM UTE Research on Technology and Innovation Club
                 </span>
               </h1>
               <p className="text-xl md:text-2xl text-gray-300 leading-relaxed max-w-4xl mx-auto">
-                Được phát triển bởi{' '}
-                <span className="font-bold text-white">Khoa Công nghệ Thông tin - HCMUTE</span>{' '}
-                và{' '}
-                <a href="http://facebook.com/hcmute.ptic" target="_blank" rel="noopener noreferrer">
-  <span className="font-bold text-white">PTIC</span>
-</a>
-{' '}
-                - Nơi công nghệ gặp gỡ sự đổi mới
+                Trợ lý ảo RTIC hỗ trợ sinh viên Khoa Công nghệ Thông tin (FIT) – HCMUTE tìm hiểu về khoa, chương trình học, hoạt động – sự kiện,
+                đồng thời giúp bạn khám phá RTIC và các câu lạc bộ trong khoa để dễ dàng tham gia và kết nối.
               </p>
             </motion.div>
 
@@ -157,12 +152,12 @@ const AboutPage = () => {
           >
             {/* Header */}
             <motion.div variants={fadeInUp} className="text-center mb-20">
-              <div className="inline-flex items-center px-6 py-3 bg-blue-50 rounded-full border border-blue-200 mb-8">
+               <div className="inline-flex items-center px-6 py-3 bg-blue-50 rounded-full border border-blue-200 mb-8">
                 <FaQuoteLeft className="text-blue-500 mr-3 text-xl" />
                 <span className="text-gray-800 font-semibold">Về dự án</span>
               </div>
               <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-8">
-                Trợ lý ảo Khoa CNTT
+                 Trợ lý ảo RTIC
                
               </h2>
               <p className="text-xl md:text-2xl text-gray-600 max-w-4xl mx-auto leading-relaxed">
@@ -185,7 +180,7 @@ const AboutPage = () => {
                   
                   <div className="space-y-6 text-gray-600 text-lg leading-relaxed">
                     <p>
-                      Dự án Trợ lý ảo Khoa CNTT ra đời với sứ mệnh cách mạng hóa cách thức tương tác 
+                       Dự án Trợ lý ảo RTIC ra đời với sứ mệnh cách mạng hóa cách thức tương tác 
                       và tra cứu thông tin trong môi trường giáo dục đại học.
                     </p>
                     <p>
@@ -232,12 +227,12 @@ const AboutPage = () => {
                 <div className="mt-8 bg-white/70 backdrop-blur-xl rounded-3xl p-8 border border-gray-200/50 shadow-xl">
                   <h4 className="text-xl font-bold text-gray-900 mb-4">Thành tựu nổi bật</h4>
                   <div className="grid grid-cols-3 gap-4 text-center">
-                    <div>
+                    {/* <div>
                       <div className="text-2xl font-bold text-blue-600">Top 1</div>
-                      <div className="text-sm text-gray-600">Dự án chatbot AI của khoa CNTT</div>
-                    </div>
+                      <div className="text-sm text-gray-600">Dự án chatbot AI của RTIC</div>
+                    </div> */}
                     <div>
-                      <div className="text-2xl font-bold text-green-600">A+</div>
+                      <div className="text-2xl font-bold text-green-600">A</div>
                       <div className="text-sm text-gray-600">Bảo mật</div>
                     </div>
                     <div>
@@ -464,8 +459,7 @@ const AboutPage = () => {
                 <span className="text-gray-800 font-semibold">Đối tác & Nhà tài trợ</span>
               </div>
               <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-8">
-                <span className="block">Hợp tác Đồng hành</span> 
-               
+                <span className="block">FIT – Khoa Công nghệ Thông tin</span>
               </h2>
               <p className="text-xl md:text-2xl text-gray-600 max-w-4xl mx-auto leading-relaxed">
                 Cảm ơn sự hỗ trợ và đồng hành của các đối tác trong hành trình phát triển
@@ -475,24 +469,23 @@ const AboutPage = () => {
             <motion.div variants={fadeInUp}>
               <div className="bg-white/80 backdrop-blur-xl rounded-3xl p-12 border border-gray-200/50 shadow-2xl hover:shadow-3xl transition-all duration-500 group">
                 {/* Logo Section */}
-                <div className="text-center mb-10">
-                  <div className="inline-block p-8 bg-gradient-to-br from-blue-50 to-purple-50 rounded-3xl group-hover:scale-105 transition-transform duration-500">
-                    <img 
-                      src={logoCNTT} 
-                      alt="Khoa CNTT - HCMUTE" 
-                      className="max-h-32 mx-auto drop-shadow-lg"
-                    />
-                  </div>
-                </div>
+                 <div className="text-center mb-10">
+                   <div className="inline-block p-8 bg-gradient-to-br from-blue-50 to-purple-50 rounded-3xl group-hover:scale-105 transition-transform duration-500">
+                     <img 
+                       src={logoCNTT} 
+                       alt="RTIC Logo" 
+                       className="max-h-32 mx-auto drop-shadow-lg"
+                     />
+                   </div>
+                 </div>
                 
                 {/* Content */}
                 <div className="text-center">
                   <h3 className="text-3xl md:text-4xl font-bold text-gray-900 mb-6 group-hover:text-blue-600 transition-colors duration-300">
-                    Khoa Công nghệ Thông tin - HCMUTE
+                    Khoa Công nghệ Thông tin (FIT) – HCMUTE
                   </h3>
                   <p className="text-lg text-gray-600 max-w-3xl mx-auto leading-relaxed mb-8">
-                    Đối tác chính cung cấp dữ liệu, tài nguyên, kiến thức chuyên môn và định hướng phát triển dự án 
-                    phù hợp với nhu cầu thực tế của sinh viên và giảng viên.
+                    Cung cấp dữ liệu, tài nguyên, kiến thức chuyên môn và định hướng phát triển dự án phù hợp với nhu cầu thực tế của sinh viên và giảng viên.
                   </p>
                   
                   {/* Partnership Benefits */}
@@ -568,10 +561,10 @@ const AboutPage = () => {
                   </div>
                   <h3 className="text-2xl font-bold text-white mb-6 group-hover:text-red-300 transition-colors duration-300">Email</h3>
                   <a 
-                    href="mailto:fitadm@hcmute.edu.vn" 
+                    href="mailto:hcmute.rtic@gmail.com" 
                     className="text-gray-300 hover:text-white font-medium text-lg transition-colors duration-300 hover:underline"
                   >
-                    fitadm@hcmute.edu.vn
+                    hcmute.rtic@gmail.com
                   </a>
                 </motion.div>
               </motion.div>
@@ -586,12 +579,12 @@ const AboutPage = () => {
                   </div>
                   <h3 className="text-2xl font-bold text-white mb-6 group-hover:text-blue-300 transition-colors duration-300">Facebook</h3>
                   <a 
-                    href="https://www.facebook.com/fithcmute" 
+                    href="https://www.facebook.com/hcmute.rtic" 
                     target="_blank" 
                     rel="noopener noreferrer"
                     className="text-gray-300 hover:text-white font-medium text-lg transition-colors duration-300 hover:underline"
                   >
-                    Fanpage Khoa CNTT
+                    Fanpage RTIC
                   </a>
                 </motion.div>
               </motion.div>
@@ -606,12 +599,12 @@ const AboutPage = () => {
                   </div>
                   <h3 className="text-2xl font-bold text-white mb-6 group-hover:text-green-300 transition-colors duration-300">Website</h3>
                   <a 
-                    href="https://fit.hcmute.edu.vn" 
+                    href="https://www.facebook.com/hcmute.rtic" 
                     target="_blank" 
                     rel="noopener noreferrer"
                     className="text-gray-300 hover:text-white font-medium text-lg transition-colors duration-300 hover:underline"
                   >
-                    fit.hcmute.edu.vn
+                    facebook.com/hcmute.rtic
                   </a>
                 </motion.div>
               </motion.div>
@@ -636,7 +629,7 @@ const AboutPage = () => {
             <div className="mb-8">
               <h3 className="text-3xl font-bold mb-4">
                 <span className="bg-gradient-to-r from-blue-400 via-purple-400 to-cyan-400 bg-clip-text text-transparent">
-                  Trợ lý ảo Khoa Công nghệ Thông tin
+                  Trợ lý ảo RTIC
                 </span>
               </h3>
               <p className="text-gray-400 max-w-2xl mx-auto">
@@ -647,7 +640,7 @@ const AboutPage = () => {
             {/* Social Links */}
             <div className="flex justify-center space-x-6 mb-8">
               <a 
-                href="https://www.facebook.com/hcmute.ptic" 
+                href="https://www.facebook.com/hcmute.rtic" 
                 target="_blank" 
                 rel="noopener noreferrer"
                 className="w-12 h-12 bg-white/10 backdrop-blur-lg rounded-full flex items-center justify-center hover:bg-blue-500 transition-all duration-300 group"
@@ -655,15 +648,15 @@ const AboutPage = () => {
                 <FaFacebookSquare className="text-xl group-hover:text-white text-gray-400" />
               </a>
               <a 
-                href="http://github.com/HCMUTE-PTIC" 
+                href="https://github.com/HCMUTE-RTIC" 
                 target="_blank" 
                 rel="noopener noreferrer"
                 className="w-12 h-12 bg-white/10 backdrop-blur-lg rounded-full flex items-center justify-center hover:bg-gray-700 transition-all duration-300 group"
               >
                 <FaGithub className="text-xl group-hover:text-white text-gray-400" />
               </a>
-              <a 
-                href="https://fit.hcmute.edu.vn" 
+                  <a 
+                    href="https://hcmutertic.com" 
                 target="_blank" 
                 rel="noopener noreferrer"
                 className="w-12 h-12 bg-white/10 backdrop-blur-lg rounded-full flex items-center justify-center hover:bg-green-500 transition-all duration-300 group"
@@ -675,7 +668,7 @@ const AboutPage = () => {
             {/* Copyright */}
             <div className="border-t border-gray-800 pt-8">
               <p className="text-lg text-gray-300 mb-2">
-                © {new Date().getFullYear()} <span className="font-semibold text-white">Trợ lý ảo Khoa CNTT</span> - Khoa Công nghệ Thông tin
+                © {new Date().getFullYear()} <span className="font-semibold text-white">Trợ lý ảo RTIC</span> - HCM UTE Research on Technology and Innovation Club
               </p>
               <p className="text-gray-400">
                 Trường Đại học Sư phạm Kỹ thuật TP.HCM × 

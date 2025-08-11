@@ -18,8 +18,8 @@ export const DEFAULT_HEADERS = {
 
 // Thông tin ứng dụng
 export const APP_INFO = {
-  NAME: import.meta.env.VITE_APP_NAME || 'Chatbot FIT-HCMUTE',
-  DESCRIPTION: import.meta.env.VITE_APP_DESCRIPTION || 'Chatbot trả lời các câu hỏi, thắc mắc liên quan đến Khoa CNTT SPKT TPHCM',
+  NAME: import.meta.env.VITE_APP_NAME || 'Trợ lý ảo RTIC',
+  DESCRIPTION: import.meta.env.VITE_APP_DESCRIPTION || 'Chatbot FIT HCMUTE – hỏi đáp về Khoa CNTT (FIT), RTIC và các CLB',
   VERSION: import.meta.env.VITE_APP_VERSION || '1.0.0',
-  URL: import.meta.env.VITE_APP_URL || 'https://chatbot.andyanh.id.vn',
-}; 
+  URL: import.meta.env.VITE_APP_URL || 'https://chatbot.hcmutertic.com',
+};

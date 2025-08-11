@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link, NavLink, Outlet } from 'react-router-dom';
-import { FaBars, FaTimes, FaRobot, FaHome, FaInfoCircle } from 'react-icons/fa'; 
+import { FaBars, FaTimes, FaRobot, FaHome } from 'react-icons/fa'; 
 
 
 export function AppNavbar({ children }: { children: React.ReactNode }) {
@@ -30,33 +30,25 @@ export function AppNavbar({ children }: { children: React.ReactNode }) {
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-14">
-            {/* Left Side - Logos & Brand Text */}
+            {/* Left Side - RTIC Logo & Brand Text */}
             <div className="flex items-center">
               <Link to="/" className="flex items-center group">
                 <div className="flex items-center space-x-3">
-                  {/* Logo FIT */}
+                  {/* RTIC Logo */}
                   <div className="relative">
-                    <img 
-                      src="./LogoDoanHoi.png" 
-                      alt="FIT HCMUTE Logo" 
-                      className="h-12 w-auto transform group-hover:scale-105 transition-all duration-300 drop-shadow-sm" 
+                    <img
+                      src="/only-logo@4x.png"
+                      alt="RTIC Logo"
+                      className="h-20 w-auto transform group-hover:scale-105 transition-all duration-300 drop-shadow-sm rounded-md"
                     />
                   </div>
-                  
-                  {/* Divider */}
-                  <div className="h-5 w-px bg-gray-300"></div>
-                  
-                  {/* Logo PTIC */}
-                  <div className="relative">
-                    <img 
-                      src="./PTIC.jpg" 
-                      alt="PTIC Logo" 
-                      className="h-12 w-auto transform group-hover:scale-105 transition-all duration-300 drop-shadow-sm rounded-md" 
-                    />
-                  </div>
-                  
                   {/* Brand Text */}
-                 
+                  <div className="hidden sm:block">
+                    <p className="text-sm text-gray-500 leading-none">HCM UTE</p>
+                    <p className="text-sm font-bold text-gray-900 leading-snug">
+                      Research on Technology and Innovation Club
+                    </p>
+                  </div>
                 </div>
               </Link>
             </div>
@@ -111,29 +103,7 @@ export function AppNavbar({ children }: { children: React.ReactNode }) {
                 )}
               </NavLink>
               
-              <NavLink
-                to="/about"
-                className={({ isActive }) => 
-                  `relative px-3 py-1.5 rounded-lg text-sm font-semibold flex items-center transition-all duration-300 group ${
-                    isActive 
-                      ? "text-gray-900" 
-                      : "text-gray-600 hover:text-gray-900"
-                  }`
-                }
-              >
-                {({ isActive }) => (
-                  <>
-                    <FaInfoCircle className="mr-1.5 text-sm" />
-                    <span>Giới thiệu</span>
-                    {isActive && (
-                      <span className="absolute -bottom-1 left-0 w-full h-0.5 bg-gray-900 rounded-full" />
-                    )}
-                    {!isActive && (
-                      <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gray-900 rounded-full group-hover:w-full transition-all duration-300" />
-                    )}
-                  </>
-                )}
-              </NavLink>
+              {/* Removed About link; content merged into Home */}
             </div>
             
             {/* Mobile menu button */}
@@ -187,20 +157,7 @@ export function AppNavbar({ children }: { children: React.ReactNode }) {
               <span>Hỏi đáp với AI</span>
             </NavLink>
             
-            <NavLink
-              to="/about"
-              className={({ isActive }) => 
-                `block px-4 py-3 rounded-lg text-base font-medium flex items-center transition-all duration-300 ${
-                  isActive 
-                    ? "text-gray-900 bg-gray-100" 
-                    : "text-gray-600 hover:text-gray-900 hover:bg-gray-50"
-                }`
-              }
-              onClick={() => setIsOpen(false)}
-            >
-              <FaInfoCircle className="mr-3 text-lg" />
-              <span>Giới thiệu</span>
-            </NavLink>
+            {/* Removed About in mobile menu */}
           </div>
         </div>
       </nav>

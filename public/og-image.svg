@@ -22,7 +22,7 @@
         </style>
     </defs>
     <rect width="1200" height="630" fill="#0A1929"/>
-    <text x="50%" y="38%" class="title" text-anchor="middle" dominant-baseline="middle">Chatbot HCMUTE - FIT</text>
-    <text x="50%" y="52%" class="subtitle" text-anchor="middle" dominant-baseline="middle">Giải đáp thắc mắc về Khoa Công nghệ Thông tin</text>
-    <text x="50%" y="63%" class="footer" text-anchor="middle" dominant-baseline="middle">Trường Đại học Sư phạm Kỹ thuật TP.HCM</text>
+    <text x="50%" y="38%" class="title" text-anchor="middle" dominant-baseline="middle">Trợ lý ảo RTIC</text>
+    <text x="50%" y="52%" class="subtitle" text-anchor="middle" dominant-baseline="middle">HCM UTE Research on Technology and Innovation Club</text>
+    <text x="50%" y="63%" class="footer" text-anchor="middle" dominant-baseline="middle">HCM UTE · RTIC</text>
 </svg>
