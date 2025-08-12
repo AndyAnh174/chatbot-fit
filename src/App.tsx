@@ -6,13 +6,17 @@ import './index.css'
 
 function App() {
   return (
-    <AppNavbar>
-      <Routes>
-        <Route path="/" element={<HomePage />} />
-        {/* About page removed; merged into Home */}
-        <Route path="/chatbot" element={<ChatbotPage />} />
-      </Routes>
-    </AppNavbar>
+    <Routes>
+      <Route path="/" element={<HomePage />} />
+      <Route
+        path="/chatbot"
+        element={
+          <AppNavbar>
+            <ChatbotPage />
+          </AppNavbar>
+        }
+      />
+    </Routes>
   );
 }
 
